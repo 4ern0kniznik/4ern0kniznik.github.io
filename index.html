@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бизнес на автопилоте — автоматизация малого и среднего бизнеса</title>
+<meta name="description" content="Автоматизация бизнес-процессов под ключ: ИИ-агенты, CRM, документооборот, отчётность. 18+ лет опыта в IT. Оставьте заявку — посчитаем эффект для вашего бизнеса.">
+<style>
+  :root{
+    --navy:#0d1730; --navy2:#172a54; --card:#141f3d;
+    --cyan:#22d3ee; --lime:#a3e635; --text:#eef2ff; --muted:#94bbff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);color:var(--text);line-height:1.6}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+  /* header */
+  header{position:sticky;top:0;background:rgba(13,23,48,.92);backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid rgba(148,187,255,.15)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:800;color:var(--muted);letter-spacing:.5px;text-decoration:none}
+  .nav a{color:var(--text);text-decoration:none;margin-left:22px;font-size:15px}
+  .nav a:hover{color:var(--cyan)}
+  .nav .cta{background:var(--lime);color:var(--navy);padding:8px 18px;border-radius:24px;font-weight:700}
+  /* hero */
+  .hero{padding:90px 0 70px;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
+  .hero h1{font-size:44px;line-height:1.15;margin-bottom:20px}
+  .hero h1 em{font-style:normal;color:var(--cyan)}
+  .hero p{font-size:19px;color:var(--muted);margin-bottom:32px}
+  .btn{display:inline-block;padding:14px 30px;border-radius:30px;font-weight:700;text-decoration:none;font-size:16px;margin-right:14px;margin-bottom:10px}
+  .btn-lime{background:var(--lime);color:var(--navy)}
+  .btn-line{border:2px solid var(--cyan);color:var(--cyan)}
+  .btn:hover{opacity:.85}
+  .hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+  .badge{background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.35);color:var(--cyan);padding:6px 14px;border-radius:18px;font-size:13px}
+  .hero-photo{text-align:center}
+  .hero-photo img{width:280px;height:280px;object-fit:cover;border-radius:50%;border:4px solid var(--cyan)}
+  .hero-photo .name{margin-top:16px;font-weight:700;font-size:18px}
+  .hero-photo .role{color:var(--muted);font-size:14px}
+  /* sections */
+  section{padding:64px 0}
+  h2{font-size:32px;margin-bottom:12px}
+  .sub{color:var(--muted);margin-bottom:36px;max-width:640px}
+  .accent{width:64px;height:6px;background:var(--cyan);border-radius:3px;margin-bottom:20px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{background:var(--card);border:1px solid rgba(148,187,255,.12);border-radius:16px;padding:26px}
+  .card h3{font-size:19px;margin-bottom:10px}
+  .card p{color:var(--muted);font-size:15px}
+  .card .ico{font-size:30px;margin-bottom:14px}
+  /* cases */
+  .case .tag{display:inline-block;background:rgba(163,230,53,.15);color:var(--lime);font-size:12px;padding:4px 12px;border-radius:14px;margin-bottom:14px}
+  .case .num{font-size:30px;font-weight:800;color:var(--lime);margin-top:14px}
+  .case .numlabel{font-size:13px;color:var(--muted)}
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:step}
+  .step{background:var(--card);border-radius:16px;padding:24px;border:1px solid rgba(148,187,255,.12)}
+  .step::before{counter-increment:step;content:counter(step);display:block;width:40px;height:40px;border-radius:50%;background:var(--cyan);color:var(--navy);font-weight:800;font-size:19px;text-align:center;line-height:40px;margin-bottom:14px}
+  .step b{display:block;margin-bottom:6px}
+  .step span{color:var(--muted);font-size:14px}
+  /* about */
+  .about{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+  .about li{margin-bottom:10px;color:var(--muted);list-style:none;padding-left:26px;position:relative}
+  .about li::before{content:'✔';color:var(--lime);position:absolute;left:0}
+  /* form */
+  .lead{background:var(--card);border-radius:20px;padding:44px;border:1px solid rgba(34,211,238,.3)}
+  .lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+  input,textarea{width:100%;background:var(--navy);border:1px solid rgba(148,187,255,.3);border-radius:10px;padding:13px 16px;color:var(--text);font-size:15px;margin-bottom:14px;font-family:inherit}
+  input:focus,textarea:focus{outline:none;border-color:var(--cyan)}
+  button[type=submit]{background:var(--lime);color:var(--navy);border:none;padding:14px 34px;border-radius:30px;font-weight:700;font-size:16px;cursor:pointer}
+  button[type=submit]:hover{opacity:.85}
+  .tg-box{display:flex;flex-direction:column;justify-content:center}
+  footer{padding:36px 0;border-top:1px solid rgba(148,187,255,.15);color:var(--muted);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  footer a{color:var(--cyan);text-decoration:none}
+  @media(max-width:800px){
+    .hero,.about,.lead-grid{grid-template-columns:1fr}
+    .grid3,.steps{grid-template-columns:1fr}
+    .hero h1{font-size:32px}
+    .nav a:not(.cta){display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#">
+      <svg width="44" height="44" viewBox="0 0 100 100">
+        <text x="50" y="66" font-size="52" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial,sans-serif">А</text>
+        <ellipse cx="50" cy="50" rx="44" ry="15" fill="none" stroke="#22d3ee" stroke-width="4" transform="rotate(-14 50 50)"/>
+        <circle cx="79" cy="38" r="6" fill="#a3e635"/>
+      </svg>
+      БИЗНЕС НА АВТОПИЛОТЕ
+    </a>
+    <nav>
+      <a href="#solutions">Решения</a>
+      <a href="#cases">Кейсы</a>
+      <a href="#about">Обо мне</a>
+      <a href="#lead" class="cta">Оставить заявку</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div>
+      <h1>Настроим ваш бизнес <em>на автопилот</em></h1>
+      <p>Внедряю автоматизацию, которая окупается: ИИ-агенты, CRM, документооборот и отчётность для малого и среднего бизнеса. Технологии уровня крупных корпораций — без корпоративных бюджетов.</p>
+      <a class="btn btn-lime" href="#lead">Оставить заявку</a>
+      <a class="btn btn-line" href="https://t.me/biznes_autopilot" target="_blank">Канал в Telegram</a>
+      <div class="hero-badges">
+        <span class="badge">18+ лет в IT</span>
+        <span class="badge">Проекты до 15 млрд ₽</span>
+        <span class="badge">ВТБ · КРОК · Техносерв · S8 Capital</span>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <img src="photo.jpg" alt="Алексей — операционный директор, эксперт по автоматизации бизнеса">
+      <div class="name">Алексей</div>
+      <div class="role">Операционный директор · Эксперт по автоматизации бизнеса</div>
+    </div>
+  </div>
+
+  <section id="solutions">
+    <div class="accent"></div>
+    <h2>Что автоматизируем</h2>
+    <p class="sub">Берём процессы, которые съедают часы вашей команды, и отдаём их роботам. Каждое решение считаем в деньгах: сколько стоит и когда окупится.</p>
+    <div class="grid3">
+      <div class="card"><div class="ico">🤖</div><h3>ИИ-агенты для заявок</h3><p>Отвечают клиентам за 30 секунд в любое время суток, квалифицируют лиды и передают менеджеру только готовых к покупке.</p></div>
+      <div class="card"><div class="ico">📈</div><h3>CRM и продажи</h3><p>Внедрение и настройка amoCRM/Битрикс24: воронки, автоматические цепочки дожима, контроль каждой сделки.</p></div>
+      <div class="card"><div class="ico">📄</div><h3>Документооборот</h3><p>Счета, акты и договоры формируются сами: интеграция CRM с 1С и бухгалтерией убирает 2–3 часа рутины в день.</p></div>
+      <div class="card"><div class="ico">📊</div><h3>Отчётность и дашборды</h3><p>Выручка, воронка и ключевые показатели — в реальном времени на одном экране, вместо ожидания Excel от сотрудников.</p></div>
+      <div class="card"><div class="ico">💬</div><h3>Чат-боты и базы знаний</h3><p>ИИ-ассистент отвечает на типовые вопросы клиентов и сотрудников, снимая с руководителя десятки обращений в неделю.</p></div>
+      <div class="card"><div class="ico">🔗</div><h3>Интеграции под ключ</h3><p>Связываем сайт, телефонию, CRM, 1С и мессенджеры в единую систему — данные вводятся один раз и работают везде.</p></div>
+    </div>
+  </section>
+
+  <section id="cases">
+    <div class="accent"></div>
+    <h2>Примеры решений</h2>
+    <p class="sub">Типовые проекты с реальной экономикой — такие решения внедряются за 2–6 недель.</p>
+    <div class="grid3">
+      <div class="card case">
+        <span class="tag">Сервисная компания</span>
+        <h3>ИИ-агент обработки заявок</h3>
+        <p>Заявки с сайта и мессенджеров обрабатывались вручную с задержкой до 4 часов — половина лидов уходила к конкурентам.</p>
+        <div class="num">+35%</div><div class="numlabel">к конверсии из заявки в сделку, ответ за 30 секунд</div>
+      </div>
+      <div class="card case">
+        <span class="tag">Оптовая торговля</span>
+        <h3>CRM + 1С без ручного ввода</h3>
+        <p>Менеджеры дублировали заказы из CRM в 1С и вручную готовили закрывающие документы по каждой отгрузке.</p>
+        <div class="num">−2,5 ч</div><div class="numlabel">рутины в день на менеджера, ноль ошибок в документах</div>
+      </div>
+      <div class="card case">
+        <span class="tag">Розничная сеть</span>
+        <h3>Дашборд руководителя</h3>
+        <p>Собственник ждал сводку по точкам до вечера понедельника — решения принимались с опозданием на неделю.</p>
+        <div class="num">24/7</div><div class="numlabel">выручка и остатки по всем точкам в реальном времени</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="accent"></div>
+    <h2>Как работаем</h2>
+    <div class="steps" style="margin-top:36px">
+      <div class="step"><b>Аудит процессов</b><span>Находим, где команда теряет больше всего ручных часов. Бесплатно.</span></div>
+      <div class="step"><b>План с расчётом эффекта</b><span>Что автоматизируем, сколько стоит, когда окупится — до старта работ.</span></div>
+      <div class="step"><b>Внедрение</b><span>Настраиваем, интегрируем, обучаем команду. Первый результат — через 2 недели.</span></div>
+      <div class="step"><b>Сопровождение</b><span>Следим, чтобы всё работало, и развиваем систему вместе с бизнесом.</span></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="accent"></div>
+    <div class="about">
+      <div>
+        <h2>Обо мне</h2>
+        <p class="sub" style="margin-bottom:20px">Меня зовут Алексей, я операционный директор. Больше 18 лет строю ИТ-системы для бизнеса — от стартапов до федеральных корпораций.</p>
+        <ul>
+          <li>Руководил ИТ-подразделениями в ВТБ, S8 Capital, КРОК и Техносерв</li>
+          <li>Запускал продукты с миллионной аудиторией</li>
+          <li>Управлял проектами с бюджетом до 15 млрд рублей</li>
+          <li>Знаю, как перенести корпоративные технологии в малый бизнес — без лишней сложности и затрат</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>⚙️ Канал «Бизнес на автопилоте»</h3>
+        <p style="color:var(--muted);margin:12px 0 20px">Каждый день в 9:00 — новости автоматизации, переведённые на язык денег: разборы инструментов, кейсы с цифрами, ответы на вопросы.</p>
+        <a class="btn btn-line" href="https://t.me/biznes_autopilot" target="_blank">Подписаться</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="lead">
+    <div class="lead">
+      <div class="accent"></div>
+      <h2>Оставить заявку на автоматизацию</h2>
+      <p class="sub">Расскажите, какой процесс отнимает больше всего времени — вернусь с оценкой эффекта и стоимости в течение рабочего дня.</p>
+      <div class="lead-grid">
+        <form action="https://formsubmit.co/yaitskii@gmail.com" method="POST">
+          <input type="hidden" name="_subject" value="Заявка с сайта — Бизнес на автопилоте">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="Имя" placeholder="Ваше имя" required>
+          <input type="text" name="Контакт" placeholder="Телефон, Telegram или email" required>
+          <textarea name="Задача" rows="4" placeholder="Что хотите автоматизировать? Пара слов о бизнесе и задаче" required></textarea>
+          <button type="submit">Отправить заявку</button>
+        </form>
+        <div class="tg-box">
+          <h3 style="margin-bottom:12px">Быстрее — в Telegram</h3>
+          <p style="color:var(--muted);margin-bottom:20px">Напишите мне напрямую — отвечу лично и по делу.</p>
+          <a class="btn btn-lime" href="https://t.me/yaitskii" target="_blank">Написать в Telegram</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 Бизнес на автопилоте · Алексей</div>
+    <div><a href="https://t.me/biznes_autopilot" target="_blank">Telegram-канал</a></div>
+  </footer>
+
+</div>
+</body>
+</html>

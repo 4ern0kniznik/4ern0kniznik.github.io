@@ -105,7 +105,7 @@
       <h1>Настроим ваш бизнес <em>на автопилот</em></h1>
       <p>Внедряю автоматизацию, которая окупается: ИИ-агенты, CRM, документооборот и отчётность для малого и среднего бизнеса. Технологии уровня крупных корпораций — без корпоративных бюджетов.</p>
       <a class="btn btn-lime" href="#lead">Оставить заявку</a>
-      <a class="btn btn-line" href="https://t.me/biznes_autopilot" target="_blank">Канал в Telegram</a>
+      <a class="btn btn-line" data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank">Канал в Telegram</a>
       <div class="hero-badges">
         <span class="badge">18+ лет в IT</span>
         <span class="badge">Проекты до 15 млрд ₽</span>
@@ -186,7 +186,7 @@
       <div class="card">
         <h3>⚙️ Канал «Бизнес на автопилоте»</h3>
         <p style="color:var(--muted);margin:12px 0 20px">Каждый день в 9:00 — новости автоматизации, переведённые на язык денег: разборы инструментов, кейсы с цифрами, ответы на вопросы.</p>
-        <a class="btn btn-line" href="https://t.me/biznes_autopilot" target="_blank">Подписаться</a>
+        <a class="btn btn-line" data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank">Подписаться</a>
       </div>
     </div>
   </section>
@@ -208,7 +208,7 @@
         <div class="tg-box">
           <h3 style="margin-bottom:12px">Быстрее — в Telegram</h3>
           <p style="color:var(--muted);margin-bottom:20px">Напишите мне напрямую — отвечу лично и по делу.</p>
-          <a class="btn btn-lime" href="https://t.me/yaitskii" target="_blank">Написать в Telegram</a>
+          <a class="btn btn-lime" data-tg="yaitskii" href="https://t.me/yaitskii" target="_blank">Написать в Telegram</a>
         </div>
       </div>
     </div>
@@ -216,9 +216,20 @@
 
   <footer>
     <div>© 2026 Бизнес на автопилоте · Алексей</div>
-    <div><a href="https://t.me/biznes_autopilot" target="_blank">Telegram-канал</a></div>
+    <div><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank">Telegram-канал</a></div>
   </footer>
 
 </div>
+<script>
+  // t.me заблокирован у части провайдеров РФ — открываем приложение Telegram напрямую
+  document.querySelectorAll('[data-tg]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var d = a.getAttribute('data-tg');
+      window.location.href = 'tg://resolve?domain=' + d;
+      setTimeout(function(){ window.open('https://t.me/' + d, '_blank'); }, 1500);
+    });
+  });
+</script>
 </body>
 </html>

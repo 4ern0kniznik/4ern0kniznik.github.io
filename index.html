@@ -227,7 +227,11 @@
       e.preventDefault();
       var d = a.getAttribute('data-tg');
       window.location.href = 'tg://resolve?domain=' + d;
-      setTimeout(function(){ window.open('https://t.me/' + d, '_blank'); }, 1500);
+      // запасной вариант через t.me — только если приложение не открылось
+      // (если Telegram открылся, вкладка теряет фокус и ничего лишнего не происходит)
+      setTimeout(function(){
+        if (document.hasFocus()) { window.open('https://t.me/' + d, '_blank'); }
+      }, 2000);
     });
   });
 </script>

@@ -2,339 +2,497 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Бизнес на автопилоте — автоматизация малого и среднего бизнеса</title>
-<meta name="description" content="Автоматизация бизнес-процессов под ключ: ИИ-агенты, CRM, документооборот, отчётность. 18+ лет опыта в IT. Оставьте заявку — посчитаем эффект для вашего бизнеса.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Бизнес на автопилоте — автоматизация бизнеса под ключ</title>
+<meta name="description" content="Автоматизация бизнеса под ключ: от разбора процессов до работающей системы и поддержки. ИИ-агенты, CRM, 1С, документы и отчётность. Алексей Яицкий, 18+ лет в IT.">
 <style>
-  :root{
-    --navy:#0d1730; --navy2:#172a54; --card:#141f3d;
-    --cyan:#22d3ee; --lime:#a3e635; --text:#eef2ff; --muted:#94bbff;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);color:var(--text);line-height:1.6}
-  .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
-  /* header */
-  header{position:sticky;top:0;background:rgba(13,23,48,.92);backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid rgba(148,187,255,.15)}
-  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-  .logo{display:flex;align-items:center;gap:12px;font-weight:800;color:var(--muted);letter-spacing:.5px;text-decoration:none}
-  .nav a{color:var(--text);text-decoration:none;margin-left:22px;font-size:15px}
-  .nav a:hover{color:var(--cyan)}
-  .nav .cta{background:var(--lime);color:var(--navy);padding:8px 18px;border-radius:24px;font-weight:700}
-  /* hero */
-  .hero{padding:90px 0 70px;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
-  .hero h1{font-size:44px;line-height:1.15;margin-bottom:20px}
-  .hero h1 em{font-style:normal;color:var(--cyan)}
-  .hero p{font-size:19px;color:var(--muted);margin-bottom:32px}
-  .btn{display:inline-block;padding:14px 30px;border-radius:30px;font-weight:700;text-decoration:none;font-size:16px;margin-right:14px;margin-bottom:10px}
-  .btn-lime{background:var(--lime);color:var(--navy)}
-  .btn-line{border:2px solid var(--cyan);color:var(--cyan)}
-  .btn:hover{opacity:.85}
-  .hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-  .badge{background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.35);color:var(--cyan);padding:6px 14px;border-radius:18px;font-size:13px}
-  .hero-photo{text-align:center}
-  .hero-photo img{width:280px;height:280px;object-fit:cover;border-radius:50%;border:4px solid var(--cyan)}
-  .hero-photo .name{margin-top:16px;font-weight:700;font-size:18px}
-  .hero-photo .role{color:var(--muted);font-size:14px}
-  /* sections */
-  section{padding:64px 0}
-  h2{font-size:32px;margin-bottom:12px}
-  .sub{color:var(--muted);margin-bottom:36px;max-width:640px}
-  .accent{width:64px;height:6px;background:var(--cyan);border-radius:3px;margin-bottom:20px}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  .card{background:var(--card);border:1px solid rgba(148,187,255,.12);border-radius:16px;padding:26px}
-  .card h3{font-size:19px;margin-bottom:10px}
-  .card p{color:var(--muted);font-size:15px}
-  .card .ico{font-size:30px;margin-bottom:14px}
-  /* cases */
-  .case .tag{display:inline-block;background:rgba(163,230,53,.15);color:var(--lime);font-size:12px;padding:4px 12px;border-radius:14px;margin-bottom:14px}
-  .case .num{font-size:30px;font-weight:800;color:var(--lime);margin-top:14px}
-  .case .numlabel{font-size:13px;color:var(--muted)}
-  /* steps */
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:step}
-  .step{background:var(--card);border-radius:16px;padding:24px;border:1px solid rgba(148,187,255,.12)}
-  .step::before{counter-increment:step;content:counter(step);display:block;width:40px;height:40px;border-radius:50%;background:var(--cyan);color:var(--navy);font-weight:800;font-size:19px;text-align:center;line-height:40px;margin-bottom:14px}
-  .step b{display:block;margin-bottom:6px}
-  .step span{color:var(--muted);font-size:14px}
-  /* about */
-  .about{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
-  .about li{margin-bottom:10px;color:var(--muted);list-style:none;padding-left:26px;position:relative}
-  .about li::before{content:'✔';color:var(--lime);position:absolute;left:0}
-  /* form */
-  .lead{background:var(--card);border-radius:20px;padding:44px;border:1px solid rgba(34,211,238,.3)}
-  .lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
-  input,textarea{width:100%;background:var(--navy);border:1px solid rgba(148,187,255,.3);border-radius:10px;padding:13px 16px;color:var(--text);font-size:15px;margin-bottom:14px;font-family:inherit}
-  input:focus,textarea:focus{outline:none;border-color:var(--cyan)}
-  button[type=submit]{background:var(--lime);color:var(--navy);border:none;padding:14px 34px;border-radius:30px;font-weight:700;font-size:16px;cursor:pointer}
-  button[type=submit]:hover{opacity:.85}
-  .consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin-bottom:16px}
-  .consent input{width:auto;flex:none;margin:4px 0 0}
-  .consent a{color:var(--cyan)}
-  #portfolio h3{margin:32px 0 16px}
-  #portfolio .card p{margin-bottom:12px}
-  .tg-box{display:flex;flex-direction:column;justify-content:center}
-  footer{padding:36px 0;border-top:1px solid rgba(148,187,255,.15);color:var(--muted);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
-  footer a{color:var(--cyan);text-decoration:none}
-  @media(max-width:800px){
-    .hero,.about,.lead-grid{grid-template-columns:1fr}
-    .grid3,.steps{grid-template-columns:1fr}
-    .hero h1{font-size:32px}
-    .nav a:not(.cta){display:none}
-  }
+:root{
+  --bg:#FFFFFF; --bg-soft:#F5F6F8; --bg-sunk:#EDEFF3;
+  --text:#14161A; --text-2:#5A6270;
+  --action:#2B5CE6; --action-h:#1E48C4; --action-p:#17399E; --action-bg:#EEF2FE;
+  --ok:#0F7A3D; --ok-bg:#E8F6EE;
+  --warn:#8A5A00; --warn-bg:#FFF4D6;
+  --error:#C22B2B; --error-bg:#FDECEC;
+  --border:#D6DAE1; --border-ctrl:#8B93A1;
+  --panel:#0E1320; --panel-2:#161C2C; --panel-line:#262E42;
+  --panel-text:#E8ECF4; --panel-dim:#9AA4B5; --signal:#4ADE80;
+  --r-ctrl:8px; --r-card:12px; --r-modal:16px;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s6:24px; --s7:32px; --s9:48px;
+  --font:'Golos Text',Inter,system-ui,'Segoe UI',Roboto,Arial,sans-serif;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);font-size:17px;line-height:1.6;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--action)}
+img{display:block;max-width:100%}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+.mono{font-family:var(--mono);font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+.eyebrow{color:var(--action);margin-bottom:var(--s4);display:block}
+h1,h2,h3{letter-spacing:-.02em;line-height:1.15;font-weight:700}
+h2{font-size:32px;max-width:720px}
+.lede{font-size:18px;color:var(--text-2);max-width:640px;margin-top:var(--s4)}
+section{padding:72px 0}
+.rule{border-top:1px solid var(--border)}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:var(--r-ctrl);font-weight:600;font-size:16px;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:background-color .16s var(--ease-out),transform .12s var(--ease-out),border-color .16s var(--ease-out)}
+.btn:active{transform:scale(.97)}
+.btn-main{background:var(--action);color:#FFFFFF}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border-ctrl)}
+.btn:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--action);outline-offset:2px}
+
+/* шапка */
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--border)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;font-weight:700;font-size:16px;letter-spacing:-.01em}
+.logo svg{flex:none}
+.nav-links{display:none;gap:28px}
+.nav-links a{color:var(--text-2);text-decoration:none;font-size:15px}
+.nav .btn{min-height:40px;padding:0 16px;font-size:15px;white-space:nowrap}
+.logo{white-space:nowrap}
+@media (max-width:419px){.logo-text{display:none}}
+
+/* первый экран */
+.hero{padding:48px 0 56px}
+.hero-grid{display:grid;gap:40px}
+.status{display:inline-flex;align-items:center;gap:8px;color:var(--ok);background:var(--ok-bg);padding:6px 12px;border-radius:999px;margin-bottom:var(--s6)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.hero h1{font-size:40px;letter-spacing:-.035em;line-height:1.05}
+.hero h1 span{color:var(--action)}
+.hero .lede{font-size:19px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--s7)}
+.risk{color:var(--text-2);font-size:16px;margin-top:var(--s3)}
+.byline{display:flex;align-items:center;gap:14px;margin-top:var(--s7);padding-top:var(--s6);border-top:1px solid var(--border)}
+.byline img{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:center 20%}
+.byline b{display:block;font-size:16px}
+.byline small{color:var(--text-2);font-size:15px}
+
+/* приборная панель — подпись страницы */
+.panel{background:var(--panel);color:var(--panel-text);border-radius:var(--r-modal);padding:22px;box-shadow:0 30px 60px -30px rgba(14,19,32,.55),0 0 0 1px rgba(14,19,32,.9)}
+.panel-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--panel-line);color:var(--panel-dim)}
+.ap{display:inline-flex;align-items:center;gap:8px;color:var(--signal)}
+.ap .dot{box-shadow:0 0 0 4px rgba(74,222,128,.15)}
+.route{list-style:none;padding:8px 0 4px}
+.route li{display:grid;grid-template-columns:18px 1fr auto;gap:12px;align-items:start;padding:12px 0;position:relative}
+.route li::before{content:"";position:absolute;left:8px;top:30px;bottom:-12px;width:2px;background:var(--panel-line)}
+.route li:last-child::before{display:none}
+.route i{width:18px;height:18px;border-radius:50%;border:2px solid var(--signal);margin-top:3px;background:var(--panel)}
+.route li:last-child i{background:var(--signal)}
+.sys li::before{display:none}
+.sys i{background:var(--signal)}
+.sys em{color:var(--signal)}
+.route b{font-weight:600;font-size:16px;display:block}
+.route small{color:var(--panel-dim);font-size:14px;display:block}
+.route em{font-style:normal;font-family:var(--mono);font-size:14px;color:var(--panel-dim);white-space:nowrap;padding-top:2px}
+.panel-foot{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--panel-line);padding-top:16px;margin-top:8px;color:var(--panel-dim)}
+.panel-foot b{color:var(--panel-text);font-weight:600}
+
+/* опыт */
+.proof{background:var(--bg-soft);border-block:1px solid var(--border);padding:28px 0}
+.proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 24px}
+.proof b{display:block;font-size:24px;letter-spacing:-.02em}
+.proof span{color:var(--text-2);font-size:15px}
+
+/* что автоматизируем */
+.feat{display:grid;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;margin-top:var(--s9)}
+.feat article{background:var(--bg);padding:28px 24px}
+.feat .mono{color:var(--text-2);display:block;margin-bottom:14px}
+.feat h3{font-size:20px;margin-bottom:8px}
+.feat p{color:var(--text-2);font-size:16px}
+
+/* разработка */
+.dev{background:var(--panel);color:var(--panel-text)}
+.dev .eyebrow{color:var(--signal)}
+.dev .lede{color:var(--panel-dim)}
+.dev-grid{display:grid;gap:16px;margin-top:var(--s9)}
+.dev-card{border:1px solid var(--panel-line);background:var(--panel-2);border-radius:var(--r-card);padding:26px 24px}
+.dev-card h3{font-size:20px;margin-bottom:8px}
+.dev-card p{color:var(--panel-dim);font-size:16px}
+.stages{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--s7);color:var(--panel-dim)}
+.stages span{border:1px solid var(--panel-line);border-radius:999px;padding:6px 14px}
+.dev a.more{color:var(--panel-text);display:inline-block;margin-top:var(--s6);font-weight:600}
+
+/* портфолио */
+.pf-group{margin-top:var(--s9)}
+.pf-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--s7)}
+.pf-nav a{font-size:15px;color:var(--text);text-decoration:none;border:1px solid var(--border-ctrl);border-radius:999px;padding:8px 14px;min-height:40px;display:inline-flex;align-items:center}
+.pf-group{scroll-margin-top:80px}
+.pf-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-bottom:12px;border-bottom:1px solid var(--text)}
+.pf-head h3{font-size:24px}
+.pf-head .mono{color:var(--text-2);white-space:nowrap}
+.pf-lead{color:var(--text-2);font-size:16px;margin-top:10px}
+.pf{list-style:none}
+.pf li{display:grid;gap:6px;padding:20px 0;border-bottom:1px solid var(--border)}
+.pf h4{font-size:19px;letter-spacing:-.01em;font-weight:650}
+.pf p{color:var(--text-2);font-size:16px}
+.pf .meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;padding:4px 10px;border-radius:999px}
+.pill.live{color:var(--ok);background:var(--ok-bg)}
+.pill.beta{color:var(--action-p);background:var(--action-bg)}
+.pill.dev{color:var(--warn);background:var(--warn-bg)}
+.pf .meta a{font-weight:600;text-decoration:none;font-size:16px}
+.pf .meta .note{color:var(--text-2);font-size:14px}
+
+/* как работаем */
+.steps{list-style:none;display:grid;gap:0;margin-top:var(--s9);counter-reset:s}
+.steps li{position:relative;padding:0 0 32px 44px}
+.steps li::before{content:"";position:absolute;left:11px;top:28px;bottom:0;width:2px;background:var(--border)}
+.steps li:last-child::before{display:none}
+.steps li::after{content:"";position:absolute;left:0;top:2px;width:24px;height:24px;border-radius:50%;border:2px solid var(--action);background:var(--bg)}
+.steps li:first-child::after{background:var(--action)}
+.steps .mono{color:var(--action);display:block;margin-bottom:4px}
+.steps h3{font-size:20px;margin-bottom:4px}
+.steps p{color:var(--text-2);font-size:16px}
+
+/* типовые задачи */
+.cases{display:grid;gap:16px;margin-top:var(--s9)}
+.case{border:1px solid var(--border);border-radius:var(--r-card);padding:26px 24px;background:var(--bg)}
+.case .mono{color:var(--text-2)}
+.case h3{font-size:20px;margin:12px 0 14px}
+.case dl{display:grid;gap:12px}
+.case dt{font-size:14px;font-weight:600;color:var(--text-2)}
+.case dd{font-size:16px}
+
+/* обо мне */
+.about-grid{display:grid;gap:40px;align-items:center}
+.portrait{border-radius:var(--r-modal);overflow:hidden;aspect-ratio:4/5;background:var(--bg-sunk);max-width:440px}
+.portrait img{width:100%;height:100%;object-fit:cover;object-position:center 15%}
+.facts{list-style:none;margin-top:var(--s7);border-top:1px solid var(--border)}
+.facts li{padding:14px 0;border-bottom:1px solid var(--border);display:grid;grid-template-columns:28px 1fr;font-size:16px}
+.facts li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--action);margin-top:9px}
+.channel{margin-top:var(--s7);padding:22px;border-radius:var(--r-card);background:var(--bg-soft);border:1px solid var(--border)}
+.channel b{display:block;font-size:17px;margin-bottom:6px}
+.channel p{color:var(--text-2);font-size:16px;margin-bottom:16px}
+.channel .row{display:flex;flex-wrap:wrap;gap:10px}
+
+/* заявка */
+.lead{background:var(--panel);color:var(--panel-text);border-radius:20px;padding:36px 22px}
+.lead .eyebrow{color:var(--signal)}
+.lead .lede{color:var(--panel-dim)}
+.lead-grid{display:grid;gap:40px;margin-top:var(--s7)}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:15px;font-weight:600;margin-bottom:6px}
+.field input,.field textarea{width:100%;font:inherit;font-size:16px;color:var(--text);background:#FFFFFF;border:1px solid var(--border-ctrl);border-radius:var(--r-ctrl);padding:12px 14px;min-height:48px}
+.field textarea{resize:vertical;min-height:112px}
+.consent{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;font-size:15px;color:var(--panel-dim);margin:4px 0 20px}
+.consent input{width:20px;height:20px;margin-top:2px;accent-color:var(--action)}
+.consent a{color:var(--panel-text)}
+.lead .btn-main{width:100%}
+.form-msg{margin-top:12px;font-size:15px;min-height:1.5em;color:var(--panel-dim)}
+.side b{font-size:20px;display:block;margin-bottom:8px}
+.side p{color:var(--panel-dim);font-size:16px;margin-bottom:20px}
+.side .btn-ghost{color:var(--panel-text);border-color:var(--panel-dim)}
+.side ul{list-style:none;margin-top:28px;border-top:1px solid var(--panel-line)}
+.side li{padding:12px 0;border-bottom:1px solid var(--panel-line);color:var(--panel-dim);font-size:16px}
+.side li b{display:inline;font-size:16px;color:var(--panel-text);margin:0}
+
+/* подвал */
+footer{padding:40px 0 48px;color:var(--text-2);font-size:15px}
+.foot{display:grid;gap:16px}
+.foot a{color:var(--text-2)}
+.foot .req{font-size:14px}
+
+/* появление при прокрутке: контент виден без скриптов */
+.js .reveal{opacity:0;transform:translateY(12px);transition:opacity .3s var(--ease-out),transform .3s var(--ease-out)}
+.js .reveal.in{opacity:1;transform:none}
+
+@media (hover:hover) and (pointer:fine){
+  .btn-main:hover{background:var(--action-h)}
+  .btn-ghost:hover{border-color:var(--text)}
+  .nav-links a:hover{color:var(--text)}
+  .pf-nav a:hover{border-color:var(--text)}
+  .case:hover{border-color:var(--border-ctrl)}
+  .side .btn-ghost:hover{border-color:var(--panel-text)}
+}
+
+@media (min-width:768px){
+  .wrap{padding:0 32px}
+  h2{font-size:42px}
+  section{padding:104px 0}
+  .nav-links{display:flex}
+  .hero{padding:80px 0 96px}
+  .hero h1{font-size:60px}
+  .proof-grid{grid-template-columns:repeat(4,1fr)}
+  .feat{grid-template-columns:repeat(2,1fr)}
+  .dev-grid,.cases{grid-template-columns:repeat(3,1fr)}
+  .pf li{grid-template-columns:1.1fr 1.6fr 1fr;gap:24px;align-items:baseline}
+  .pf .meta{margin-top:0;justify-content:flex-end}
+  .steps{grid-template-columns:repeat(4,1fr);gap:24px}
+  .steps li{padding:44px 0 0 0}
+  .steps li::before{left:28px;right:-24px;top:11px;bottom:auto;width:auto;height:2px}
+  .lead{padding:64px}
+  .lead-grid{grid-template-columns:1.3fr 1fr;gap:64px}
+  .foot{grid-template-columns:1fr auto;align-items:start}
+}
+@media (min-width:1024px){
+  .hero-grid{grid-template-columns:1.25fr 1fr;gap:72px;align-items:center}
+  .hero h1{font-size:72px}
+  .feat{grid-template-columns:repeat(3,1fr)}
+  .about-grid{grid-template-columns:.85fr 1.15fr;gap:80px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .js .reveal{transform:none!important;opacity:1!important}
+}
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap nav">
-    <a class="logo" href="#">
-      <svg width="44" height="44" viewBox="0 0 100 100">
-        <text x="50" y="66" font-size="52" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial,sans-serif">А</text>
-        <ellipse cx="50" cy="50" rx="44" ry="15" fill="none" stroke="#22d3ee" stroke-width="4" transform="rotate(-14 50 50)"/>
-        <circle cx="79" cy="38" r="6" fill="#a3e635"/>
-      </svg>
-      БИЗНЕС НА АВТОПИЛОТЕ
+    <a class="logo" href="#top" aria-label="Бизнес на автопилоте — наверх">
+      <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#14161A"/><path d="M9 23 L16 8 L23 23" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linejoin="round"/><path d="M11.5 18h9" stroke="#FFFFFF" stroke-width="2.4"/><circle cx="24.5" cy="9.5" r="2.5" fill="#4ADE80"/></svg>
+      <span class="logo-text">Бизнес на автопилоте</span>
     </a>
-    <nav>
+    <nav class="nav-links" aria-label="Разделы">
       <a href="#solutions">Решения</a>
-      <a href="#dev">Разработка</a>
-      <a href="#cases">Кейсы</a>
       <a href="#portfolio">Портфолио</a>
+      <a href="#process">Как работаем</a>
       <a href="#about">Обо мне</a>
-      <a href="#lead" class="cta">Оставить заявку</a>
     </nav>
+    <a class="btn btn-main" href="#lead">Оставить заявку</a>
   </div>
 </header>
 
-<div class="wrap">
+<main id="top">
 
-  <div class="hero">
+<section class="hero">
+  <div class="wrap hero-grid">
     <div>
-      <h1>Настроим ваш бизнес <em>на автопилот</em></h1>
-      <p>Внедряю автоматизацию, которая окупается: ИИ-агенты, CRM, документооборот и отчётность для малого и среднего бизнеса. Технологии уровня крупных корпораций — без корпоративных бюджетов.</p>
-      <a class="btn btn-lime" href="#lead">Оставить заявку</a>
-      <a class="btn btn-line" data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank">Канал в Telegram</a>
-      <a class="btn btn-line" href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank">Канал в MAX</a>
-      <div class="hero-badges">
-        <span class="badge">18+ лет в IT</span>
-        <span class="badge">Проекты до 15 млрд ₽</span>
-        <span class="badge">ВТБ · КРОК · Техносерв · S8 Capital</span>
+      <span class="status mono"><i class="dot"></i>Беру проекты</span>
+      <h1>Автоматизация бизнеса <span>под&nbsp;ключ</span></h1>
+      <p class="lede">Больше 25 проектов в 10 отраслях. Беру на себя весь путь — от разбора процессов до работающей системы и её поддержки. Продажи, документы, сервис и отчётность связываем в одну систему с ИИ-агентами, CRM и 1С. До старта считаем, когда вложения окупятся.</p>
+      <div class="cta-row">
+        <a class="btn btn-main" href="#lead">Оставить заявку</a>
+        <a class="btn btn-ghost" href="#portfolio">Посмотреть проекты</a>
+      </div>
+      <p class="risk">Отвечу в течение рабочего дня. Разбор процессов — бесплатно.</p>
+      <div class="byline">
+        <img src="photo.jpg" alt="Алексей Яицкий, генеральный директор">
+        <div><b>Алексей Яицкий</b><small>Генеральный директор · 18+ лет в IT</small></div>
       </div>
     </div>
-    <div class="hero-photo">
-      <img src="photo.jpg" alt="Яицкий Алексей Андреевич — генеральный директор, эксперт по автоматизации бизнеса">
-      <div class="name">Яицкий Алексей Андреевич</div>
-      <div class="role">Генеральный директор · Эксперт по автоматизации бизнеса</div>
+
+    <div class="panel" aria-label="Какие участки бизнеса работают автоматически">
+      <div class="panel-head mono"><span>Бортовая панель бизнеса</span><span class="ap"><i class="dot"></i>AP ON</span></div>
+      <ul class="route sys">
+        <li><i></i><div><b>Продажи и заявки</b><small>ИИ-агент на входе, воронка в CRM</small></div><em>авто</em></li>
+        <li><i></i><div><b>Документы и учёт</b><small>счета, акты, договоры — из 1С</small></div><em>авто</em></li>
+        <li><i></i><div><b>Клиентский сервис</b><small>бот и база знаний отвечают сами</small></div><em>авто</em></li>
+        <li><i></i><div><b>Команда и задачи</b><small>поручения, сроки, контроль</small></div><em>авто</em></li>
+        <li><i></i><div><b>Финансы и отчёты</b><small>выручка и показатели на одном экране</small></div><em>24/7</em></li>
+      </ul>
+      <div class="panel-foot mono"><span>Под ключ</span><b>разбор → запуск → поддержка</b></div>
     </div>
   </div>
+</section>
 
-  <section id="solutions">
-    <div class="accent"></div>
-    <h2>Что автоматизируем</h2>
-    <p class="sub">Берём процессы, которые съедают часы вашей команды, и отдаём их роботам. Каждое решение считаем в деньгах: сколько стоит и когда окупится.</p>
-    <div class="grid3">
-      <div class="card"><div class="ico">🤖</div><h3>ИИ-агенты для заявок</h3><p>Отвечают клиентам за 30 секунд в любое время суток, квалифицируют лиды и передают менеджеру только готовых к покупке.</p></div>
-      <div class="card"><div class="ico">📈</div><h3>CRM и продажи</h3><p>Внедрение и настройка amoCRM/Битрикс24: воронки, автоматические цепочки дожима, контроль каждой сделки.</p></div>
-      <div class="card"><div class="ico">📄</div><h3>Документооборот</h3><p>Счета, акты и договоры формируются сами: интеграция CRM с 1С и бухгалтерией убирает 2–3 часа рутины в день.</p></div>
-      <div class="card"><div class="ico">📊</div><h3>Отчётность и дашборды</h3><p>Выручка, воронка и ключевые показатели — в реальном времени на одном экране, вместо ожидания Excel от сотрудников.</p></div>
-      <div class="card"><div class="ico">💬</div><h3>Чат-боты и базы знаний</h3><p>ИИ-ассистент отвечает на типовые вопросы клиентов и сотрудников, снимая с руководителя десятки обращений в неделю.</p></div>
-      <div class="card"><div class="ico">🔗</div><h3>Интеграции под ключ</h3><p>Связываем сайт, телефонию, CRM, 1С и мессенджеры в единую систему — данные вводятся один раз и работают везде.</p></div>
+<div class="proof">
+  <div class="wrap proof-grid">
+    <div><b>25+ проектов</b><span>в портфеле компании</span></div>
+    <div><b>10 отраслей</b><span>от медицины до производства</span></div>
+    <div><b>18+ лет в IT</b><span>ВТБ, КРОК, Техносерв, S8 Capital и другие крупные холдинги</span></div>
+    <div><b>до 15 млрд ₽</b><span>бюджет проектов под управлением</span></div>
+  </div>
+</div>
+
+<section id="solutions">
+  <div class="wrap">
+    <span class="eyebrow mono">Что автоматизируем</span>
+    <h2>Автоматизируем бизнес целиком, а не одну задачу</h2>
+    <p class="lede">Разбираем процессы, собираем из инструментов единую систему, запускаем и сопровождаем. Каждое решение считаем в деньгах: сколько стоит внедрить и через сколько месяцев вернётся.</p>
+    <div class="feat">
+      <article class="reveal"><span class="mono">Заявки</span><h3>ИИ-агент на входе</h3><p>Отвечает клиенту за 30 секунд в любое время, уточняет задачу и передаёт менеджеру только тех, кто готов купить.</p></article>
+      <article class="reveal"><span class="mono">Продажи</span><h3>CRM без хаоса</h3><p>amoCRM или Битрикс24: воронки, цепочки дожима, контроль каждой сделки и каждого менеджера.</p></article>
+      <article class="reveal"><span class="mono">Документы</span><h3>Счета и акты сами</h3><p>CRM связана с 1С и бухгалтерией: закрывающие документы формируются по сделке, без перепечатывания.</p></article>
+      <article class="reveal"><span class="mono">Цифры</span><h3>Дашборд руководителя</h3><p>Выручка, воронка и остатки на одном экране — не нужно ждать Excel от сотрудников.</p></article>
+      <article class="reveal"><span class="mono">Вопросы</span><h3>Бот и база знаний</h3><p>ИИ-ассистент отвечает на типовые вопросы клиентов и сотрудников и снимает с руководителя лишние обращения.</p></article>
+      <article class="reveal"><span class="mono">Связки</span><h3>Одна система вместо пяти</h3><p>Сайт, телефония, CRM, 1С и мессенджеры обмениваются данными: ввели один раз — видно везде.</p></article>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="dev">
-    <div class="accent"></div>
-    <h2>Заказная разработка</h2>
-    <p class="sub">Когда готовых инструментов мало — создаём своё. Полный цикл: от идеи и прототипа до промышленной эксплуатации и поддержки. Опыт управления разработкой продуктов с миллионной аудиторией и проектами до 15 млрд рублей.</p>
-    <div class="grid3">
-      <div class="card"><div class="ico">🚀</div><h3>MVP и веб-сервисы</h3><p>Быстро проверяем бизнес-идею: прототип за недели, а не месяцы. Личные кабинеты, маркетплейсы, порталы, SaaS-продукты.</p></div>
-      <div class="card"><div class="ico">🧩</div><h3>Интеграции и API</h3><p>Связываем ваши системы между собой и с внешними сервисами: 1С, CRM, телефония, банки, госсистемы, ИИ-модели.</p></div>
-      <div class="card"><div class="ico">🏢</div><h3>Корпоративные системы</h3><p>Внутренние инструменты под ваши процессы: учёт, документооборот, дашборды, автоматизация работы отделов — по ГОСТ при необходимости.</p></div>
+<section class="dev" id="dev">
+  <div class="wrap">
+    <span class="eyebrow mono">Заказная разработка</span>
+    <h2>Когда готовых сервисов не хватает — делаем своё</h2>
+    <p class="lede">Полный цикл от прототипа до эксплуатации и поддержки. Опыт управления продуктами с миллионной аудиторией.</p>
+    <div class="dev-grid">
+      <article class="dev-card reveal"><h3>MVP и веб-сервисы</h3><p>Проверяем идею прототипом за недели. Личные кабинеты, порталы, маркетплейсы, SaaS.</p></article>
+      <article class="dev-card reveal"><h3>Интеграции и API</h3><p>1С, CRM, телефония, банки, госсистемы и ИИ-модели — связываем между собой.</p></article>
+      <article class="dev-card reveal"><h3>Корпоративные системы</h3><p>Учёт, документооборот, дашборды и инструменты отделов под ваши процессы, по ГОСТ при необходимости.</p></article>
     </div>
-    <p style="margin-top:24px;color:var(--muted)">Работаем по этапам с фиксацией сроков и бюджета: аудит → техническое задание → разработка → внедрение → сопровождение. <a href="#lead" style="color:var(--cyan)">Обсудить задачу →</a></p>
-  </section>
+    <div class="stages mono" aria-label="Этапы работ"><span>Аудит</span><span>ТЗ</span><span>Разработка</span><span>Внедрение</span><span>Сопровождение</span></div>
+    <a class="more" href="#lead">Обсудить задачу →</a>
+  </div>
+</section>
 
-  <section id="cases">
-    <div class="accent"></div>
-    <h2>Примеры решений</h2>
-    <p class="sub">Типовые проекты с реальной экономикой — такие решения внедряются за 2–6 недель.</p>
-    <div class="grid3">
-      <div class="card case">
-        <span class="tag">Сервисная компания</span>
-        <h3>ИИ-агент обработки заявок</h3>
-        <p>Заявки с сайта и мессенджеров обрабатывались вручную с задержкой до 4 часов — половина лидов уходила к конкурентам.</p>
-        <div class="num">+35%</div><div class="numlabel">к конверсии из заявки в сделку, ответ за 30 секунд</div>
-      </div>
-      <div class="card case">
-        <span class="tag">Оптовая торговля</span>
-        <h3>CRM + 1С без ручного ввода</h3>
-        <p>Менеджеры дублировали заказы из CRM в 1С и вручную готовили закрывающие документы по каждой отгрузке.</p>
-        <div class="num">−2,5 ч</div><div class="numlabel">рутины в день на менеджера, ноль ошибок в документах</div>
-      </div>
-      <div class="card case">
-        <span class="tag">Розничная сеть</span>
-        <h3>Дашборд руководителя</h3>
-        <p>Собственник ждал сводку по точкам до вечера понедельника — решения принимались с опозданием на неделю.</p>
-        <div class="num">24/7</div><div class="numlabel">выручка и остатки по всем точкам в реальном времени</div>
-      </div>
+<section id="portfolio">
+  <div class="wrap">
+    <span class="eyebrow mono">Портфолио</span>
+    <h2>Опыт по отраслям</h2>
+    <p class="lede">Больше 25 проектов. Здесь — отрасли, где у нас уже есть работающие решения или проекты в разработке. Отметка «работает» стоит только там, где есть ссылка.</p>
+    <nav class="pf-nav" aria-label="Отрасли"><a href="#pf-0">Медицина</a><a href="#pf-1">Стройка и отделочные материалы</a><a href="#pf-2">Производство</a><a href="#pf-3">Образование</a><a href="#pf-4">ИИ-агенты и продукты</a><a href="#pf-5">Контент и медиа</a><a href="#pf-6">Тендеры и внедрение ИИ в компаниях</a></nav>
+    <div class="pf-group" id="pf-0">
+      <div class="pf-head"><h3>Медицина</h3><span class="mono">2 проекта</span></div>
+      <p class="pf-lead">Продвижение медицинского магазина и сервис для здоровья семьи.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>Магазин медтехники</h4><p>Продвижение: SEO, тексты категорий, аналитика, соответствие закону о рекламе.</p><div class="meta"><span class="pill live"><i class="dot"></i>Работает</span><a href="https://mvmed.ru" target="_blank" rel="noopener">mvmed.ru ↗</a></div></li>
+        <li class="reveal"><h4>«Ритм»</h4><p>Сервис о здоровье семьи.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Исследование</span></div></li>
+      </ul>
     </div>
-  </section>
-
-  <section id="portfolio">
-    <div class="accent"></div>
-    <h2>Портфолио</h2>
-    <p class="sub">Наши проекты. «Работает» пишем только там, где результат можно открыть по ссылке.</p>
-
-    <h3>Сайты и интернет-магазины</h3>
-    <div class="grid3">
-      <article class="card">
-        <h4>Магазин медтехники</h4>
-        <p>Продвижение магазина: SEO, тексты категорий, аналитика, соответствие закону о рекламе.</p>
-        <p>Статус: работает</p>
-        <a class="btn btn-line" href="https://mvmed.ru" target="_blank" rel="noopener">mvmed.ru</a>
-      </article>
-      <article class="card">
-        <h4>Магазин лакокрасочных материалов</h4>
-        <p>Интернет-магазин и витрина с подбором цвета.</p>
-        <p>Статус: работает</p>
-        <a class="btn btn-line" href="https://tkskarabey.ru" target="_blank" rel="noopener">tkskarabey.ru</a>
-      </article>
-      <article class="card">
-        <h4>Поиск поставщиков</h4>
-        <p>Сервис поиска поставщиков и сравнения цен.</p>
-        <p>Статус: работает</p>
-        <a class="btn btn-line" href="https://xoolo.ru" target="_blank" rel="noopener">xoolo.ru</a>
-      </article>
-      <article class="card">
-        <h4>Подготовка к ОГЭ и ЕГЭ</h4>
-        <p>Диагностика ученика и отчёт родителю.</p>
-        <p>Статус: работает</p>
-        <a class="btn btn-line" href="https://nauchilsya.ru" target="_blank" rel="noopener">nauchilsya.ru</a>
-      </article>
+    <div class="pf-group" id="pf-1">
+      <div class="pf-head"><h3>Стройка и отделочные материалы</h3><span class="mono">3 проекта</span></div>
+      <p class="pf-lead">Электронная торговля, поиск поставщиков и подбор цвета.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>Магазин лакокрасочных материалов</h4><p>Интернет-магазин и витрина с подбором цвета.</p><div class="meta"><span class="pill live"><i class="dot"></i>Работает</span><a href="https://tkskarabey.ru" target="_blank" rel="noopener">tkskarabey.ru ↗</a></div></li>
+        <li class="reveal"><h4>Поиск поставщиков</h4><p>Сервис поиска поставщиков и сравнения цен.</p><div class="meta"><span class="pill live"><i class="dot"></i>Работает</span><a href="https://xoolo.ru" target="_blank" rel="noopener">xoolo.ru ↗</a></div></li>
+        <li class="reveal"><h4>Сканер цвета</h4><p>B2B-сервис: подбор краски по фото с телефона.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span></div></li>
+      </ul>
     </div>
-
-    <h3>ИИ-агенты и автоматизация</h3>
-    <div class="grid3">
-      <article class="card">
-        <h4>Контора агентов</h4>
-        <p>Команда ИИ-агентов ведёт проект от требований до выката: аналитик, архитектор, дизайнер, разработчик, тестировщик, безопасник.</p>
-        <p>Статус: продукт собран</p>
-        <a class="btn btn-line" href="#lead">Демо по запросу</a>
-      </article>
-      <article class="card">
-        <h4>Автопостинг</h4>
-        <p>Контент-конвейер: пост и карточка для Telegram и Max.</p>
-        <p>Статус: работает</p>
-        <a class="btn btn-line" data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Канал @biznes_autopilot</a>
-      </article>
-      <article class="card">
-        <h4>Запись и расшифровка звонков</h4>
-        <p>Приложение для Mac: запись, расшифровка, текст встречи.</p>
-        <p>Статус: версия 1.0</p>
-        <a class="btn btn-line" href="#lead">Демо по запросу</a>
-      </article>
-      <article class="card">
-        <h4>Голосовой ассистент</h4>
-        <p>Приложение для iPhone: мессенджеры голосом для тех, кому трудно с экраном.</p>
-        <p>Статус: прототип</p>
-        <a class="btn btn-line" href="#lead">Демо по запросу</a>
-      </article>
-      <article class="card">
-        <h4>Конвейер коротких роликов</h4>
-        <p>Из материала — готовый ролик для Reels.</p>
-        <p>Статус: прототип</p>
-        <a class="btn btn-line" href="#lead">Демо по запросу</a>
-      </article>
+    <div class="pf-group" id="pf-2">
+      <div class="pf-head"><h3>Производство</h3><span class="mono">1 проект</span></div>
+      <p class="pf-lead">Планирование и учёт на заводе.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>NeuroPlan</h4><p>Планирование и учёт производства (MES / APS).</p><div class="meta"><span class="pill dev"><i class="dot"></i>В разработке</span></div></li>
+      </ul>
     </div>
-
-    <h3>Производство</h3>
-    <div class="grid3">
-      <article class="card">
-        <h4>MES / APS NeuroPlan</h4>
-        <p>Планирование и учёт производства.</p>
-        <p>Статус: в разработке</p>
-      </article>
+    <div class="pf-group" id="pf-3">
+      <div class="pf-head"><h3>Образование</h3><span class="mono">1 проект</span></div>
+      <p class="pf-lead">Онлайн-подготовка к экзаменам.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>Подготовка к ОГЭ и ЕГЭ</h4><p>Диагностика ученика и отчёт родителю.</p><div class="meta"><span class="pill live"><i class="dot"></i>Работает</span><a href="https://nauchilsya.ru" target="_blank" rel="noopener">nauchilsya.ru ↗</a></div></li>
+      </ul>
     </div>
-
-    <h3>Тендеры и внедрение ИИ в компаниях</h3>
-    <div class="grid3">
-      <article class="card">
-        <h4>Тендерная платформа</h4>
-        <p>Поиск и разбор тендеров: медтехника, стройка.</p>
-        <p>Статус: в разработке</p>
-      </article>
-      <article class="card">
-        <h4>«Искра»</h4>
-        <p>Центр компетенций по внедрению ИИ в компании.</p>
-        <p>Статус: аналитика, пилот</p>
-      </article>
+    <div class="pf-group" id="pf-4">
+      <div class="pf-head"><h3>ИИ-агенты и продукты</h3><span class="mono">3 проекта</span></div>
+      <p class="pf-lead">Собственные ИИ-инструменты, которые мы используем сами и предлагаем клиентам.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>Контора ИИ-агентов</h4><p>Команда агентов ведёт проект от требований до выката: аналитик, архитектор, дизайнер, разработчик, тестировщик, безопасник.</p><div class="meta"><span class="pill beta"><i class="dot"></i>Продукт собран</span><a href="#lead">Демо по запросу</a></div></li>
+        <li class="reveal"><h4>Запись и расшифровка звонков</h4><p>Приложение для Mac: запись встречи, расшифровка, готовый текст.</p><div class="meta"><span class="pill beta"><i class="dot"></i>Версия 1.0</span><a href="#lead">Демо по запросу</a></div></li>
+        <li class="reveal"><h4>Голосовой ассистент</h4><p>Приложение для iPhone: мессенджеры голосом для тех, кому трудно с экраном.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span><a href="#lead">Демо по запросу</a></div></li>
+      </ul>
     </div>
-  </section>
-
-  <section>
-    <div class="accent"></div>
-    <h2>Как работаем</h2>
-    <div class="steps" style="margin-top:36px">
-      <div class="step"><b>Аудит процессов</b><span>Находим, где команда теряет больше всего ручных часов. Бесплатно.</span></div>
-      <div class="step"><b>План с расчётом эффекта</b><span>Что автоматизируем, сколько стоит, когда окупится — до старта работ.</span></div>
-      <div class="step"><b>Внедрение</b><span>Настраиваем, интегрируем, обучаем команду. Первый результат — через 2 недели.</span></div>
-      <div class="step"><b>Сопровождение</b><span>Следим, чтобы всё работало, и развиваем систему вместе с бизнесом.</span></div>
+    <div class="pf-group" id="pf-5">
+      <div class="pf-head"><h3>Контент и медиа</h3><span class="mono">2 проекта</span></div>
+      <p class="pf-lead">Конвейеры, которые выпускают контент каждый день без ручной работы.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>Автопостинг</h4><p>Пост и карточка для Telegram и MAX каждый день.</p><div class="meta"><span class="pill live"><i class="dot"></i>Работает</span><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">@biznes_autopilot ↗</a></div></li>
+        <li class="reveal"><h4>Конвейер коротких роликов</h4><p>Из исходного материала — готовый ролик для Reels.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span><a href="#lead">Демо по запросу</a></div></li>
+      </ul>
     </div>
-  </section>
-
-  <section id="about">
-    <div class="accent"></div>
-    <div class="about">
-      <div>
-        <h2>Обо мне</h2>
-        <p class="sub" style="margin-bottom:20px">Меня зовут Яицкий Алексей Андреевич, я генеральный директор. Больше 18 лет строю ИТ-системы для бизнеса — от стартапов до федеральных корпораций.</p>
-        <ul>
-          <li>Руководил ИТ-подразделениями в ВТБ, S8 Capital, КРОК и Техносерв</li>
-          <li>Запускал продукты с миллионной аудиторией</li>
-          <li>Управлял проектами с бюджетом до 15 млрд рублей</li>
-          <li>Знаю, как перенести корпоративные технологии в малый бизнес — без лишней сложности и затрат</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>⚙️ Канал «Бизнес на автопилоте»</h3>
-        <p style="color:var(--muted);margin:12px 0 20px">Каждый день в 9:00 — новости автоматизации, переведённые на язык денег: разборы инструментов, кейсы с цифрами, ответы на вопросы. Выходит в Telegram и MAX.</p>
-        <a class="btn btn-line" data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank">Telegram</a>
-        <a class="btn btn-line" href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank">MAX</a>
-      </div>
+    <div class="pf-group" id="pf-6">
+      <div class="pf-head"><h3>Тендеры и внедрение ИИ в компаниях</h3><span class="mono">2 проекта</span></div>
+      <p class="pf-lead">Поиск закупок и системное внедрение ИИ в организациях.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>«Искра»</h4><p>Центр компетенций по внедрению ИИ в компании.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Пилот</span></div></li>
+        <li class="reveal"><h4>Тендерная платформа</h4><p>Поиск и разбор тендеров: медтехника, стройка.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span></div></li>
+      </ul>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="lead">
-    <div class="lead">
-      <div class="accent"></div>
-      <h2>Оставить заявку</h2>
-      <p class="sub">Автоматизация или заказная разработка — расскажите о задаче, и я вернусь с оценкой эффекта и стоимости в течение рабочего дня.</p>
-      <div class="lead-grid">
-        <form action="https://formsubmit.co/yaitskii@gmail.com" method="POST">
-          <input type="hidden" name="_subject" value="Заявка с сайта — Бизнес на автопилоте">
-          <input type="hidden" name="_captcha" value="false">
-          <input type="text" name="Имя" placeholder="Ваше имя" required>
-          <input type="text" name="Контакт" placeholder="Телефон, Telegram или email" required>
-          <textarea name="Задача" rows="4" placeholder="Что хотите автоматизировать или разработать? Пара слов о бизнесе и задаче" required></textarea>
-          <input type="hidden" name="Согласие — дата и время" id="consent-time" value="не передано (в браузере отключён JavaScript), см. время письма">
-          <input type="hidden" name="Согласие — редакция политики" value="26.09.2026">
-          <label class="consent"><input type="checkbox" name="Согласие на обработку ПДн" value="получено" required> <span>Даю согласие на обработку моих персональных данных (имя, контакт, описание задачи) для обработки заявки и обратной связи по ней, в том числе на их трансграничную передачу, согласно <a href="policy.html" target="_blank" rel="noopener">Политике обработки персональных данных</a>. Обязательное поле.</span></label>
-          <button type="submit">Отправить заявку</button>
-        </form>
-        <div class="tg-box">
-          <h3 style="margin-bottom:12px">Быстрее — в Telegram</h3>
-          <p style="color:var(--muted);margin-bottom:20px">Напишите мне напрямую — отвечу лично и по делу.</p>
-          <a class="btn btn-lime" data-tg="yaitskii" href="https://t.me/yaitskii" target="_blank">Написать в Telegram</a>
+<section id="process" class="rule">
+  <div class="wrap">
+    <span class="eyebrow mono">Как работаем</span>
+    <h2>Что будет после заявки</h2>
+    <ol class="steps">
+      <li class="reveal"><span class="mono">Бесплатно</span><h3>Разбор процессов</h3><p>Находим, где команда теряет больше всего ручных часов.</p></li>
+      <li class="reveal"><span class="mono">До старта</span><h3>План и расчёт</h3><p>Что автоматизируем, сколько стоит, когда окупится.</p></li>
+      <li class="reveal"><span class="mono">От 2 недель</span><h3>Внедрение</h3><p>Настраиваем, связываем системы, обучаем команду.</p></li>
+      <li class="reveal"><span class="mono">Постоянно</span><h3>Сопровождение</h3><p>Следим, чтобы всё работало, и развиваем вместе с бизнесом.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section style="background:var(--bg-soft)">
+  <div class="wrap">
+    <span class="eyebrow mono">Типовые задачи</span>
+    <h2>С чем приходят чаще всего</h2>
+    <p class="lede">Такие задачи решаются за 2–6 недель. Эффект считаем на вашем разборе, а не обещаем заранее.</p>
+    <div class="cases">
+      <article class="case reveal"><span class="mono">Сервисная компания</span><h3>ИИ-агент для заявок</h3><dl><dt>Было</dt><dd>Заявки разбирают вручную, ответ через несколько часов — клиент уходит к тому, кто ответил первым.</dd><dt>Станет</dt><dd>Ответ за 30 секунд в любое время, менеджер получает уже квалифицированного клиента.</dd></dl></article>
+      <article class="case reveal"><span class="mono">Оптовая торговля</span><h3>CRM и 1С без двойного ввода</h3><dl><dt>Было</dt><dd>Менеджеры переносят заказы из CRM в 1С и вручную готовят закрывающие документы.</dd><dt>Станет</dt><dd>Документы формируются по сделке сами, ошибки перепечатывания исчезают.</dd></dl></article>
+      <article class="case reveal"><span class="mono">Розничная сеть</span><h3>Дашборд собственника</h3><dl><dt>Было</dt><dd>Сводка по точкам приходит раз в неделю — решения опаздывают.</dd><dt>Станет</dt><dd>Выручка и остатки по всем точкам на одном экране в реальном времени.</dd></dl></article>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="portrait reveal"><img src="photo.jpg" alt="Алексей Андреевич Яицкий — генеральный директор, эксперт по автоматизации бизнеса"></div>
+    <div>
+      <span class="eyebrow mono">Обо мне</span>
+      <h2>Алексей Яицкий</h2>
+      <p class="lede">Генеральный директор. Больше 18 лет строю ИТ-системы для бизнеса — от стартапов до федеральных корпораций. Теперь переношу корпоративные технологии в малый и средний бизнес — без лишней сложности и затрат.</p>
+      <ul class="facts">
+        <li>Руководил ИТ-подразделениями в ВТБ, КРОК, Техносерв, S8 Capital и других крупных холдингах</li>
+        <li>Запускал продукты с миллионной аудиторией</li>
+        <li>Управлял проектами с бюджетом до 15 млрд рублей</li>
+      </ul>
+      <div class="channel">
+        <b>Канал «Бизнес на автопилоте»</b>
+        <p>Каждый день в 9:00 — новости автоматизации на языке денег: инструменты, кейсы с цифрами, ответы на вопросы.</p>
+        <div class="row">
+          <a class="btn btn-ghost" data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Telegram</a>
+          <a class="btn btn-ghost" href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener">MAX</a>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <footer>
-    <div>© 2026 Бизнес на автопилоте · Яицкий Алексей Андреевич</div>
-    <div><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank">Telegram</a> · <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank">MAX</a></div>
-  </footer>
+<section id="lead" style="padding-top:0">
+  <div class="wrap">
+    <div class="lead">
+      <span class="eyebrow mono">Заявка</span>
+      <h2>Расскажите, что съедает время команды</h2>
+      <p class="lede">Автоматизация или заказная разработка — вернусь с оценкой эффекта и стоимости в течение рабочего дня.</p>
+      <div class="lead-grid">
+        <form id="lead-form" action="https://formsubmit.co/yaitskii@gmail.com" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="Заявка с сайта — Бизнес на автопилоте">
+          <input type="hidden" name="_captcha" value="false">
+          <div class="field"><label for="f-name">Имя</label><input id="f-name" type="text" name="Имя" autocomplete="name" required></div>
+          <div class="field"><label for="f-contact">Телефон, Telegram или почта</label><input id="f-contact" type="text" name="Контакт" autocomplete="tel" placeholder="+7 999 123-45-67 или @username" required></div>
+          <div class="field"><label for="f-task">Задача</label><textarea id="f-task" name="Задача" rows="4" placeholder="Пара слов о бизнесе и о том, что хотите автоматизировать" required></textarea></div>
+          <input type="hidden" name="Согласие — дата и время" id="consent-time" value="не передано (в браузере отключён JavaScript), см. время письма">
+          <input type="hidden" name="Согласие — редакция политики" value="26.09.2026">
+          <label class="consent"><input type="checkbox" name="Согласие на обработку ПДн" value="получено" required><span>Даю согласие на обработку моих персональных данных (имя, контакт, описание задачи) для обработки заявки и обратной связи по ней, в том числе на их трансграничную передачу, согласно <a href="policy.html" target="_blank" rel="noopener">Политике обработки персональных данных</a>.</span></label>
+          <button class="btn btn-main" type="submit">Оставить заявку</button>
+          <p class="form-msg" role="status" aria-live="polite">Ничего не продаю по телефону — сначала разбор.</p>
+        </form>
+        <div class="side">
+          <b>Быстрее — в Telegram</b>
+          <p>Напишите напрямую — отвечу лично и по делу.</p>
+          <a class="btn btn-ghost" data-tg="yaitskii" href="https://t.me/yaitskii" target="_blank" rel="noopener">Написать в Telegram</a>
+          <ul>
+            <li><b>1.</b> Разбор процессов — бесплатно</li>
+            <li><b>2.</b> План с расчётом эффекта до старта</li>
+            <li><b>3.</b> Первый результат — от 2 недель</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-</div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <div>© 2026 Бизнес на автопилоте · Алексей Андреевич Яицкий</div>
+      <!-- РЕКВИЗИТЫ: ИП ФИО, ИНН, ОГРНИП — вписывает Алексей вручную перед публикацией (схема D62, в файлы ИИ не кладём) -->
+      <div class="req">ИП [реквизиты вписать перед публикацией] · <a href="policy.html">Политика обработки персональных данных</a></div>
+    </div>
+    <div><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Telegram</a> · <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener">MAX</a></div>
+  </div>
+</footer>
+
 <script>
   // t.me заблокирован у части провайдеров РФ — открываем приложение Telegram напрямую
   document.querySelectorAll('[data-tg]').forEach(function(a){
@@ -342,26 +500,37 @@
       e.preventDefault();
       var d = a.getAttribute('data-tg');
       window.location.href = 'tg://resolve?domain=' + d;
-      // запасной вариант через t.me — только если приложение не открылось
-      // (если Telegram открылся, вкладка теряет фокус и ничего лишнего не происходит)
-      setTimeout(function(){
-        if (document.hasFocus()) { window.open('https://t.me/' + d, '_blank'); }
-      }, 2000);
+      setTimeout(function(){ if (document.hasFocus()) { window.open('https://t.me/' + d, '_blank', 'noopener'); } }, 2000);
     });
   });
 
-  // Т-3: время согласия в письмо и защита от двойной отправки.
-  // submit срабатывает только после проверки браузером, то есть при отмеченном согласии.
-  var leadForm = document.querySelector('#lead form');
-  leadForm.addEventListener('submit', function(){
-    document.getElementById('consent-time').value =
-      new Date().toLocaleString('ru-RU', {timeZone: 'Europe/Moscow'}) + ' МСК';
-    leadForm.querySelector('button[type=submit]').disabled = true;
+  // появление при прокрутке: без скриптов всё видно сразу
+  if ('IntersectionObserver' in window) {
+    document.documentElement.classList.add('js');
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  }
+
+  // форма: проверка полей и состояние отправки
+  var form = document.getElementById('lead-form');
+  form.addEventListener('submit', function(e){
+    var msg = form.querySelector('.form-msg');
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      var bad = form.querySelector(':invalid');
+      msg.style.color = '#FCA5A5';
+      msg.textContent = bad.type === 'checkbox' ? 'Отметьте согласие на обработку персональных данных — без него заявку отправить нельзя.' : 'Заполните имя, контакт и пару слов о задаче.';
+      bad.focus();
+      return;
+    }
+    document.getElementById('consent-time').value = new Date().toLocaleString('ru-RU', {timeZone: 'Europe/Moscow'}) + ' МСК';
+    var b = form.querySelector('button[type=submit]');
+    b.disabled = true; b.textContent = 'Отправляем…';
   });
   // при возврате «Назад» из кеша браузера кнопка снова активна
-  window.addEventListener('pageshow', function(){
-    leadForm.querySelector('button[type=submit]').disabled = false;
-  });
+  window.addEventListener('pageshow', function(){ var b = form.querySelector('button[type=submit]'); b.disabled = false; b.textContent = 'Оставить заявку'; });
 </script>
 </body>
 </html>

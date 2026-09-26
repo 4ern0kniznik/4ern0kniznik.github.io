@@ -180,7 +180,10 @@ header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdro
 .consent{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;font-size:15px;color:var(--panel-dim);margin:4px 0 20px}
 .consent input{width:20px;height:20px;margin-top:2px;accent-color:var(--action)}
 .consent a{color:var(--panel-text)}
-.lead .btn-main{width:100%}
+.yform{background:#FFFFFF;border-radius:var(--r-card);padding:8px;overflow:hidden}
+.yform iframe{display:block;width:100%;min-height:560px;border:0}
+.yform .form-msg{color:var(--text-2);padding:8px 12px 4px}
+.yform .form-msg a{color:var(--action)}
 .form-msg{margin-top:12px;font-size:15px;min-height:1.5em;color:var(--panel-dim)}
 .side b{font-size:20px;display:block;margin-bottom:8px}
 .side p{color:var(--panel-dim);font-size:16px;margin-bottom:20px}
@@ -486,18 +489,11 @@ footer{padding:40px 0 48px;color:var(--text-2);font-size:15px}
       <h2>Расскажите, что съедает время команды</h2>
       <p class="lede">Автоматизация или заказная разработка — вернусь с оценкой эффекта и стоимости в течение рабочего дня.</p>
       <div class="lead-grid">
-        <form id="lead-form" action="https://formsubmit.co/yaitskii@gmail.com" method="POST" novalidate>
-          <input type="hidden" name="_subject" value="Заявка с сайта — Бизнес на автопилоте">
-          <input type="hidden" name="_captcha" value="false">
-          <div class="field"><label for="f-name">Имя</label><input id="f-name" type="text" name="Имя" autocomplete="name" required></div>
-          <div class="field"><label for="f-contact">Телефон, Telegram или почта</label><input id="f-contact" type="text" name="Контакт" autocomplete="tel" placeholder="+7 999 123-45-67 или @username" required></div>
-          <div class="field"><label for="f-task">Задача</label><textarea id="f-task" name="Задача" rows="4" placeholder="Пара слов о бизнесе и о том, что хотите автоматизировать" required></textarea></div>
-          <input type="hidden" name="Согласие — дата и время" id="consent-time" value="не передано (в браузере отключён JavaScript), см. время письма">
-          <input type="hidden" name="Согласие — редакция политики" value="26.09.2026">
-          <label class="consent"><input type="checkbox" name="Согласие на обработку ПДн" value="получено" required><span>Даю согласие на обработку моих персональных данных (имя, контакт, описание задачи) для обработки заявки и обратной связи по ней, в том числе на их трансграничную передачу, согласно <a href="policy.html" target="_blank" rel="noopener">Политике обработки персональных данных</a>.</span></label>
-          <button class="btn btn-main" type="submit">Оставить заявку</button>
-          <p class="form-msg" role="status" aria-live="polite">Ничего не продаю по телефону — сначала разбор.</p>
-        </form>
+        <div class="yform">
+          <!-- Яндекс Формы: данные хранятся в РФ. YA_FORM_ID — номер формы из кода встраивания -->
+          <iframe src="https://forms.yandex.ru/u/YA_FORM_ID/?iframe=1" name="ya-form-YA_FORM_ID" title="Форма заявки" width="100%" height="640" loading="lazy"></iframe>
+          <p class="form-msg">Форма не загрузилась? <a href="https://forms.yandex.ru/u/YA_FORM_ID/" target="_blank" rel="noopener">Откройте её в новой вкладке</a> или напишите в Telegram.</p>
+        </div>
         <div class="side">
           <b>Быстрее — в Telegram</b>
           <p>Напишите напрямую — отвечу лично и по делу.</p>
@@ -546,24 +542,7 @@ footer{padding:40px 0 48px;color:var(--text-2);font-size:15px}
     document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
   }
 
-  // форма: проверка полей и состояние отправки
-  var form = document.getElementById('lead-form');
-  form.addEventListener('submit', function(e){
-    var msg = form.querySelector('.form-msg');
-    if (!form.checkValidity()) {
-      e.preventDefault();
-      var bad = form.querySelector(':invalid');
-      msg.style.color = '#FCA5A5';
-      msg.textContent = bad.type === 'checkbox' ? 'Отметьте согласие на обработку персональных данных — без него заявку отправить нельзя.' : 'Заполните имя, контакт и пару слов о задаче.';
-      bad.focus();
-      return;
-    }
-    document.getElementById('consent-time').value = new Date().toLocaleString('ru-RU', {timeZone: 'Europe/Moscow'}) + ' МСК';
-    var b = form.querySelector('button[type=submit]');
-    b.disabled = true; b.textContent = 'Отправляем…';
-  });
-  // при возврате «Назад» из кеша браузера кнопка снова активна
-  window.addEventListener('pageshow', function(){ var b = form.querySelector('button[type=submit]'); b.disabled = false; b.textContent = 'Оставить заявку'; });
 </script>
+<script src="https://forms.yandex.ru/_static/embed.js"></script>
 </body>
 </html>

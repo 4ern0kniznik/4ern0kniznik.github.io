@@ -132,6 +132,7 @@ header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdro
 .pill.live{color:var(--ok);background:var(--ok-bg)}
 .pill.beta{color:var(--action-p);background:var(--action-bg)}
 .pill.dev{color:var(--warn);background:var(--warn-bg)}
+.pill.pause,.pill.idea{color:var(--text-2);background:var(--bg-sunk)}
 .pf .meta a{font-weight:600;text-decoration:none;font-size:16px}
 .pf .meta .note{color:var(--text-2);font-size:14px}
 
@@ -294,7 +295,7 @@ footer{padding:40px 0 48px;color:var(--text-2);font-size:15px}
 <div class="proof">
   <div class="wrap proof-grid">
     <div><b>25+ проектов</b><span>в портфеле компании</span></div>
-    <div><b>10 отраслей</b><span>от медицины до производства</span></div>
+    <div><b>10 отраслей</b><span>от медицины до робототехники</span></div>
     <div><b>18+ лет в IT</b><span>ВТБ, КРОК, Техносерв, S8 Capital и другие крупные холдинги</span></div>
     <div><b>до 15 млрд ₽</b><span>бюджет проектов под управлением</span></div>
   </div>
@@ -335,14 +336,16 @@ footer{padding:40px 0 48px;color:var(--text-2);font-size:15px}
   <div class="wrap">
     <span class="eyebrow mono">Портфолио</span>
     <h2>Опыт по отраслям</h2>
-    <p class="lede">Больше 25 проектов. Здесь — отрасли, где у нас уже есть работающие решения или проекты в разработке. Отметка «работает» стоит только там, где есть ссылка.</p>
-    <nav class="pf-nav" aria-label="Отрасли"><a href="#pf-0">Медицина</a><a href="#pf-1">Стройка и отделочные материалы</a><a href="#pf-2">Производство</a><a href="#pf-3">Образование</a><a href="#pf-4">ИИ-агенты и продукты</a><a href="#pf-5">Контент и медиа</a><a href="#pf-6">Тендеры и внедрение ИИ в компаниях</a></nav>
+    <p class="lede">28 проектов в 10 отраслях — от работающих сервисов до прототипов и идей. Отметка «работает» стоит только там, где есть ссылка.</p>
+    <nav class="pf-nav" aria-label="Отрасли"><a href="#pf-0">Медицина</a><a href="#pf-1">Стройка и отделочные материалы</a><a href="#pf-2">Производство</a><a href="#pf-3">Образование</a><a href="#pf-4">ИИ-агенты и продукты</a><a href="#pf-5">Контент и медиа</a><a href="#pf-6">Внедрение ИИ в компаниях</a><a href="#pf-7">Тендеры</a><a href="#pf-8">Социальные проекты</a><a href="#pf-9">Робототехника</a></nav>
     <div class="pf-group" id="pf-0">
-      <div class="pf-head"><h3>Медицина</h3><span class="mono">2 проекта</span></div>
-      <p class="pf-lead">Продвижение медицинского магазина и сервис для здоровья семьи.</p>
+      <div class="pf-head"><h3>Медицина</h3><span class="mono">4 проекта</span></div>
+      <p class="pf-lead">Продвижение медицинского магазина, сервисы для пациентов и аптек.</p>
       <ul class="pf">
         <li class="reveal"><h4>Магазин медтехники</h4><p>Продвижение: SEO, тексты категорий, аналитика, соответствие закону о рекламе.</p><div class="meta"><span class="pill live"><i class="dot"></i>Работает</span><a href="https://mvmed.ru" target="_blank" rel="noopener">mvmed.ru ↗</a></div></li>
         <li class="reveal"><h4>«Ритм»</h4><p>Сервис о здоровье семьи.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Исследование</span></div></li>
+        <li class="reveal"><h4>Агрегатор аптек</h4><p>Поиск и сравнение лекарств по аптекам.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
+        <li class="reveal"><h4>Продукт для рынка медтехники</h4><p>B2B-решение для поставщиков медицинской техники.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
       </ul>
     </div>
     <div class="pf-group" id="pf-1">
@@ -355,42 +358,72 @@ footer{padding:40px 0 48px;color:var(--text-2);font-size:15px}
       </ul>
     </div>
     <div class="pf-group" id="pf-2">
-      <div class="pf-head"><h3>Производство</h3><span class="mono">1 проект</span></div>
-      <p class="pf-lead">Планирование и учёт на заводе.</p>
+      <div class="pf-head"><h3>Производство</h3><span class="mono">3 проекта</span></div>
+      <p class="pf-lead">Планирование, учёт и автоматизация на заводе.</p>
       <ul class="pf">
-        <li class="reveal"><h4>NeuroPlan</h4><p>Планирование и учёт производства (MES / APS).</p><div class="meta"><span class="pill dev"><i class="dot"></i>В разработке</span></div></li>
+        <li class="reveal"><h4>Планирование производства</h4><p>Система планирования и учёта производства (MES / APS).</p><div class="meta"><span class="pill dev"><i class="dot"></i>В разработке</span></div></li>
+        <li class="reveal"><h4>Автоматизация производства</h4><p>Перевод производственных процессов на автоматический учёт и контроль.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Старт</span></div></li>
+        <li class="reveal"><h4>Автозапчасти из Китая</h4><p>Сервис поставок автозапчастей напрямую от производителей.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
       </ul>
     </div>
     <div class="pf-group" id="pf-3">
-      <div class="pf-head"><h3>Образование</h3><span class="mono">1 проект</span></div>
-      <p class="pf-lead">Онлайн-подготовка к экзаменам.</p>
+      <div class="pf-head"><h3>Образование</h3><span class="mono">3 проекта</span></div>
+      <p class="pf-lead">Онлайн-подготовка, курсы и обучающий контент.</p>
       <ul class="pf">
         <li class="reveal"><h4>Подготовка к ОГЭ и ЕГЭ</h4><p>Диагностика ученика и отчёт родителю.</p><div class="meta"><span class="pill live"><i class="dot"></i>Работает</span><a href="https://nauchilsya.ru" target="_blank" rel="noopener">nauchilsya.ru ↗</a></div></li>
+        <li class="reveal"><h4>«Документ по ГОСТ»</h4><p>Мини-курс по оформлению документов по ГОСТ.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
+        <li class="reveal"><h4>Образовательный YouTube-канал</h4><p>Видео и сценарии для обучающего канала.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
       </ul>
     </div>
     <div class="pf-group" id="pf-4">
-      <div class="pf-head"><h3>ИИ-агенты и продукты</h3><span class="mono">3 проекта</span></div>
+      <div class="pf-head"><h3>ИИ-агенты и продукты</h3><span class="mono">7 проектов</span></div>
       <p class="pf-lead">Собственные ИИ-инструменты, которые мы используем сами и предлагаем клиентам.</p>
       <ul class="pf">
         <li class="reveal"><h4>Контора ИИ-агентов</h4><p>Команда агентов ведёт проект от требований до выката: аналитик, архитектор, дизайнер, разработчик, тестировщик, безопасник.</p><div class="meta"><span class="pill beta"><i class="dot"></i>Продукт собран</span><a href="#lead">Демо по запросу</a></div></li>
         <li class="reveal"><h4>Запись и расшифровка звонков</h4><p>Приложение для Mac: запись встречи, расшифровка, готовый текст.</p><div class="meta"><span class="pill beta"><i class="dot"></i>Версия 1.0</span><a href="#lead">Демо по запросу</a></div></li>
         <li class="reveal"><h4>Голосовой ассистент</h4><p>Приложение для iPhone: мессенджеры голосом для тех, кому трудно с экраном.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span><a href="#lead">Демо по запросу</a></div></li>
+        <li class="reveal"><h4>Чат-боты для бизнеса</h4><p>Готовые ИИ-боты для типовых задач малого бизнеса.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span></div></li>
+        <li class="reveal"><h4>«Точный отклик»</h4><p>ИИ-помощник соискателю: отклики под каждую вакансию.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
+        <li class="reveal"><h4>«Ясный подбор»</h4><p>Инструмент подбора кандидатов для кадровых агентств.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
+        <li class="reveal"><h4>Забота о родителях</h4><p>Голосовой сервис, который помогает присматривать за пожилыми родителями.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
       </ul>
     </div>
     <div class="pf-group" id="pf-5">
-      <div class="pf-head"><h3>Контент и медиа</h3><span class="mono">2 проекта</span></div>
+      <div class="pf-head"><h3>Контент и медиа</h3><span class="mono">3 проекта</span></div>
       <p class="pf-lead">Конвейеры, которые выпускают контент каждый день без ручной работы.</p>
       <ul class="pf">
         <li class="reveal"><h4>Автопостинг</h4><p>Пост и карточка для Telegram и MAX каждый день.</p><div class="meta"><span class="pill live"><i class="dot"></i>Работает</span><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">@biznes_autopilot ↗</a></div></li>
         <li class="reveal"><h4>Конвейер коротких роликов</h4><p>Из исходного материала — готовый ролик для Reels.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span><a href="#lead">Демо по запросу</a></div></li>
+        <li class="reveal"><h4>Фабрика статей</h4><p>Статьи для Дзена по контент-плану.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span></div></li>
       </ul>
     </div>
     <div class="pf-group" id="pf-6">
-      <div class="pf-head"><h3>Тендеры и внедрение ИИ в компаниях</h3><span class="mono">2 проекта</span></div>
-      <p class="pf-lead">Поиск закупок и системное внедрение ИИ в организациях.</p>
+      <div class="pf-head"><h3>Внедрение ИИ в компаниях</h3><span class="mono">1 проект</span></div>
+      <p class="pf-lead">Системное внедрение ИИ в организациях заказчиков.</p>
       <ul class="pf">
-        <li class="reveal"><h4>«Искра»</h4><p>Центр компетенций по внедрению ИИ в компании.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Пилот</span></div></li>
-        <li class="reveal"><h4>Тендерная платформа</h4><p>Поиск и разбор тендеров: медтехника, стройка.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Прототип</span></div></li>
+        <li class="reveal"><h4>Центр компетенций по внедрению ИИ</h4><p>Проект для заказчика: методика и команда внедрения ИИ в компании.</p><div class="meta"><span class="pill dev"><i class="dot"></i>Аналитика</span></div></li>
+      </ul>
+    </div>
+    <div class="pf-group" id="pf-7">
+      <div class="pf-head"><h3>Тендеры</h3><span class="mono">1 проект</span></div>
+      <p class="pf-lead">Поиск и разбор закупок.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>Тендерная платформа</h4><p>Поиск и разбор тендеров: медтехника, стройка.</p><div class="meta"><span class="pill pause"><i class="dot"></i>На паузе</span></div></li>
+      </ul>
+    </div>
+    <div class="pf-group" id="pf-8">
+      <div class="pf-head"><h3>Социальные проекты</h3><span class="mono">2 проекта</span></div>
+      <p class="pf-lead">Проекты общественного значения.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>«Летопись своих»</h4><p>Цифровой мемориал участников СВО.</p><div class="meta"><span class="pill dev"><i class="dot"></i>В разработке</span></div></li>
+        <li class="reveal"><h4>«Сарафан»</h4><p>Соседский маркетплейс услуг.</p><div class="meta"><span class="pill idea"><i class="dot"></i>Идея</span></div></li>
+      </ul>
+    </div>
+    <div class="pf-group" id="pf-9">
+      <div class="pf-head"><h3>Робототехника</h3><span class="mono">1 проект</span></div>
+      <p class="pf-lead">Программное обеспечение для роботов.</p>
+      <ul class="pf">
+        <li class="reveal"><h4>ПО для роботизированных платформ</h4><p>Управляющее программное обеспечение для робототехники.</p><div class="meta"><span class="pill idea"><i class="dot"></i>Идея</span></div></li>
       </ul>
     </div>
   </div>
@@ -487,7 +520,7 @@ footer{padding:40px 0 48px;color:var(--text-2);font-size:15px}
     <div>
       <div>© 2026 Бизнес на автопилоте · Алексей Андреевич Яицкий</div>
       <!-- РЕКВИЗИТЫ: ИП ФИО, ИНН, ОГРНИП — вписывает Алексей вручную перед публикацией (схема D62, в файлы ИИ не кладём) -->
-      <div class="req">ИП [реквизиты вписать перед публикацией] · <a href="policy.html">Политика обработки персональных данных</a></div>
+      <div class="req">Оператор персональных данных — ИП [реквизиты вписать перед публикацией] · <a href="policy.html">Политика обработки персональных данных</a></div>
     </div>
     <div><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Telegram</a> · <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener">MAX</a></div>
   </div>

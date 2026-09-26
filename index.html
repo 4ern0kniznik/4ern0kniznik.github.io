@@ -66,6 +66,11 @@
   input:focus,textarea:focus{outline:none;border-color:var(--cyan)}
   button[type=submit]{background:var(--lime);color:var(--navy);border:none;padding:14px 34px;border-radius:30px;font-weight:700;font-size:16px;cursor:pointer}
   button[type=submit]:hover{opacity:.85}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin-bottom:16px}
+  .consent input{width:auto;flex:none;margin:4px 0 0}
+  .consent a{color:var(--cyan)}
+  #portfolio h3{margin:32px 0 16px}
+  #portfolio .card p{margin-bottom:12px}
   .tg-box{display:flex;flex-direction:column;justify-content:center}
   footer{padding:36px 0;border-top:1px solid rgba(148,187,255,.15);color:var(--muted);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   footer a{color:var(--cyan);text-decoration:none}
@@ -93,6 +98,7 @@
       <a href="#solutions">Решения</a>
       <a href="#dev">Разработка</a>
       <a href="#cases">Кейсы</a>
+      <a href="#portfolio">Портфолио</a>
       <a href="#about">Обо мне</a>
       <a href="#lead" class="cta">Оставить заявку</a>
     </nav>
@@ -115,9 +121,9 @@
       </div>
     </div>
     <div class="hero-photo">
-      <img src="photo.jpg" alt="Яицкий Алексей Андреевич — операционный директор, эксперт по автоматизации бизнеса">
+      <img src="photo.jpg" alt="Яицкий Алексей Андреевич — генеральный директор, эксперт по автоматизации бизнеса">
       <div class="name">Яицкий Алексей Андреевич</div>
-      <div class="role">Операционный директор · Эксперт по автоматизации бизнеса</div>
+      <div class="role">Генеральный директор · Эксперт по автоматизации бизнеса</div>
     </div>
   </div>
 
@@ -173,6 +179,97 @@
     </div>
   </section>
 
+  <section id="portfolio">
+    <div class="accent"></div>
+    <h2>Портфолио</h2>
+    <p class="sub">Наши проекты. «Работает» пишем только там, где результат можно открыть по ссылке.</p>
+
+    <h3>Сайты и интернет-магазины</h3>
+    <div class="grid3">
+      <article class="card">
+        <h4>Магазин медтехники</h4>
+        <p>Продвижение магазина: SEO, тексты категорий, аналитика, соответствие закону о рекламе.</p>
+        <p>Статус: работает</p>
+        <a class="btn btn-line" href="https://mvmed.ru" target="_blank" rel="noopener">mvmed.ru</a>
+      </article>
+      <article class="card">
+        <h4>Магазин лакокрасочных материалов</h4>
+        <p>Интернет-магазин и витрина с подбором цвета.</p>
+        <p>Статус: работает</p>
+        <a class="btn btn-line" href="https://tkskarabey.ru" target="_blank" rel="noopener">tkskarabey.ru</a>
+      </article>
+      <article class="card">
+        <h4>Поиск поставщиков</h4>
+        <p>Сервис поиска поставщиков и сравнения цен.</p>
+        <p>Статус: работает</p>
+        <a class="btn btn-line" href="https://xoolo.ru" target="_blank" rel="noopener">xoolo.ru</a>
+      </article>
+      <article class="card">
+        <h4>Подготовка к ОГЭ и ЕГЭ</h4>
+        <p>Диагностика ученика и отчёт родителю.</p>
+        <p>Статус: работает</p>
+        <a class="btn btn-line" href="https://nauchilsya.ru" target="_blank" rel="noopener">nauchilsya.ru</a>
+      </article>
+    </div>
+
+    <h3>ИИ-агенты и автоматизация</h3>
+    <div class="grid3">
+      <article class="card">
+        <h4>Контора агентов</h4>
+        <p>Команда ИИ-агентов ведёт проект от требований до выката: аналитик, архитектор, дизайнер, разработчик, тестировщик, безопасник.</p>
+        <p>Статус: продукт собран</p>
+        <a class="btn btn-line" href="#lead">Демо по запросу</a>
+      </article>
+      <article class="card">
+        <h4>Автопостинг</h4>
+        <p>Контент-конвейер: пост и карточка для Telegram и Max.</p>
+        <p>Статус: работает</p>
+        <a class="btn btn-line" data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Канал @biznes_autopilot</a>
+      </article>
+      <article class="card">
+        <h4>Запись и расшифровка звонков</h4>
+        <p>Приложение для Mac: запись, расшифровка, текст встречи.</p>
+        <p>Статус: версия 1.0</p>
+        <a class="btn btn-line" href="#lead">Демо по запросу</a>
+      </article>
+      <article class="card">
+        <h4>Голосовой ассистент</h4>
+        <p>Приложение для iPhone: мессенджеры голосом для тех, кому трудно с экраном.</p>
+        <p>Статус: прототип</p>
+        <a class="btn btn-line" href="#lead">Демо по запросу</a>
+      </article>
+      <article class="card">
+        <h4>Конвейер коротких роликов</h4>
+        <p>Из материала — готовый ролик для Reels.</p>
+        <p>Статус: прототип</p>
+        <a class="btn btn-line" href="#lead">Демо по запросу</a>
+      </article>
+    </div>
+
+    <h3>Производство</h3>
+    <div class="grid3">
+      <article class="card">
+        <h4>MES / APS NeuroPlan</h4>
+        <p>Планирование и учёт производства.</p>
+        <p>Статус: в разработке</p>
+      </article>
+    </div>
+
+    <h3>Тендеры и внедрение ИИ в компаниях</h3>
+    <div class="grid3">
+      <article class="card">
+        <h4>Тендерная платформа</h4>
+        <p>Поиск и разбор тендеров: медтехника, стройка.</p>
+        <p>Статус: в разработке</p>
+      </article>
+      <article class="card">
+        <h4>«Искра»</h4>
+        <p>Центр компетенций по внедрению ИИ в компании.</p>
+        <p>Статус: аналитика, пилот</p>
+      </article>
+    </div>
+  </section>
+
   <section>
     <div class="accent"></div>
     <h2>Как работаем</h2>
@@ -189,7 +286,7 @@
     <div class="about">
       <div>
         <h2>Обо мне</h2>
-        <p class="sub" style="margin-bottom:20px">Меня зовут Яицкий Алексей Андреевич, я операционный директор. Больше 18 лет строю ИТ-системы для бизнеса — от стартапов до федеральных корпораций.</p>
+        <p class="sub" style="margin-bottom:20px">Меня зовут Яицкий Алексей Андреевич, я генеральный директор. Больше 18 лет строю ИТ-системы для бизнеса — от стартапов до федеральных корпораций.</p>
         <ul>
           <li>Руководил ИТ-подразделениями в ВТБ, S8 Capital, КРОК и Техносерв</li>
           <li>Запускал продукты с миллионной аудиторией</li>
@@ -218,6 +315,9 @@
           <input type="text" name="Имя" placeholder="Ваше имя" required>
           <input type="text" name="Контакт" placeholder="Телефон, Telegram или email" required>
           <textarea name="Задача" rows="4" placeholder="Что хотите автоматизировать или разработать? Пара слов о бизнесе и задаче" required></textarea>
+          <input type="hidden" name="Согласие — дата и время" id="consent-time" value="не передано (в браузере отключён JavaScript), см. время письма">
+          <input type="hidden" name="Согласие — редакция политики" value="26.09.2026">
+          <label class="consent"><input type="checkbox" name="Согласие на обработку ПДн" value="получено" required> <span>Даю согласие на обработку моих персональных данных (имя, контакт, описание задачи) для обработки заявки и обратной связи по ней, в том числе на их трансграничную передачу, согласно <a href="policy.html" target="_blank" rel="noopener">Политике обработки персональных данных</a>. Обязательное поле.</span></label>
           <button type="submit">Отправить заявку</button>
         </form>
         <div class="tg-box">
@@ -248,6 +348,19 @@
         if (document.hasFocus()) { window.open('https://t.me/' + d, '_blank'); }
       }, 2000);
     });
+  });
+
+  // Т-3: время согласия в письмо и защита от двойной отправки.
+  // submit срабатывает только после проверки браузером, то есть при отмеченном согласии.
+  var leadForm = document.querySelector('#lead form');
+  leadForm.addEventListener('submit', function(){
+    document.getElementById('consent-time').value =
+      new Date().toLocaleString('ru-RU', {timeZone: 'Europe/Moscow'}) + ' МСК';
+    leadForm.querySelector('button[type=submit]').disabled = true;
+  });
+  // при возврате «Назад» из кеша браузера кнопка снова активна
+  window.addEventListener('pageshow', function(){
+    leadForm.querySelector('button[type=submit]').disabled = false;
   });
 </script>
 </body>

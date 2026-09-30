@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Бизнес на автопилоте — автопилот для рутины компании</title>
-<meta name="description" content="Один рабочий день руководителя: как он идёт сейчас и каким становится, когда рутину ведут ИИ-агенты. ИИ-агенты ведут заявки, документы, сводки и контент. Алексей Яицкий, 18+ лет в IT.">
+<title>Свод — утренний доклад руководителю</title>
+<meta name="description" content="Каждое утро — один короткий доклад: что случилось в компании за сутки и что решить сегодня. Свод собирает заявки, деньги, встречи и переписку и доводит задачи до результата. Алексей Яицкий, 18+ лет в IT.">
 <style>
 :root{
-  --bg:#FFFFFF; --bg-soft:#F5F6F8; --bg-sunk:#EDEFF3; --bg-dawn:#E9EEF5;
-  --text:#14161A; --text-2:#5A6270;
-  --ok:#0F7A3D; --border:#D6DAE1;
-  --ap:#B0156E; --ap-bg:#FBEAF3;
-  --night:#0E1726; --night-text:#E6ECF5; --night-text-2:#9AA7BA; --night-ap:#FF6FB5; --night-ok:#4ADE80; --night-line:#26344A;
+  --bg:#FFFFFF; --bg-soft:#F5F6F8; --bg-sunk:#EDEFF3;
+  --text:#14161A; --text-2:#5A6270; --border:#D6DAE1;
+  --accent:#1F3350; --accent-hover:#16263D; --accent-bg:#EAEFF5;
+  --ok:#0F7A3D; --ok-bg:#EAF6EF;
+  --warn:#8A4B00; --warn-bg:#FBF1E4;
+  --night:#0E1726; --night-text:#E6ECF5; --night-text-2:#9AA7BA; --night-line:#26344A;
   --r-ctrl:8px; --r-card:12px;
   --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s6:24px; --s7:32px; --s9:48px;
   --font:'Golos Text', Inter, system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -20,276 +21,334 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:56px}
 body{margin:0;font-family:var(--font);font-size:16px;line-height:1.55;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
 a{color:inherit}
-.wrap{max-width:1100px;margin:0 auto;padding:0 var(--s4)}
+img{max-width:100%;display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:0 var(--s4)}
 
 /* шапка */
-.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);transition:background-color .3s var(--ease-out),border-color .3s var(--ease-out)}
+.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:var(--s4)}
-.brand{font-weight:700;text-decoration:none;letter-spacing:-.01em}
-.now{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:16px;display:flex;align-items:center;gap:var(--s2)}
-.ap-dot{display:inline-flex;align-items:center;gap:6px;color:var(--ap);font-weight:700;font-size:14px;letter-spacing:.06em}
-.ap-dot::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
-body.is-night .top{background:rgba(14,23,38,.92);border-color:var(--night-line);color:var(--night-text)}
-body.is-night .top .ap-dot{color:var(--night-ap)}
+.brand{font-weight:700;font-size:20px;letter-spacing:-.01em;text-decoration:none}
+.brand span{color:var(--accent)}
+.nav{display:flex;align-items:center;gap:var(--s6)}
+.nav a{font-size:15px;color:var(--text-2);text-decoration:none}
+@media (hover: hover) and (pointer: fine){.nav a:hover{color:var(--text)}}
+@media (max-width:720px){.nav .hide-m{display:none}}
 
 /* кнопка — одно действие на всю страницу */
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 var(--s6);border-radius:var(--r-ctrl);background:var(--ap);color:#FFFFFF;font-weight:600;font-size:17px;text-decoration:none;transition:transform .14s var(--ease-out),background-color .2s var(--ease-out)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 var(--s6);border-radius:var(--r-ctrl);background:var(--accent);color:#FFFFFF;font-weight:600;font-size:17px;text-decoration:none;text-align:center;transition:transform .14s var(--ease-out),background-color .2s var(--ease-out)}
 .btn:active{transform:scale(0.97)}
-@media (hover: hover) and (pointer: fine){.btn:hover{background:#96105D}}
-.risk{margin-top:var(--s3);font-size:16px;color:var(--text-2)}
+@media (hover: hover) and (pointer: fine){.btn:hover{background:var(--accent-hover)}}
+.nav .btn{min-height:38px;padding:0 var(--s4);font-size:15px;color:#FFFFFF}
+.note{margin:var(--s3) 0 0;font-size:15px;color:var(--text-2)}
 
 /* экран 1 */
-.hero{min-height:calc(100svh - 56px);display:flex;align-items:center;padding:var(--s9) 0}
-.clock{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:clamp(64px,18vw,168px);line-height:1;letter-spacing:-.04em;color:var(--ap);margin:0 0 var(--s6)}
-.hero h1{font-size:clamp(32px,6vw,60px);line-height:1.08;letter-spacing:-.025em;margin:0 0 var(--s4);max-width:15em}
-.hero .lead{font-size:clamp(18px,2.2vw,21px);color:var(--text-2);max-width:34em;margin:0 0 var(--s7)}
-.legend{margin-top:var(--s9);display:flex;gap:var(--s3);align-items:flex-start;font-size:16px;color:var(--text-2);max-width:36em}
-.legend .ap-dot{flex:none;margin-top:3px}
+.hero{padding:clamp(40px,8vw,96px) 0 clamp(48px,8vw,96px)}
+.hero .grid{display:grid;gap:var(--s9);grid-template-columns:1.1fr 1fr;align-items:center}
+@media (max-width:900px){.hero .grid{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(32px,5.4vw,54px);line-height:1.08;letter-spacing:-.025em;margin:0 0 var(--s4)}
+.hero .lead{font-size:clamp(18px,2.1vw,20px);color:var(--text-2);margin:0 0 var(--s7);max-width:32em}
 
-/* часы дня */
-.hour{padding:clamp(64px,10vw,120px) 0;border-top:1px solid var(--border)}
-.hour.dawn{background:var(--bg-dawn)}
-.hour.soft{background:var(--bg-soft)}
-.night{background:var(--night);color:var(--night-text);border-top-color:var(--night-line)}
-.grid{display:grid;gap:var(--s6)}
-.time{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:clamp(48px,11vw,96px);line-height:1;letter-spacing:-.04em;color:var(--text-2);margin:0}
-.night .time{color:var(--night-text-2)}
-.hour h2{font-size:clamp(26px,4vw,40px);line-height:1.15;letter-spacing:-.02em;margin:0 0 var(--s6);max-width:18em}
-.pair{display:grid;gap:var(--s4)}
-.state{padding:var(--s4) var(--s6);border-radius:var(--r-card);border-left:4px solid var(--border);background:rgba(255,255,255,.6)}
-.state b{display:block;font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:var(--s1)}
-.state p{margin:0;font-size:17px}
-.state.was{color:var(--text-2)}
-.state.ap{border-left-color:var(--ap);background:var(--ap-bg)}
-.state.ap b{color:var(--ap)}
-.night .state{background:rgba(255,255,255,.04);border-left-color:var(--night-line)}
-.night .state.was{color:var(--night-text-2)}
-.night .state.ap{border-left-color:var(--night-ap);background:rgba(255,111,181,.08)}
-.night .state.ap b{color:var(--night-ap)}
-.proof{margin-top:var(--s4);font-size:16px;color:var(--text-2);display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center}
-.night .proof{color:var(--night-text-2)}
-.tag{display:inline-block;padding:2px 10px;border-radius:999px;border:1px solid currentColor;font-size:14px}
-.tag.live{color:var(--ok);font-weight:600}
-.night .tag.live{color:var(--night-ok)}
-.proof a{font-weight:600}
+/* пример доклада */
+.report{border:1px solid var(--border);border-radius:var(--r-card);background:var(--bg-soft);padding:var(--s6)}
+.report-head{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s3);margin-bottom:var(--s4)}
+.report-head b{font-size:17px}
+.report-head span{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;color:var(--text-2)}
+.report h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin:var(--s4) 0 var(--s2)}
+.report ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--s2)}
+.report li{background:#fff;border:1px solid var(--border);border-radius:var(--r-ctrl);padding:var(--s3) var(--s4);font-size:15px}
+.report li.decide{border-color:var(--warn);background:var(--warn-bg)}
+.report .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600}
+.report-foot{margin:var(--s4) 0 0;font-size:13px;color:var(--text-2)}
 
-/* экран 8: команда агентов */
-.roles{display:flex;flex-wrap:wrap;gap:var(--s2);margin:var(--s6) 0 0;padding:0;list-style:none}
-.roles li{font-size:16px;padding:6px 12px;border-radius:999px;border:1px solid var(--night-line);color:var(--night-text)}
+/* секции */
+.section{padding:clamp(56px,9vw,104px) 0;border-top:1px solid var(--border)}
+.section.soft{background:var(--bg-soft)}
+.section h2{font-size:clamp(26px,3.8vw,38px);line-height:1.15;letter-spacing:-.02em;margin:0 0 var(--s4);max-width:20em}
+.section .sub{color:var(--text-2);font-size:18px;max-width:38em;margin:0 0 var(--s7)}
 
-/* экран 9: проводник */
-.guide{display:grid;gap:var(--s7);align-items:start}
-.guide img{width:120px;height:120px;border-radius:50%;object-fit:cover;display:block}
-.who{font-size:17px;margin:var(--s4) 0 0}
-.who span{display:block;color:var(--text-2);font-size:16px}
-.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:var(--s4)}
-.steps li{counter-increment:s;padding:var(--s4) var(--s6);background:var(--bg);border-radius:var(--r-card);border:1px solid var(--border)}
-.steps li::before{content:"Шаг " counter(s);display:block;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--ap);font-weight:700;margin-bottom:var(--s1)}
+/* знакомо? */
+.pains{display:grid;gap:var(--s4);grid-template-columns:repeat(2,1fr);list-style:none;margin:0;padding:0}
+@media (max-width:720px){.pains{grid-template-columns:1fr}}
+.pains li{border-left:4px solid var(--border);padding:var(--s2) 0 var(--s2) var(--s4)}
+.pains b{display:block;font-size:18px;margin-bottom:var(--s1)}
+.pains p{margin:0;color:var(--text-2)}
+
+/* умения */
+.skills{display:grid;gap:var(--s4);grid-template-columns:repeat(2,1fr);list-style:none;margin:0;padding:0}
+@media (max-width:760px){.skills{grid-template-columns:1fr}}
+.skill{background:#fff;border:1px solid var(--border);border-radius:var(--r-card);padding:var(--s6);display:flex;flex-direction:column;gap:var(--s2)}
+.skill h3{margin:0;font-size:19px}
+.skill p{margin:0;color:var(--text-2)}
+.meta{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center;margin-top:auto;padding-top:var(--s2);font-size:15px}
+.meta a{font-weight:600;color:var(--accent)}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;font-size:14px;font-weight:600}
+.tag::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.tag.live{color:var(--ok);background:var(--ok-bg)}
+.tag.show{color:var(--accent);background:var(--accent-bg)}
+.tag.dev{color:var(--warn);background:var(--warn-bg)}
+.legend{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s6);margin:0 0 var(--s6);font-size:15px;color:var(--text-2)}
+.legend span{display:inline-flex;align-items:center;gap:var(--s2)}
+
+/* где работает */
+.cases{list-style:none;margin:0;padding:0;border-top:1px solid var(--border)}
+.cases li{display:grid;grid-template-columns:220px 1fr;gap:var(--s4);padding:var(--s4) 0;border-bottom:1px solid var(--border);align-items:baseline}
+@media (max-width:640px){.cases li{grid-template-columns:1fr;gap:var(--s1)}}
+.cases a{font-weight:600;color:var(--accent);font-size:18px}
+.cases p{margin:0;color:var(--text-2)}
+
+/* пакеты */
+.pkgs{display:grid;gap:var(--s4);grid-template-columns:repeat(4,1fr)}
+@media (max-width:960px){.pkgs{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.pkgs{grid-template-columns:1fr}}
+.pkg{border:1px solid var(--border);border-radius:var(--r-card);padding:var(--s6) var(--s4);background:#fff;display:flex;flex-direction:column;gap:var(--s2)}
+.pkg.main{border:2px solid var(--accent);background:var(--accent-bg)}
+.pkg .step{font-family:var(--mono);font-size:14px;color:var(--text-2)}
+.pkg h3{margin:0;font-size:19px}
+.pkg p{margin:0;color:var(--text-2);font-size:15px}
+.pkg .when{margin-top:auto;padding-top:var(--s3);font-size:14px;font-weight:600;color:var(--accent)}
+
+/* данные */
+.rules{display:grid;gap:var(--s4);grid-template-columns:repeat(2,1fr);list-style:none;margin:0;padding:0}
+@media (max-width:720px){.rules{grid-template-columns:1fr}}
+.rules li{background:#fff;border:1px solid var(--border);border-radius:var(--r-card);padding:var(--s4) var(--s6)}
+.rules b{display:block;margin-bottom:var(--s1)}
+.rules p{margin:0;color:var(--text-2)}
+
+/* как начинаем */
+.guide{display:grid;gap:var(--s9);grid-template-columns:200px 1fr;align-items:start}
+@media (max-width:760px){.guide{grid-template-columns:1fr;gap:var(--s6)}}
+.guide img{width:160px;height:160px;border-radius:50%;object-fit:cover}
+.who{margin:var(--s3) 0 0;font-weight:600}
+.who span{display:block;font-weight:400;font-size:15px;color:var(--text-2)}
+.steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;gap:var(--s6)}
+.steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:var(--s3)}
+.steps li::before{content:counter(s);font-family:var(--mono);font-size:24px;font-weight:600;color:var(--accent);line-height:1.2}
 .steps b{display:block;font-size:18px}
 .steps p{margin:var(--s1) 0 0;color:var(--text-2)}
 
-/* экран 10 */
-.final h2{font-size:clamp(30px,5.5vw,56px);max-width:14em;margin-bottom:var(--s7)}
-.yform{margin-top:var(--s6);background:#FFFFFF;border-radius:var(--r-card);padding:var(--s2);max-width:720px;scroll-margin-top:72px}
+/* заявка */
+.final{background:var(--night);color:var(--night-text);border-top:none}
+.final h2{color:var(--night-text)}
+.final .sub{color:var(--night-text-2)}
+.yform{background:#fff;border-radius:var(--r-card);overflow:hidden;max-width:680px}
 .yform iframe{display:block;border:0;width:100%;min-height:640px}
-.form-msg{margin:var(--s2) var(--s3) var(--s3);font-size:16px;color:var(--text-2)}
-.form-msg a{color:var(--ap)}
-.final .risk{color:var(--night-text-2)}
-.live-now{margin-top:var(--s9);padding-top:var(--s6);border-top:1px solid var(--night-line)}
-.live-now h3{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--night-text-2);margin:0 0 var(--s3);font-weight:600}
-.live-now ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--s3) var(--s6)}
-.live-now li{font-size:16px}
-.live-now a{color:var(--night-ok);font-weight:600}
-footer{background:var(--night);color:var(--night-text-2);font-size:16px;padding:var(--s7) 0 var(--s9);border-top:1px solid var(--night-line)}
-footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s7);justify-content:space-between}
+.form-msg{margin:var(--s3) 0 0;font-size:15px;color:var(--night-text-2)}
+.form-msg a{color:var(--night-text)}
 
-/* появление при прокрутке: контент виден и без скриптов */
-.js .reveal{opacity:0;transform:translateY(12px);transition:opacity .3s var(--ease-out),transform .3s var(--ease-out)}
+footer{padding:var(--s7) 0;border-top:1px solid var(--border);font-size:14px;color:var(--text-2)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s4);justify-content:space-between}
+footer a{text-decoration:underline}
+
+.reveal{opacity:1}
+.js .reveal{opacity:0;transform:translateY(12px);transition:opacity .5s var(--ease-out),transform .5s var(--ease-out)}
 .js .reveal.in{opacity:1;transform:none}
-
-@media (min-width:768px){
-  .grid{grid-template-columns:260px 1fr;gap:var(--s9)}
-  .guide{grid-template-columns:260px 1fr}
-  .guide img{width:160px;height:160px}
-}
-@media (min-width:960px){.pair{grid-template-columns:1fr 1fr}}
-@media (prefers-reduced-motion: reduce){
-  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
-  html{scroll-behavior:auto}
-  .js .reveal{transform:none!important;opacity:1!important}
-}
+@media (prefers-reduced-motion: reduce){.js .reveal{opacity:1;transform:none;transition:none}.btn{transition:none}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#start">Бизнес на автопилоте</a>
-    <div class="now" aria-hidden="true"><span id="topClock">07:30</span><span class="ap-dot">AP</span></div>
+    <a class="brand" href="#start">Свод<span>.</span></a>
+    <nav class="nav" aria-label="Разделы">
+      <a class="hide-m" href="#umeet">Что умеет</a>
+      <a class="hide-m" href="#rabotaet">Где работает</a>
+      <a class="hide-m" href="#pakety">Пакеты</a>
+      <a class="btn" href="#zayavka">Заявка</a>
+    </nav>
   </div>
 </header>
 
 <main>
-  <!-- 1 -->
-  <section class="hero" id="start" data-time="">
-    <div class="wrap">
-      <p class="clock" id="heroClock" aria-label="Текущее время">07:30</p>
-      <h1>Автопилот не заменяет пилота. Он освобождает ему руки</h1>
-      <p class="lead">Один рабочий день руководителя: как он идёт сейчас и каким становится, когда рутину ведут ИИ-агенты. Две минуты прокрутки.</p>
-      <a class="btn" href="#zayavka">Разобрать мой день</a>
-      <p class="risk">Разбор бесплатный. Ответим в течение рабочего дня.</p>
-      <p class="legend"><span class="ap-dot">AP</span><span>На приборах многих самолётов пурпурным показано то, что ведёт автопилот. На этой странице пурпурным отмечено только то, что делают агенты.</span></p>
-    </div>
-  </section>
-
-  <!-- 2 -->
-  <section class="hour night reveal" data-time="02:14" data-night>
+  <!-- 1. Первый экран -->
+  <section class="hero" id="start">
     <div class="wrap grid">
-      <p class="time">02:14</p>
       <div>
-        <h2>Заявка пришла ночью. Ответ ушёл тоже ночью</h2>
-        <div class="pair">
-          <div class="state was"><b>Как сейчас</b><p>Сообщение прочтут в десять утра. К этому времени клиент написал ещё троим.</p></div>
-          <div class="state ap"><b>С автопилотом</b><p>Агент ответил сразу, уточнил задачу и срок. Утром в CRM готовая карточка.</p></div>
-        </div>
-        <p class="proof"><span class="tag">Прототип</span> Демо по запросу</p>
+        <h1>Каждое утро — свод по компании: что случилось за сутки и что решить сегодня</h1>
+        <p class="lead">Свод собирает заявки, деньги, встречи и переписку из ваших систем и к началу дня присылает короткий доклад в Telegram или MAX. Решения остаются за вами, сбор и проверка — за Сводом.</p>
+        <a class="btn" href="#zayavka">Обсудить мой утренний свод</a>
+        <p class="note">Первая встреча бесплатная. Ответим в течение рабочего дня.</p>
       </div>
-    </div>
-  </section>
-
-  <!-- 3 -->
-  <section class="hour dawn reveal" data-time="07:00">
-    <div class="wrap grid">
-      <p class="time">07:00</p>
-      <div>
-        <h2>Пост в канале вышел, пока вы завтракали</h2>
-        <div class="pair">
-          <div class="state was"><b>Как сейчас</b><p>Маркетолог пишет и выкладывает руками. Заболел — канал молчит неделю.</p></div>
-          <div class="state ap"><b>С автопилотом</b><p>Пост и карточка выходят каждый день: Telegram, MAX, VK, Дзен, сайт.</p></div>
-        </div>
-        <p class="proof"><span class="tag live">Работает</span> <a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">@biznes_autopilot ↗</a></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4 -->
-  <section class="hour reveal" data-time="08:30">
-    <div class="wrap grid">
-      <p class="time">08:30</p>
-      <div>
-        <h2>Сводка за вчера уже на столе</h2>
-        <div class="pair">
-          <div class="state was"><b>Как сейчас</b><p>Цифры собирают из трёх таблиц. Excel будет к пятнице, если никто не заболеет.</p></div>
-          <div class="state ap"><b>С автопилотом</b><p>Выручка, воронка и остатки на одном экране. Обновляются сами.</p></div>
-        </div>
-        <p class="proof"><span class="tag">Под задачу</span> Собираем из ваших систем</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5 -->
-  <section class="hour soft reveal" data-time="10:00">
-    <div class="wrap grid">
-      <p class="time">10:00</p>
-      <div>
-        <h2>Поставщик найден, цены сравнены</h2>
-        <div class="pair">
-          <div class="state was"><b>Как сейчас</b><p>Закупщик полдня обзванивает и сводит прайсы в таблицу.</p></div>
-          <div class="state ap"><b>С автопилотом</b><p>Поиск поставщиков и сравнение цен в одном сервисе.</p></div>
-        </div>
-        <p class="proof"><span class="tag live">Работает</span> <a href="https://xoolo.ru" target="_blank" rel="noopener">xoolo.ru ↗</a></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6 -->
-  <section class="hour reveal" data-time="11:00">
-    <div class="wrap grid">
-      <p class="time">11:00</p>
-      <div>
-        <h2>Счёт и акт собрались из сделки сами</h2>
-        <div class="pair">
-          <div class="state was"><b>Как сейчас</b><p>Бухгалтер перепечатывает данные из CRM в 1С. Раз в месяц — с ошибкой.</p></div>
-          <div class="state ap"><b>С автопилотом</b><p>CRM связана с 1С: закрывающие документы формируются по сделке.</p></div>
-        </div>
-        <p class="proof"><span class="tag">Под задачу</span> amoCRM или Битрикс24 + 1С</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7 -->
-  <section class="hour soft reveal" data-time="14:00">
-    <div class="wrap grid">
-      <p class="time">14:00</p>
-      <div>
-        <h2>Встреча записана и расшифрована на вашем компьютере</h2>
-        <div class="pair">
-          <div class="state was"><b>Как сейчас</b><p>Протокол не пишет никто. Через неделю каждый помнит договорённости по-своему.</p></div>
-          <div class="state ap"><b>С автопилотом</b><p>Запись, расшифровка и готовый текст. Звук не уходит в облако.</p></div>
-        </div>
-        <p class="proof"><span class="tag">Версия 1.0</span> Приложение для Mac, демо по запросу</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 8 -->
-  <section class="hour night reveal" data-time="23:00" data-night>
-    <div class="wrap grid">
-      <p class="time">23:00</p>
-      <div>
-        <h2>Вы спите. Команда агентов ведёт проект</h2>
-        <div class="pair">
-          <div class="state was"><b>Как сейчас</b><p>Ночью компания стоит. Утром всё начинается с вопроса «кто что делал вчера».</p></div>
-          <div class="state ap"><b>С автопилотом</b><p>Агенты ищут клиентов, пишут требования, код и тесты. Утром — журнал сделанного.</p></div>
-        </div>
-        <ul class="roles" aria-label="Роли агентов">
-          <li>руководитель проекта</li><li>разведчик</li><li>исследователь</li><li>менеджер по продажам</li><li>аналитик</li><li>архитектор</li><li>дизайнер</li><li>разработчик</li><li>тестировщик</li><li>безопасник</li><li>DevOps</li><li>маркетолог</li><li>контент-менеджер</li>
+      <div class="report" aria-label="Учебный пример утреннего доклада">
+        <div class="report-head"><b>Утренний свод</b><span>08:30</span></div>
+        <h3>За сутки</h3>
+        <ul>
+          <li>Новых заявок: <span class="n">12</span>, из них горячих <span class="n">3</span>. Ночную ответили за <span class="n">40</span> минут.</li>
+          <li>Оплаты: <span class="n">4</span> счёта на <span class="n">1 260 000 ₽</span>. Просрочен один — у клиента «Север».</li>
+          <li>Встреча с поставщиком — протокол готов, три договорённости с датами.</li>
         </ul>
-        <p class="proof"><span class="tag">Продукт собран</span> Так работаем мы сами. Демо по запросу</p>
+        <h3>Решить сегодня</h3>
+        <ul>
+          <li class="decide">Поставщик поднял цену на <span class="n">8%</span>. Нашли двух дешевле — сравнение приложено.</li>
+        </ul>
+        <p class="report-foot">Учебный пример. Цифры и названия выдуманы.</p>
       </div>
     </div>
   </section>
 
-  <!-- 9 -->
-  <section class="hour soft reveal" data-time="">
+  <!-- 2. Знакомо? -->
+  <section class="section soft">
+    <div class="wrap">
+      <h2>Руководитель тратит день на то, чтобы узнать, что происходит</h2>
+      <p class="sub">Пересылает, напоминает, собирает цифры. Узнаёте хотя бы одну ситуацию?</p>
+      <ul class="pains">
+        <li class="reveal"><b>Заявку увидели утром</b><p>Клиент написал в одиннадцать вечера. К десяти утра он уже ждёт ответа от конкурента.</p></li>
+        <li class="reveal"><b>Цифры собирают к пятнице</b><p>Выручку, оплаты и остатки сводят из трёх таблиц вручную, и каждый раз немного по-разному.</p></li>
+        <li class="reveal"><b>Протокол никто не написал</b><p>Через неделю каждый участник встречи помнит договорённости по-своему.</p></li>
+        <li class="reveal"><b>Поручение застряло</b><p>Задачу отдали заму, через три дня выяснилось, что она не сдвинулась.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. Что умеет Свод -->
+  <section class="section" id="umeet">
+    <div class="wrap">
+      <h2>Что умеет Свод</h2>
+      <p class="sub">Свод собираем из частей, которые уже работают у нас и у клиентов. У каждой указано, в каком она состоянии.</p>
+      <div class="legend" aria-label="Обозначения">
+        <span><span class="tag live">работает</span> есть живая ссылка</span>
+        <span><span class="tag show">показываем на встрече</span> собрано, публичной ссылки нет</span>
+        <span><span class="tag dev">в разработке</span> делаем сейчас</span>
+      </div>
+      <ul class="skills">
+        <li class="skill reveal">
+          <h3>Утренний доклад</h3>
+          <p>Что случилось за сутки и что требует решения — одним сообщением к началу дня.</p>
+          <div class="meta"><span class="tag dev">в разработке</span> набираем первых клиентов</div>
+        </li>
+        <li class="skill reveal">
+          <h3>Подключение к CRM, 1С и почте</h3>
+          <p>amoCRM, Битрикс24, 1С, InSales, почта. Только чтение: Свод ничего не меняет в ваших системах.</p>
+          <div class="meta"><span class="tag dev">в разработке</span></div>
+        </li>
+        <li class="skill reveal">
+          <h3>Протокол встречи</h3>
+          <p>Запись, расшифровка и договорённости с датами. Звук обрабатывается на вашем компьютере и не уходит в облако.</p>
+          <div class="meta"><span class="tag show">показываем на встрече</span> приложение для Mac</div>
+        </li>
+        <li class="skill reveal">
+          <h3>Команда агентов под задачу</h3>
+          <p>Аналитик, разработчик, тестировщик и другие роли доводят задачу до результата и проверяют работу друг друга. Так работаем мы сами.</p>
+          <div class="meta"><span class="tag show">показываем на встрече</span></div>
+        </li>
+        <li class="skill reveal">
+          <h3>Закупки: поставщики и цены</h3>
+          <p>Поиск поставщиков и сравнение цен. Находки попадают в доклад пунктом «решить сегодня».</p>
+          <div class="meta"><span class="tag live">работает</span><a href="https://xoolo.ru" target="_blank" rel="noopener">xoolo.ru ↗</a></div>
+        </li>
+        <li class="skill reveal">
+          <h3>Канал компании без ручной работы</h3>
+          <p>Пост и карточка выходят каждый день в Telegram, MAX, VK и Дзен.</p>
+          <div class="meta"><span class="tag live">работает</span><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">@biznes_autopilot ↗</a></div>
+        </li>
+        <li class="skill reveal">
+          <h3>Задачи голосом</h3>
+          <p>Надиктовать поручение за рулём или между встречами, не открывая ноутбук.</p>
+          <div class="meta"><span class="tag dev">в разработке</span></div>
+        </li>
+        <li class="skill reveal">
+          <h3>Производство: план и загрузка</h3>
+          <p>Для заводов — пункт доклада о выполнении плана и загрузке участков.</p>
+          <div class="meta"><span class="tag dev">в разработке</span></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. Где это уже работает -->
+  <section class="section soft" id="rabotaet">
+    <div class="wrap">
+      <h2>Где это уже работает</h2>
+      <p class="sub">Проекты, которые можно открыть прямо сейчас.</p>
+      <ul class="cases">
+        <li><a href="https://mvmed.ru" target="_blank" rel="noopener">mvmed.ru ↗</a><p>Магазин медтехники: SEO, тексты категорий, аналитика, соответствие закону о рекламе.</p></li>
+        <li><a href="https://tkskarabey.ru" target="_blank" rel="noopener">tkskarabey.ru ↗</a><p>Магазин лакокрасочных материалов: интернет-магазин и витрина с подбором цвета.</p></li>
+        <li><a href="https://xoolo.ru" target="_blank" rel="noopener">xoolo.ru ↗</a><p>Сервис поиска поставщиков и сравнения цен.</p></li>
+        <li><a href="https://nauchilsya.ru" target="_blank" rel="noopener">nauchilsya.ru ↗</a><p>Подготовка к ОГЭ и ЕГЭ: диагностика ученика и отчёт родителю.</p></li>
+        <li><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">@biznes_autopilot ↗</a><p>Канал о том, как мы автоматизируем бизнес. Публикации выходят без участия человека.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. Пакеты -->
+  <section class="section" id="pakety">
+    <div class="wrap">
+      <h2>Начинаем с доклада, расширяем по запросу</h2>
+      <p class="sub">Следующая ступень подключается, когда предыдущая работает и вам нужно больше. Стоимость считаем после первой встречи — под ваши системы и объём.</p>
+      <div class="pkgs">
+        <div class="pkg main reveal">
+          <span class="step">01</span>
+          <h3>Утренний доклад</h3>
+          <p>Каждое утро — свод за сутки и список решений на сегодня.</p>
+          <span class="when">С него начинаем</span>
+        </div>
+        <div class="pkg reveal">
+          <span class="step">02</span>
+          <h3>Одно окно</h3>
+          <p>Вы пишете или говорите задачу — Свод ставит её агентам и человеку-консьержу и присылает итог.</p>
+          <span class="when">Следующая ступень</span>
+        </div>
+        <div class="pkg reveal">
+          <span class="step">03</span>
+          <h3>Свой отдел</h3>
+          <p>Команда агентов под участок компании: заявки, документы, переписка с поставщиками.</p>
+          <span class="when">По запросу</span>
+        </div>
+        <div class="pkg reveal">
+          <span class="step">04</span>
+          <h3>Закрытый контур</h3>
+          <p>Всё на вашем оборудовании. Для тех, кому данные нельзя выносить наружу.</p>
+          <span class="when">По запросу</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Данные -->
+  <section class="section soft">
+    <div class="wrap">
+      <h2>Как Свод обращается с вашими данными</h2>
+      <p class="sub">Эти правила записаны в требованиях к Своду до первой строки кода.</p>
+      <ul class="rules">
+        <li><b>Только чтение</b><p>Свод читает CRM, 1С и почту, но ничего в них не меняет.</p></li>
+        <li><b>Хранение в России</b><p>Данные клиентов хранятся на серверах в РФ, по договору поручения обработки.</p></li>
+        <li><b>Обезличивание</b><p>Во внешнюю модель текст уходит только без имён, телефонов и реквизитов.</p></li>
+        <li><b>Отключение одним действием</b><p>Отзываете доступ — Свод перестаёт читать источник сразу.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7. Как начинаем -->
+  <section class="section">
     <div class="wrap guide">
       <div>
         <img src="photo.jpg" alt="Алексей Яицкий, генеральный директор" width="160" height="160">
         <p class="who">Алексей Яицкий<span>Генеральный директор. 18+ лет в IT: ВТБ, КРОК, Техносерв, S8 Capital</span></p>
       </div>
       <div>
-        <h2>Начинаем с одного часа, а не со всей компании</h2>
+        <h2>Как начинаем</h2>
         <ol class="steps">
-          <li><b>Разбираем ваш день</b><p>Одна встреча: где рутина съедает больше всего времени. Бесплатно.</p></li>
-          <li><b>Отдаём автопилоту один участок</b><p>Тот, где результат увидите быстрее всего. Считаем, сколько стоит и когда окупится.</p></li>
-          <li><b>Дальше — по часу</b><p>Следующий участок берём, когда первый работает без нас.</p></li>
+          <li><b>Встреча на час</b><p>Разбираем, какие системы у вас есть и что вы хотите видеть в докладе каждое утро. Бесплатно.</p></li>
+          <li><b>Первый доклад</b><p>Подключаем один-два источника только на чтение. Вы получаете свод и говорите, что в нём лишнее.</p></li>
+          <li><b>Дальше — по запросу</b><p>Добавляем источники и задачи, когда доклад стал привычкой, а не раньше.</p></li>
         </ol>
       </div>
     </div>
   </section>
 
-  <!-- 10 -->
-  <section class="hour night final reveal" data-time="" data-night>
+  <!-- 8. Заявка -->
+  <section class="section final" id="zayavka">
     <div class="wrap">
-      <h2>Какой час вашего дня отдать автопилоту первым?</h2>
-      <p class="risk">Разбор бесплатный. Ответим в течение рабочего дня. Без навязчивых звонков.</p>
-      <div class="yform" id="zayavka">
+      <h2>Что вы хотите видеть в своём утреннем своде?</h2>
+      <p class="sub">Оставьте контакт — созвонимся и разберём ваши системы. Ответим в течение рабочего дня, без навязчивых звонков.</p>
+      <div class="yform">
         <!-- Яндекс Формы: данные хранятся в РФ, согласие и ссылка на политику — в самой форме -->
-        <iframe src="https://forms.yandex.ru/u/6ab77bf002848f02d3020c48/?iframe=1" name="ya-form-6ab77bf002848f02d3020c48" title="Форма заявки: разобрать мой день" width="100%" height="640" loading="lazy"></iframe>
-        <p class="form-msg">Форма не загрузилась? <a href="https://forms.yandex.ru/u/6ab77bf002848f02d3020c48/" target="_blank" rel="noopener">Откройте её в новой вкладке</a>.</p>
+        <iframe src="https://forms.yandex.ru/u/6ab77bf002848f02d3020c48/?iframe=1" name="ya-form-6ab77bf002848f02d3020c48" title="Форма заявки" width="100%" height="640" loading="lazy"></iframe>
       </div>
-      <div class="live-now">
-        <h3>Работает прямо сейчас</h3>
-        <ul>
-          <li><a href="https://mvmed.ru" target="_blank" rel="noopener">mvmed.ru ↗</a> магазин медтехники</li>
-          <li><a href="https://tkskarabey.ru" target="_blank" rel="noopener">tkskarabey.ru ↗</a> магазин красок</li>
-          <li><a href="https://xoolo.ru" target="_blank" rel="noopener">xoolo.ru ↗</a> поиск поставщиков</li>
-          <li><a href="https://nauchilsya.ru" target="_blank" rel="noopener">nauchilsya.ru ↗</a> подготовка к ОГЭ и ЕГЭ</li>
-          <li><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">@biznes_autopilot ↗</a> автопостинг</li>
-        </ul>
-      </div>
+      <p class="form-msg">Форма не загрузилась? <a href="https://forms.yandex.ru/u/6ab77bf002848f02d3020c48/" target="_blank" rel="noopener">Откройте её в новой вкладке</a>.</p>
     </div>
   </section>
 </main>
@@ -297,7 +356,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s7);justify-content
 <footer>
   <div class="wrap">
     <div>
-      <div>© 2026 Бизнес на автопилоте · Алексей Андреевич Яицкий</div>
+      <div>© 2026 Свод · Алексей Андреевич Яицкий</div>
       <div>Оператор персональных данных — ИП [реквизиты вписать перед публикацией] · <a href="policy.html">Политика обработки персональных данных</a></div>
     </div>
     <div><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Telegram</a> · <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener">MAX</a></div>
@@ -306,8 +365,8 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s7);justify-content
 
 <script>
 (function(){
-  var d=document, root=d.documentElement;
-  root.classList.add('js');
+  var d=document;
+  d.documentElement.classList.add('js');
   // t.me заблокирован у части провайдеров РФ — открываем приложение Telegram напрямую
   d.querySelectorAll('[data-tg]').forEach(function(a){
     a.addEventListener('click', function(e){
@@ -317,24 +376,9 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s7);justify-content
       setTimeout(function(){ if (d.hasFocus()) { window.open('https://t.me/' + n, '_blank', 'noopener'); } }, 2000);
     });
   });
-  function hm(){var t=new Date();return String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')}
-  var hero=d.getElementById('heroClock'), top=d.getElementById('topClock');
-  function tick(){var v=hm();hero.textContent=v;if(!top.dataset.lock)top.textContent=v}
-  tick(); setInterval(tick,15000);
-
   if(!('IntersectionObserver' in window)){d.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in')});return}
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -10% 0px'});
   d.querySelectorAll('.reveal').forEach(function(e){io.observe(e)});
-
-  // шапка показывает час того экрана, который сейчас под ней
-  var secs=[].slice.call(d.querySelectorAll('main > section'));
-  var watch=new IntersectionObserver(function(es){es.forEach(function(e){
-    if(!e.isIntersecting)return;
-    var s=e.target, t=s.getAttribute('data-time');
-    if(t){top.textContent=t;top.dataset.lock='1'}else{delete top.dataset.lock;top.textContent=hm()}
-    d.body.classList.toggle('is-night',s.hasAttribute('data-night'));
-  })},{rootMargin:'-56px 0px -85% 0px'});
-  secs.forEach(function(s){watch.observe(s)});
 })();
 </script>
 <script src="https://forms.yandex.ru/_static/embed.js"></script>

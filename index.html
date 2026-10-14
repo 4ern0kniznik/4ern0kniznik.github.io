@@ -430,6 +430,29 @@
     }
     .metric-label { font-size: 14px; color: var(--muted); line-height: 1.5; }
 
+    .products-grid {
+        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+    .product {
+        background:
+            linear-gradient(165deg, rgba(255,255,255,0.07), transparent 42%),
+            var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.22);
+        border-radius: 14px;
+        overflow: hidden;
+        min-width: 0;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 10px 24px rgba(0,0,0,0.35);
+    }
+    .product video {
+        display: block; width: 100%; height: auto;
+        aspect-ratio: 16 / 9; background: #000;
+    }
+    .product-body { padding: 20px 22px 24px; }
+    .product h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .product p { font-size: 14px; color: var(--muted); line-height: 1.55; }
+    .product .product-warn { margin-top: 10px; font-size: 13px; color: var(--text); }
+
     .cta {
         border-top: 1px solid var(--line);
         text-align: center;
@@ -511,6 +534,10 @@
         .cta h2 { font-size: 32px; }
         .cta p { font-size: 17px; }
         .problem-item { padding: 28px 20px; }
+        .products-grid { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 901px) and (max-width: 1100px) {
+        .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -536,6 +563,7 @@
                 <li><a href="#problem">Проблема</a></li>
                 <li><a href="#features">Возможности</a></li>
                 <li><a href="#security">Безопасность</a></li>
+                <li><a href="#produkty">Примеры</a></li>
             </ul>
             <a href="#cta" class="btn btn-primary">Получить доступ</a>
         </nav>
@@ -704,6 +732,95 @@
                 <div class="metric-label">отзыв доступа — и чтение источника прекращается</div>
             </div>
         </div>
+        </div>
+    </div>
+</section>
+
+<section id="produkty">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">04 / ПРИМЕРЫ</div>
+            <h2 class="section-title">Примеры продуктов</h2>
+            <p class="section-note">Короткие ролики о том, что мы уже сделали.</p>
+        </div>
+        <div class="products-grid">
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/biznes-na-avtopilote.jpg" src="video/biznes-na-avtopilote.mp4"></video>
+                <div class="product-body">
+                    <h3>Бизнес на автопилоте</h3>
+                    <p>Утром — сводка за сутки: заявки, оплаты, встречи и риски из CRM, 1С и почты.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/kontora-agentov.jpg" src="video/kontora-agentov.mp4"></video>
+                <div class="product-body">
+                    <h3>Контора агентов</h3>
+                    <p>Команда ИИ-ролей ведёт задачу от требований до сервера, наружу — только с вашего «отправляй».</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/shlyuz-k-modelyam.jpg" src="video/shlyuz-k-modelyam.mp4"></video>
+                <div class="product-body">
+                    <h3>Шлюз к моделям</h3>
+                    <p>Три ИИ-модели по одному входу и без ключей на руках: шлюз сам выбирает модель под вопрос.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/redactdoc.jpg" src="video/redactdoc.mp4"></video>
+                <div class="product-body">
+                    <h3>RedactDoc</h3>
+                    <p>Обезличивает договоры и сканы перед отправкой в ИИ: персональные данные заменяются метками, оригинал не покидает компьютер.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/podslushka.jpg" src="video/podslushka.mp4"></video>
+                <div class="product-body">
+                    <h3>Подслушка</h3>
+                    <p>Запись и расшифровка звонков на маке: текст, протокол и поиск по разговорам, ничего не уходит в сеть.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/poisk-postavshchika.jpg" src="video/poisk-postavshchika.mp4"></video>
+                <div class="product-body">
+                    <h3>ПоискПоставщика</h3>
+                    <p>Подбирает поставщика под закупку и объясняет выбор по товару, цене, логистике и надёжности.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/skarabey.jpg" src="video/skarabey.mp4"></video>
+                <div class="product-body">
+                    <h3>Скарабей</h3>
+                    <p>Сайт магазина красок: по фото стены подбирает ближайшие оттенки прямо в браузере.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/skaner-cveta.jpg" src="video/skaner-cveta.mp4"></video>
+                <div class="product-body">
+                    <h3>Сканер цвета</h3>
+                    <p>Снимает стену с белым листом и подбирает оттенки из колеровочных карт — всё считается на телефоне.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/mes.jpg" src="video/mes.mp4"></video>
+                <div class="product-body">
+                    <h3>MES</h3>
+                    <p>План цеха по станкам с учётом мощности и переналадок, отметки оператора сразу видны мастеру.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/nauchilsya.jpg" src="video/nauchilsya.mp4"></video>
+                <div class="product-body">
+                    <h3>Научился</h3>
+                    <p>Подготовка к ОГЭ: диагностика, прогноз балла и тренажёр с разбором ошибок, без регистрации.</p>
+                </div>
+            </article>
+            <article class="product">
+                <video controls preload="none" playsinline poster="video/letopis-svoih.jpg" src="video/letopis-svoih.mp4"></video>
+                <div class="product-body">
+                    <h3>Летопись своих</h3>
+                    <p>Сайт, где об участнике СВО рассказывают родные и сослуживцы. В ролике демо-стенд, люди вымышлены.</p>
+                </div>
+            </article>
         </div>
     </div>
 </section>

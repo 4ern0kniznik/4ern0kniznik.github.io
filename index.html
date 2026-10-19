@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Нейромануфактура</title>
-<meta name="description" content="Операционный контроль будущего подключается к CRM, 1С и почте и к утру собирает картину: заявки, оплаты, встречи, риски.">
+<meta name="description" content="Нейромануфактура подключается к CRM, 1С и почте и к утру собирает картину: заявки, оплаты, встречи, риски.">
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -521,12 +521,22 @@
 
     @media (max-width: 900px) {
         .container { padding: 0 16px; }
-        nav { height: auto; min-height: 56px; flex-wrap: wrap; padding: 10px 0; row-gap: 8px; }
-        .nav-links { order: 3; width: 100%; gap: 12px 16px; flex-wrap: wrap; }
+        nav { height: auto; min-height: 56px; flex-wrap: wrap; padding: 8px 0 0; row-gap: 0; column-gap: 12px; }
+        .nav-links {
+            order: 3; width: 100%;
+            gap: 20px;
+            overflow-x: auto; overscroll-behavior-x: contain;
+            scrollbar-width: none;
+            padding: 0 4px;
+            margin: 0 -4px;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-links a { display: inline-block; padding: 12px 0; white-space: nowrap; }
+        .nav-links a::after { bottom: 6px; }
         .logo { margin-right: auto; flex: 1 1 140px; min-width: 0; font-size: 13px; white-space: normal; }
         .btn { padding: 10px 14px; }
-        section[id] { scroll-margin-top: 132px; }
-        section.hero { padding: 112px 16px 56px; }
+        section[id] { scroll-margin-top: 120px; }
+        section.hero { padding: 120px 16px 56px; }
         .hero h1 { font-size: 36px; }
         .hero .sub { font-size: 17px; margin-bottom: 28px; }
         .stage { perspective: none; margin-top: 32px; padding: 8px 0 24px; }
@@ -593,9 +603,9 @@
 </header>
 
 <section class="hero container" id="start">
-    <div class="eyebrow">// ОПЕРАЦИОННЫЙ КОНТРОЛЬ</div>
+    <div class="eyebrow">// НЕЙРОМАНУФАКТУРА</div>
     <h1>Бизнес-разведка.<br><span class="highlight">Каждое утро в 08:30.</span></h1>
-    <p class="sub">Операционный контроль будущего подключается к вашим системам — CRM, 1С, почте — и к утру собирает полную картину: заявки, оплаты, встречи, риски. Вы начинаете день с решений, а не с разбора завалов.</p>
+    <p class="sub">Нейромануфактура подключается к вашим системам — CRM, 1С, почте — и к утру собирает полную картину: заявки, оплаты, встречи, риски. Вы начинаете день с решений, а не с разбора завалов.</p>
     <div class="hero-cta">
         <a href="#cta" class="btn btn-primary">Получить первый отчёт</a>
         <a href="#features" class="btn btn-ghost">Возможности</a>

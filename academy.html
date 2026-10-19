@@ -124,7 +124,6 @@
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0, 217, 255, 0.35); }
         .btn-ghost:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0, 217, 255, 0.2); }
         .footer-inner a:hover { color: var(--text); }
-        .form-msg a:hover { text-decoration-thickness: 2px; }
         .row:hover { background: rgba(0, 217, 255, 0.02); }
         .row:hover::before { transform: scaleY(1); }
     }
@@ -460,47 +459,10 @@
         margin: 0 auto 40px;
         position: relative;
     }
-    .yform {
-        background: #fff;
-        border-radius: 12px;
-        overflow: hidden;
-        max-width: 680px;
-        margin: 0 auto;
-        position: relative;
-        text-align: left;
-    }
-    .yform iframe {
-        display: block; border: 0; width: 100%; min-height: 640px;
-        position: relative; z-index: 1;
-        transition: opacity .2s var(--ease-out);
-    }
-    .yform-skeleton { display: none; }
-    .yform.is-loading iframe { opacity: 0; }
-    .yform.is-loading .yform-skeleton {
-        display: block;
-        position: absolute; inset: 0;
-        padding: 40px 32px;
-    }
-    .sk {
-        height: 14px; border-radius: 6px; background: #e9ecf1;
-        margin-bottom: 14px;
-        animation: pulse 1.4s ease-in-out infinite;
-    }
-    .sk-label { width: 34%; height: 12px; }
-    .sk-field { width: 100%; height: 44px; margin-bottom: 28px; }
-    .sk-btn { width: 44%; height: 48px; margin-top: 12px; }
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.55; }
-    }
-    .form-msg {
-        margin: 16px auto 0; font-size: 16px; color: var(--muted);
-        position: relative; max-width: 600px;
-        transition: color .2s var(--ease-out);
-    }
-    .form-msg a { color: var(--cyan); text-underline-offset: 3px; }
-    .form-msg.is-slow { color: var(--text); }
-    .form-policy { margin-top: 8px; }
+    .paths { max-width: 960px; margin: 0 auto; position: relative; text-align: left; }
+    .path { display: flex; flex-direction: column; }
+    .path p { margin-bottom: 24px; }
+    .path-btns { margin-top: auto; display: flex; flex-wrap: wrap; gap: 12px; }
 
     /* подвал */
     footer {
@@ -572,7 +534,7 @@
         .cta h2 { font-size: 30px; }
         .cta-text { font-size: 16px; }
         .after-note { font-size: 16px; }
-        .yform-skeleton { padding: 28px 20px; }
+        .path-btns .btn { width: 100%; text-align: center; }
     }
 
     @media (max-width: 600px) {
@@ -595,7 +557,6 @@
         .slab { transform: none !important; }
         .stage-floor { display: none; }
         .t-line { opacity: 1; animation: none; }
-        .sk { animation: none; }
         .btn-primary:hover, .btn:active { transform: none; }
     }
 </style>
@@ -628,7 +589,7 @@
     <p class="sub">Практический курс для сотрудников и компаний. Одно рабочее задание сотрудник отправляет в ChatGPT, Claude, Gemini и Grok, сравнивает ответы и учится выбирать, кому что доверить. Всё в браузере: ничего не устанавливать.</p>
     <p class="pilot">Пилот стартует 9 ноября 2026 года. Принимаем заявки на корпоративные группы после пилота.</p>
     <div class="hero-cta">
-        <a href="#zayavka" class="btn btn-primary">Оставить заявку на группу</a>
+        <a href="#zayavka" class="btn btn-primary">Оставить заявку</a>
         <a href="#programma" class="btn btn-ghost">Программа</a>
     </div>
 
@@ -904,20 +865,26 @@
 <section id="zayavka" class="cta">
     <div class="container">
         <div class="section-label">08 / ЗАЯВКА</div>
-        <h2>Группа для вашей компании</h2>
-        <p class="cta-text">Пилот стартует 9 ноября 2026 года. Принимаем заявки на корпоративные группы после пилота. Расскажите, сколько сотрудников и каких должностей хотите учить: подберём уровень и направление, а даты и цену согласуем отдельно.</p>
-        <div class="yform">
-            <div class="yform-skeleton" aria-hidden="true">
-                <div class="sk sk-label"></div><div class="sk sk-field"></div>
-                <div class="sk sk-label"></div><div class="sk sk-field"></div>
-                <div class="sk sk-label"></div><div class="sk sk-field"></div>
-                <div class="sk sk-label"></div><div class="sk sk-field"></div>
-                <div class="sk sk-btn"></div>
-            </div>
-            <iframe src="https://forms.yandex.ru/u/6ab77bf002848f02d3020c48/?iframe=1" name="ya-form-6ab77bf002848f02d3020c48" title="Форма заявки" width="100%" height="640" loading="lazy"></iframe>
+        <h2>Два пути на курс</h2>
+        <p class="cta-text">Пилот стартует 9 ноября 2026 года. Выберите, как хотите учиться, и напишите нам в Telegram или MAX.</p>
+        <div class="grid grid-2 paths">
+            <article class="card card-accent path">
+                <h3>Для компании</h3>
+                <p>Принимаем заявки на корпоративные группы после пилота. Напишите, сколько сотрудников и каких должностей хотите учить: подберём уровень и направление, а даты и цену согласуем отдельно.</p>
+                <div class="path-btns">
+                    <a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener" class="btn btn-primary">Написать в Telegram</a>
+                    <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener" class="btn btn-ghost">Написать в MAX</a>
+                </div>
+            </article>
+            <article class="card card-violet path">
+                <h3>Для себя</h3>
+                <p>Обучение для себя — три формата: самостоятельно в браузере, место в группе, вечерняя живая группа. Старт и цены — скоро. Напишите нам — запишем и сообщим первыми.</p>
+                <div class="path-btns">
+                    <a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener" class="btn btn-primary">Написать в Telegram</a>
+                    <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener" class="btn btn-ghost">Написать в MAX</a>
+                </div>
+            </article>
         </div>
-        <p class="form-msg" id="form-msg">Форма не загрузилась? <a href="https://forms.yandex.ru/u/6ab77bf002848f02d3020c48/" target="_blank" rel="noopener">Откройте её в новой вкладке</a>.</p>
-        <p class="form-msg form-policy"><a href="policy.html">Политика обработки персональных данных</a></p>
     </div>
 </section>
 
@@ -943,30 +910,6 @@
         });
     });
 
-    var box = document.querySelector('.yform');
-    var frame = box && box.querySelector('iframe');
-    var msg = document.getElementById('form-msg');
-    if (box && frame) {
-        var done = false;
-        var finish = function (slow) {
-            if (done) return;
-            done = true;
-            box.classList.remove('is-loading');
-            if (slow && msg) msg.classList.add('is-slow');
-        };
-        box.classList.add('is-loading');
-        frame.addEventListener('load', function () { finish(false); });
-        var startTimer = function () { setTimeout(function () { finish(true); }, 15000); };
-        if ('IntersectionObserver' in window) {
-            var io = new IntersectionObserver(function (entries) {
-                if (entries[0].isIntersecting) { io.disconnect(); startTimer(); }
-            });
-            io.observe(box);
-        } else {
-            startTimer();
-        }
-    }
-
     var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var wide = window.matchMedia('(min-width: 901px)').matches;
@@ -986,6 +929,5 @@
     });
 })();
 </script>
-<script src="https://forms.yandex.ru/_static/embed.js"></script>
 </body>
 </html>

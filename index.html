@@ -453,6 +453,23 @@
     .product p { font-size: 14px; color: var(--muted); line-height: 1.55; }
     .product .product-warn { margin-top: 10px; font-size: 13px; color: var(--text); }
 
+    .academy-teaser { padding-top: 0; }
+    .academy-card {
+        display: grid; grid-template-columns: minmax(0, 1fr) auto;
+        gap: 24px 40px; align-items: center;
+        padding: 36px 40px;
+        background:
+            linear-gradient(165deg, rgba(255,255,255,0.05), transparent 42%),
+            var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.5);
+        border-radius: 14px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 0 32px rgba(0, 217, 255, 0.12), 0 10px 24px rgba(0,0,0,0.35);
+    }
+    .academy-card .f-status { display: inline-block; margin-bottom: 16px; }
+    .academy-card h3 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 10px; }
+    .academy-card p { font-size: 16px; color: var(--muted); line-height: 1.6; max-width: 640px; }
+    .academy-card .btn-ghost { border-color: rgba(0, 217, 255, 0.5); font-size: 16px; white-space: nowrap; }
+
     .cta {
         border-top: 1px solid var(--line);
         text-align: center;
@@ -535,9 +552,13 @@
         .cta p { font-size: 17px; }
         .problem-item { padding: 28px 20px; }
         .products-grid { grid-template-columns: 1fr; }
+        .academy-card { grid-template-columns: 1fr; padding: 28px 20px; }
+        .academy-card h3 { font-size: 24px; }
+        .academy-card .btn-ghost { justify-self: start; }
     }
     @media (min-width: 901px) and (max-width: 1100px) {
         .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .nav-links { gap: 20px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -564,6 +585,7 @@
                 <li><a href="#features">Возможности</a></li>
                 <li><a href="#security">Безопасность</a></li>
                 <li><a href="#produkty">Примеры</a></li>
+                <li><a href="academy.html">Обучение</a></li>
             </ul>
             <a href="#cta" class="btn btn-primary">Получить доступ</a>
         </nav>
@@ -822,6 +844,19 @@
                 </div>
             </article>
         </div>
+    </div>
+</section>
+
+<section id="akademiya" class="academy-teaser">
+    <div class="container">
+        <article class="academy-card">
+            <div>
+                <span class="f-status show">ПИЛОТ С 09.11</span>
+                <h3>Академия ИИ</h3>
+                <p>Практический курс для сотрудников: одна рабочая задача — в ChatGPT, Claude, Gemini и Grok. Пилот с 9 ноября 2026 года, набираем первую группу.</p>
+            </div>
+            <a href="academy.html" class="btn btn-ghost">Программа и заявка →</a>
+        </article>
     </div>
 </section>
 

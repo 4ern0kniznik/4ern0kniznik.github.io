@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Академия ИИ · Операционный контроль будущего</title>
+<meta name="description" content="Практический курс для сотрудников и компаний. Одно рабочее задание сотрудник отправляет в ChatGPT, Claude, Gemini и Grok, сравнивает ответы и учится выбирать, кому что доверить.">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --bg-dark: #0f1419;   /* фон: основной текст 14.92:1, вторичный 6.12:1 */
+        --bg-card: #1a1f2e;   /* карточка: основной текст 13.23:1, вторичный 5.42:1 */
+        --line: #2a3441;
+        --text: #e4e7eb;
+        --muted: #8b95a5;
+        --cyan: #00d9ff;      /* 10.90:1 на фоне, 9.67:1 на карточке */
+        --magenta: #ff006e;
+        --purple: #a855f7;    /* 4.15:1 на карточке — только границы и градиент кнопки */
+        --green: #10b981;     /* 6.47:1 на карточке */
+        --amber: #f59e0b;     /* 7.64:1 на карточке */
+        --mono: 'SF Mono', 'Consolas', 'Menlo', 'DejaVu Sans Mono', monospace;
+        --sans: system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    section[id] { scroll-margin-top: 88px; }
+
+    body {
+        font-family: var(--sans);
+        font-size: 16px;
+        background: var(--bg-dark);
+        color: var(--text);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        color-scheme: dark;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(900px 500px at 80% 10%, rgba(0, 217, 255, 0.08), transparent 60%),
+            radial-gradient(700px 480px at 10% 80%, rgba(168, 85, 247, 0.07), transparent 65%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+    a:focus-visible, .btn:focus-visible, summary:focus-visible {
+        outline: 2px solid var(--cyan);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+    .nowrap { white-space: nowrap; }
+    .sr-only {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
+    /* ---------- шапка ---------- */
+    header {
+        position: fixed; top: 0; left: 0; width: 100%;
+        background: rgba(15, 20, 25, 0.9);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--line);
+        z-index: 100;
+    }
+    nav { display: flex; justify-content: space-between; align-items: center; height: 64px; gap: 24px; }
+    .logo {
+        font-size: clamp(13px, 1.15vw, 15px); font-weight: 700; letter-spacing: 0.01em;
+        line-height: 1.25; white-space: nowrap;
+        color: var(--cyan);
+        text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
+    .nav-links a {
+        color: var(--muted); text-decoration: none; font-size: 14px;
+        white-space: nowrap;
+        transition: color .2s var(--ease-out); position: relative;
+    }
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: -4px; left: 0; width: 100%; height: 2px;
+        background: var(--cyan);
+        transform: scaleX(0); transform-origin: left center;
+        transition: transform .25s var(--ease-out);
+        box-shadow: 0 0 10px var(--cyan);
+    }
+    .nav-home { padding-left: 24px; border-left: 1px solid var(--line); }
+    .nav-home a { color: var(--text); }
+
+    /* ---------- кнопки ---------- */
+    .btn {
+        display: inline-block; padding: 12px 24px; border-radius: 6px;
+        font-size: 16px; font-weight: 600; text-decoration: none; line-height: 1.5;
+        transition: transform .16s var(--ease-out), box-shadow .2s var(--ease-out), border-color .2s var(--ease-out);
+        cursor: pointer;
+        position: relative;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        color: #0f1419;   /* 10.90:1 на бирюзовом конце, 4.68:1 на фиолетовом */
+        box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+    }
+    .btn-primary:active { transform: translateY(1px) scale(0.98); }
+    .btn-ghost {
+        border: 1px solid var(--line); color: var(--text);
+        background: transparent;
+    }
+    .btn-ghost:active { transform: scale(0.98); }
+    .btn-sm { padding: 8px 16px; font-size: 14px; }
+
+    @media (hover: hover) and (pointer: fine) {
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0, 217, 255, 0.35); }
+        .btn-ghost:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0, 217, 255, 0.2); }
+        .footer-inner a:hover { color: var(--text); }
+        .form-msg a:hover { text-decoration-thickness: 2px; }
+        .row:hover { background: rgba(0, 217, 255, 0.02); }
+        .row:hover::before { transform: scaleY(1); }
+    }
+
+    /* ---------- первый экран ---------- */
+    section.hero { padding: 160px 32px 80px; position: relative; }
+    .hero::after {
+        content: '';
+        position: absolute;
+        top: 50%; right: -200px;
+        width: 600px; height: 600px;
+        background: radial-gradient(circle, rgba(0, 217, 255, 0.15) 0%, transparent 70%);
+        filter: blur(80px);
+        pointer-events: none;
+    }
+    .eyebrow {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        letter-spacing: 0.15em; margin-bottom: 28px;
+        display: inline-block;
+    }
+    .hero h1 {
+        font-size: 64px; font-weight: 700; line-height: 1.05;
+        letter-spacing: -0.03em; margin-bottom: 28px; max-width: 900px;
+        position: relative;
+    }
+    .hero h1 .highlight {
+        color: var(--cyan);
+        background: linear-gradient(135deg, var(--cyan), var(--magenta));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .hero .sub {
+        font-size: 20px; color: var(--muted); max-width: 640px;
+        margin-bottom: 20px; line-height: 1.6;
+    }
+    .pilot {
+        display: flex; align-items: baseline; gap: 10px;
+        font-size: 17px; color: var(--text); max-width: 640px;
+        margin-bottom: 36px;
+    }
+    .pilot::before {
+        content: '';
+        flex-shrink: 0;
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        transform: translateY(-2px);
+    }
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    /* ---------- панель-терминал ---------- */
+    .stage {
+        position: relative;
+        perspective: 1400px;
+        margin-top: 56px;
+        padding: 28px 12px 64px;
+    }
+    .stage-floor {
+        position: absolute;
+        z-index: 0;
+        left: -8%; right: -8%; bottom: 8px;
+        height: 240px;
+        background-image:
+            linear-gradient(rgba(0, 217, 255, 0.28) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 217, 255, 0.28) 1px, transparent 1px);
+        background-size: 52px 52px;
+        transform: rotateX(72deg);
+        transform-origin: center top;
+        -webkit-mask-image: linear-gradient(#000 10%, transparent 80%);
+        mask-image: linear-gradient(#000 10%, transparent 80%);
+        pointer-events: none;
+        opacity: 0.45;
+    }
+    .slab {
+        position: relative;
+        z-index: 1;
+        transform: rotateX(12deg) rotateY(-16deg);
+        transform-style: preserve-3d;
+        transition: transform .3s var(--ease-out);
+    }
+    .slab-side, .slab-bottom { position: absolute; pointer-events: none; }
+    .slab-side {
+        top: 0; bottom: 0; right: 0;
+        width: 22px;
+        background: linear-gradient(90deg, #101820, #2a3c52);
+        transform-origin: right center;
+        transform: rotateY(-90deg);
+    }
+    .slab-bottom {
+        left: 0; right: 0; bottom: 0;
+        height: 22px;
+        background: linear-gradient(#0c1218, #1c2a3a);
+        transform-origin: center bottom;
+        transform: rotateX(90deg);
+    }
+    .terminal {
+        position: relative;
+        background:
+            linear-gradient(160deg, rgba(255,255,255,0.06), transparent 38%),
+            var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.28);
+        border-radius: 14px;
+        overflow: hidden;
+        transform: translateZ(1px);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.14),
+            0 30px 50px rgba(0, 0, 0, 0.45);
+    }
+    .terminal::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        animation: scanline 3s linear infinite;
+    }
+    @keyframes scanline {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    .terminal-bar {
+        display: flex; align-items: center; gap: 8px;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.3);
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .dot:nth-child(1) { background: #ff5f57; }
+    .dot:nth-child(2) { background: #febc2e; }
+    .dot:nth-child(3) { background: #28c840; }
+    .terminal-title {
+        margin-left: 12px; font-family: var(--mono); font-size: 14px;
+        color: var(--cyan);
+        text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+    }
+    .terminal-body {
+        padding: 28px; font-family: var(--mono); font-size: 16px; line-height: 1.6;
+        list-style: none;
+    }
+    .t-line {
+        display: flex; gap: 12px;
+        padding: 6px 0;
+        opacity: 0;
+        animation: appear .3s var(--ease-out) forwards;
+    }
+    .t-line:nth-child(1) { animation-delay: .2s; }
+    .t-line:nth-child(2) { animation-delay: .45s; }
+    .t-line:nth-child(3) { animation-delay: .7s; }
+    .t-line:nth-child(4) { animation-delay: .95s; }
+    .t-line:nth-child(5) { animation-delay: 1.2s; }
+    @keyframes appear {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .t-tag { width: 130px; flex-shrink: 0; font-weight: 600; }
+    .tag-ok { color: var(--green); text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+    .tag-warn { color: var(--amber); text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+    .tag-info { color: var(--cyan); text-shadow: 0 0 10px rgba(0, 217, 255, 0.5); }
+    .t-text { color: var(--text); min-width: 0; }
+    .terminal-note {
+        padding: 0 28px 24px;
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+    /* ---------- разделы ---------- */
+    section { padding: 120px 0; position: relative; }
+    .section-header { margin-bottom: 56px; max-width: 760px; }
+    .section-label {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        letter-spacing: 0.15em; margin-bottom: 20px; font-weight: 400;
+        display: inline-block;
+    }
+    .section-title {
+        font-size: 44px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+    }
+    .section-note {
+        margin-top: 16px;
+        font-size: 17px;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 680px;
+    }
+    .alt { background: linear-gradient(180deg, var(--bg-dark) 0%, #0a0f14 100%); }
+
+    .grid { display: grid; gap: 20px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid + .grid { margin-top: 20px; }
+
+    .card {
+        padding: 32px 28px;
+        background:
+            linear-gradient(165deg, rgba(255,255,255,0.05), transparent 42%),
+            var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.22);
+        border-radius: 14px;
+        min-width: 0;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 10px 24px rgba(0,0,0,0.35);
+    }
+    .card-num {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        margin-bottom: 16px; letter-spacing: 0.08em;
+    }
+    .card h3 { font-size: 20px; font-weight: 600; line-height: 1.3; margin-bottom: 12px; }
+    .card p { font-size: 16px; color: var(--muted); line-height: 1.6; }
+    .card-accent { border-color: rgba(0, 217, 255, 0.5); }
+    .card-violet { border-color: rgba(168, 85, 247, 0.4); }
+    .card-violet h3 { color: var(--cyan); }
+
+    .after-note {
+        margin-top: 32px; max-width: 760px;
+        font-size: 17px; color: var(--text); line-height: 1.6;
+    }
+
+    /* программа: строки как «02 / РЕШЕНИЕ» на главной */
+    .rows { list-style: none; }
+    .row {
+        display: grid; grid-template-columns: 80px minmax(0, 1fr) minmax(0, 2fr);
+        gap: 32px; align-items: baseline;
+        padding: 32px 0;
+        border-bottom: 1px solid var(--line);
+        transition: background .2s var(--ease-out);
+        position: relative;
+    }
+    .row:first-child { border-top: 1px solid var(--line); }
+    .row::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0; width: 2px;
+        background: var(--cyan);
+        transform: scaleY(0);
+        transition: transform .25s var(--ease-out);
+    }
+    .r-num { font-family: var(--mono); font-size: 14px; color: var(--cyan); padding-left: 12px; }
+    .r-name { font-size: 22px; font-weight: 600; line-height: 1.3; }
+    .r-desc { font-size: 16px; color: var(--muted); line-height: 1.6; }
+
+    /* расписание */
+    .schedule-wrap { max-width: 860px; }
+    .sched-head {
+        font-size: 20px; font-weight: 600; margin-bottom: 16px; line-height: 1.3;
+    }
+    .sched-head .mono { font-family: var(--mono); color: var(--cyan); font-weight: 600; }
+    .schedule {
+        width: 100%; border-collapse: collapse;
+        background: var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.22);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+    .schedule th, .schedule td {
+        text-align: left; padding: 16px 24px;
+        border-bottom: 1px solid var(--line);
+        font-size: 16px; vertical-align: baseline;
+    }
+    .schedule tr:last-child td { border-bottom: 0; }
+    .schedule th {
+        font-family: var(--mono); font-size: 14px; font-weight: 400;
+        color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+        background: rgba(0, 0, 0, 0.25);
+    }
+    .schedule td:first-child {
+        font-family: var(--mono); color: var(--cyan);
+        white-space: nowrap; width: 200px;
+    }
+    .sched-note { margin-top: 16px; font-size: 16px; color: var(--muted); line-height: 1.6; }
+    .sched-block { margin-top: 40px; }
+    .sched-list { list-style: none; display: grid; gap: 8px; margin-top: 4px; }
+    .sched-list li { font-size: 16px; color: var(--muted); padding-left: 20px; position: relative; }
+    .sched-list li::before {
+        content: ''; position: absolute; left: 0; top: 0.65em;
+        width: 8px; height: 2px; background: var(--cyan);
+    }
+    .sched-list b { color: var(--text); font-family: var(--mono); font-weight: 400; }
+    .caption {
+        margin-top: 40px; font-family: var(--mono); font-size: 14px;
+        color: var(--muted); letter-spacing: 0.06em;
+    }
+
+    /* вопросы */
+    .faq { max-width: 860px; }
+    .faq details { border-bottom: 1px solid var(--line); }
+    .faq details:first-child { border-top: 1px solid var(--line); }
+    .faq summary {
+        list-style: none; cursor: pointer;
+        display: flex; justify-content: space-between; align-items: center; gap: 24px;
+        padding: 24px 0;
+        font-size: 19px; font-weight: 600; line-height: 1.35;
+        min-height: 48px;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+        content: '';
+        flex-shrink: 0;
+        width: 10px; height: 10px;
+        border-right: 2px solid var(--cyan);
+        border-bottom: 2px solid var(--cyan);
+        transform: translateY(-3px) rotate(45deg);
+        transition: transform .2s var(--ease-out);
+    }
+    .faq details[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+    .faq details p {
+        padding: 0 48px 24px 0;
+        font-size: 16px; color: var(--muted); line-height: 1.65; max-width: 720px;
+    }
+
+    /* заявка */
+    .cta {
+        border-top: 1px solid var(--line);
+        text-align: center;
+        position: relative;
+    }
+    .cta::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 800px; height: 800px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+        transform: translate(-50%, -50%);
+        filter: blur(100px);
+        pointer-events: none;
+    }
+    .cta .section-label { position: relative; }
+    .cta h2 {
+        font-size: 52px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .cta-text {
+        font-size: 19px; color: var(--muted); max-width: 600px; line-height: 1.6;
+        margin: 0 auto 40px;
+        position: relative;
+    }
+    .yform {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        max-width: 680px;
+        margin: 0 auto;
+        position: relative;
+        text-align: left;
+    }
+    .yform iframe {
+        display: block; border: 0; width: 100%; min-height: 640px;
+        position: relative; z-index: 1;
+        transition: opacity .2s var(--ease-out);
+    }
+    .yform-skeleton { display: none; }
+    .yform.is-loading iframe { opacity: 0; }
+    .yform.is-loading .yform-skeleton {
+        display: block;
+        position: absolute; inset: 0;
+        padding: 40px 32px;
+    }
+    .sk {
+        height: 14px; border-radius: 6px; background: #e9ecf1;
+        margin-bottom: 14px;
+        animation: pulse 1.4s ease-in-out infinite;
+    }
+    .sk-label { width: 34%; height: 12px; }
+    .sk-field { width: 100%; height: 44px; margin-bottom: 28px; }
+    .sk-btn { width: 44%; height: 48px; margin-top: 12px; }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.55; }
+    }
+    .form-msg {
+        margin: 16px auto 0; font-size: 16px; color: var(--muted);
+        position: relative; max-width: 600px;
+        transition: color .2s var(--ease-out);
+    }
+    .form-msg a { color: var(--cyan); text-underline-offset: 3px; }
+    .form-msg.is-slow { color: var(--text); }
+    .form-policy { margin-top: 8px; }
+
+    /* подвал */
+    footer {
+        padding: 48px 0;
+        border-top: 1px solid var(--line);
+        position: relative;
+    }
+    .footer-inner {
+        display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+        color: var(--muted); font-size: 14px;
+    }
+    .footer-inner a { color: var(--muted); }
+
+    /* шапка: до 1100 px меню уходит второй строкой с прокруткой внутри строки */
+    @media (max-width: 1100px) {
+        nav { height: auto; min-height: 56px; flex-wrap: wrap; padding: 8px 0 0; row-gap: 0; column-gap: 12px; }
+        .logo { margin-right: auto; flex: 1 1 140px; min-width: 0; white-space: normal; }
+        .nav-links {
+            order: 3; width: 100%;
+            gap: 20px;
+            overflow-x: auto; overscroll-behavior-x: contain;
+            scrollbar-width: none;
+            padding: 0 4px;
+            margin: 0 -4px;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-links a { display: inline-block; padding: 12px 0; }
+        .nav-links a::after { bottom: 6px; }
+        .nav-home { padding-left: 20px; }
+        section[id] { scroll-margin-top: 120px; }
+    }
+
+    @media (max-width: 1100px) and (min-width: 901px) {
+        .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+        .container { padding: 0 16px; }
+        .logo { font-size: 13px; }
+        section.hero { padding: 120px 16px 56px; }
+        .hero::after { display: none; }
+        .eyebrow { font-size: 14px; letter-spacing: 0.04em; margin-bottom: 16px; }
+        .hero h1 { font-size: 30px; line-height: 1.1; margin-bottom: 16px; }
+        .hero .sub { font-size: 16px; line-height: 1.55; margin-bottom: 16px; }
+        .pilot { font-size: 16px; margin-bottom: 20px; }
+        .hero-cta { gap: 12px; }
+        .hero-cta .btn-primary { width: 100%; text-align: center; padding: 12px 16px; }
+        .stage { perspective: none; margin-top: 40px; padding: 0; }
+        .stage-floor, .slab-side, .slab-bottom { display: none; }
+        .slab { transform: none; }
+        .terminal-body { padding: 16px; }
+        .terminal-note { padding: 0 16px 16px; }
+        .t-line { flex-wrap: wrap; gap: 0 12px; padding: 8px 0; }
+        .t-tag { width: auto; }
+        section { padding: 72px 0; }
+        .section-header { margin-bottom: 32px; }
+        .section-title { font-size: 30px; }
+        .section-note { font-size: 16px; }
+        .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+        .grid { gap: 14px; }
+        .grid + .grid { margin-top: 14px; }
+        .card { padding: 24px 20px; }
+        .row { grid-template-columns: auto minmax(0, 1fr); gap: 8px 16px; padding: 24px 0; }
+        .r-num { padding-left: 8px; }
+        .r-name { font-size: 19px; }
+        .r-desc { grid-column: 1 / -1; padding-left: 8px; }
+        .faq summary { font-size: 17px; padding: 20px 0; }
+        .faq details p { padding-right: 0; }
+        .cta h2 { font-size: 30px; }
+        .cta-text { font-size: 16px; }
+        .after-note { font-size: 16px; }
+        .yform-skeleton { padding: 28px 20px; }
+    }
+
+    @media (max-width: 600px) {
+        .schedule, .schedule tbody, .schedule tr, .schedule td { display: block; width: 100%; }
+        .schedule thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+        .schedule tr { padding: 14px 18px; border-bottom: 1px solid var(--line); }
+        .schedule tr:last-child { border-bottom: 0; }
+        .schedule td { padding: 0; border: 0; }
+        .schedule td:first-child { width: auto; font-size: 14px; margin-bottom: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after {
+            animation-duration: .01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: .01ms !important;
+        }
+        .terminal::before { display: none; }
+        .slab { transform: none !important; }
+        .stage-floor { display: none; }
+        .t-line { opacity: 1; animation: none; }
+        .sk { animation: none; }
+        .btn-primary:hover, .btn:active { transform: none; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <nav aria-label="Разделы страницы">
+            <a class="logo" href="index.html">Операционный контроль будущего</a>
+            <ul class="nav-links">
+                <li><a href="#programma">Программа</a></li>
+                <li><a href="#urovni">Уровни</a></li>
+                <li><a href="#proverka">Проверка</a></li>
+                <li><a href="#dannye">Данные</a></li>
+                <li><a href="#raspisanie">Расписание</a></li>
+                <li><a href="#voprosy">Вопросы</a></li>
+                <li class="nav-home"><a href="index.html">На главную</a></li>
+            </ul>
+            <a href="#zayavka" class="btn btn-ghost btn-sm">Заявка</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+<section class="hero container" id="start">
+    <div class="eyebrow">// АКАДЕМИЯ ИИ · ПИЛОТ С 9 НОЯБРЯ</div>
+    <h1>Четыре <span class="nowrap">ИИ-ассистента.</span><br><span class="highlight">Одна ваша задача.</span></h1>
+    <p class="sub">Практический курс для сотрудников и компаний. Одно рабочее задание сотрудник отправляет в ChatGPT, Claude, Gemini и Grok, сравнивает ответы и учится выбирать, кому что доверить. Всё в браузере: ничего не устанавливать, VPN не нужен.</p>
+    <p class="pilot">Пилот стартует 9 ноября 2026 года — набираем первую группу.</p>
+    <div class="hero-cta">
+        <a href="#zayavka" class="btn btn-primary">Оставить заявку на группу</a>
+        <a href="#programma" class="btn btn-ghost">Программа</a>
+    </div>
+
+    <div class="stage">
+        <div class="stage-floor" aria-hidden="true"></div>
+        <div class="slab">
+            <div class="terminal">
+                <div class="terminal-bar" aria-hidden="true">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="terminal-title">одна задача — четыре ответа</div>
+                </div>
+                <ol class="terminal-body">
+                    <li class="t-line"><span class="t-tag tag-info">[ЗАДАЧА]</span><span class="t-text">Ответ клиенту на жалобу о сроке поставки</span></li>
+                    <li class="t-line"><span class="t-tag tag-info">[ОТПРАВКА]</span><span class="t-text">Один текст → ChatGPT · Claude · Gemini · Grok</span></li>
+                    <li class="t-line"><span class="t-tag tag-warn">[СРАВНЕНИЕ]</span><span class="t-text">Какой ответ годен без правки, что пришлось исправить</span></li>
+                    <li class="t-line"><span class="t-tag tag-ok">[ДАННЫЕ]</span><span class="t-text">В задаче нет имён, телефонов и реквизитов</span></li>
+                    <li class="t-line"><span class="t-tag tag-ok">[ИТОГ]</span><span class="t-text">Строка в общей таблице группы</span></li>
+                </ol>
+                <p class="terminal-note">Учебная задача первого занятия.</p>
+            </div>
+            <div class="slab-side" aria-hidden="true"></div>
+            <div class="slab-bottom" aria-hidden="true"></div>
+        </div>
+    </div>
+</section>
+
+<section id="dlya-kogo">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">01 / ДЛЯ КОГО</div>
+            <h2 class="section-title">Для сотрудников и компаний</h2>
+        </div>
+        <div class="grid grid-3">
+            <article class="card">
+                <h3>Сотрудникам</h3>
+                <p>Тем, кто пишет письма и служебные записки, собирает сводки, ведёт таблицы и разбирает документы. Подойдёт и тем, кто ни разу не открывал ИИ-ассистента, и тем, кто пользуется им каждый день: уровень каждого узнаём анкетой до старта.</p>
+            </article>
+            <article class="card">
+                <h3>Руководителям и отделам персонала</h3>
+                <p>Если сотрудники уже пользуются ИИ кто как, а правил, что туда можно отправлять, нет, — курс даёт общие правила работы с данными и засчитывается только тем, кто сделал задания.</p>
+            </article>
+            <article class="card">
+                <h3>Службе безопасности</h3>
+                <p>Персональные данные уходят только обезличенными. На рабочие компьютеры ничего не устанавливаем. Тексты запросов сотрудников проверяющие не читают.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="programma" class="alt">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">02 / ЧТО ВНУТРИ</div>
+            <h2 class="section-title">Что внутри курса</h2>
+            <p class="section-note">Задания и примеры — свои. Бесплатные материалы компаний-разработчиков даём ссылками для самостоятельного чтения.</p>
+        </div>
+        <ol class="rows">
+            <li class="row">
+                <div class="r-num">01</div>
+                <h3 class="r-name">История ИИ</h3>
+                <p class="r-desc">От экспертных систем на правилах до нынешних ассистентов: откуда взялись четыре компании и почему модель уверенно ошибается. Читается до первого занятия.</p>
+            </li>
+            <li class="row">
+                <div class="r-num">02</div>
+                <h3 class="r-name">Четыре ассистента</h3>
+                <p class="r-desc">ChatGPT, Claude, Gemini и Grok — по блоку на каждого: кто делает, в чём силён и где слаб на рабочих задачах.</p>
+            </li>
+            <li class="row">
+                <div class="r-num">03</div>
+                <h3 class="r-name">Одна задача — четыре ответа</h3>
+                <p class="r-desc">Один и тот же запрос уходит во все четыре ассистента. Группа ведёт общую таблицу: сколько минут ушло до годного ответа, какая оценка, что пришлось исправить. Рейтинга «лучший вообще» не будет — только сравнение на ваших задачах.</p>
+            </li>
+            <li class="row">
+                <div class="r-num">04</div>
+                <h3 class="r-name">Что нельзя отправлять</h3>
+                <p class="r-desc">Светофор данных и обезличивание документов в RedactDoc. Занятие обязательное.</p>
+            </li>
+            <li class="row">
+                <div class="r-num">05</div>
+                <h3 class="r-name">Постановка задачи</h3>
+                <p class="r-desc">Контекст, формат, пример. Переписываем свой запрос, чтобы годный ответ получался с меньшего числа попыток, и уносим шаблон под свою регулярную задачу.</p>
+            </li>
+            <li class="row">
+                <div class="r-num">06</div>
+                <h3 class="r-name">Проверка ответа</h3>
+                <p class="r-desc">Ловим выдуманные факты, ошибки в числах и несуществующие ссылки. Время на проверку считаем отдельно.</p>
+            </li>
+            <li class="row">
+                <div class="r-num">07</div>
+                <h3 class="r-name">Документы и таблицы</h3>
+                <p class="r-desc">Свёртка длинного документа, перенос данных в таблицу, сверка двух версий.</p>
+            </li>
+            <li class="row">
+                <div class="r-num">08</div>
+                <h3 class="r-name">Своя задача</h3>
+                <p class="r-desc">Последнее занятие: рабочая задача от начала до конца и замер «было — стало» в минутах.</p>
+            </li>
+        </ol>
+    </div>
+</section>
+
+<section id="urovni">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">03 / УРОВНИ</div>
+            <h2 class="section-title">Три уровня</h2>
+        </div>
+        <div class="grid grid-3">
+            <article class="card card-accent">
+                <div class="card-num">Т0</div>
+                <h3>ИИ на рабочем месте</h3>
+                <p>База для всех: шесть живых занятий и самостоятельные блоки по 30–40 минут между ними. С неё начинается любое направление Т1.</p>
+            </article>
+            <article class="card">
+                <div class="card-num">Т1</div>
+                <h3>По ролям</h3>
+                <p>Четыре направления по четыре занятия: руководитель; продажи и маркетинг; офис и аналитика; производство и закупки. Задачи своей должности: сводка для решения, письма и коммерческие предложения, отчёт из выгрузки, сравнение предложений поставщиков. Направления идут по одному, первое — «Офис и аналитика».</p>
+            </article>
+            <article class="card">
+                <div class="card-num">Т2</div>
+                <h3>Агенты и автоматизация</h3>
+                <p>Для тех, кто прошёл Т0 и одно направление Т1. Свои инструкции для ассистента, подключение к инструментам и данным, цепочки шагов, которые запускаются сами, права и журнал действий. Итог — защита своей автоматизации с замером. Начало — январь 2027 года.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="proverka" class="alt">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">04 / ПРОВЕРКА</div>
+            <h2 class="section-title">Как проверяем знания</h2>
+            <p class="section-note">Тест — в конце каждого блока. Он проверяет, что вы умеете сделать: определения заучивать не нужно.</p>
+        </div>
+        <div class="grid grid-4">
+            <article class="card">
+                <h3>Суждение</h3>
+                <p>Найти ошибку в ответе модели, выбрать ассистента под задачу и объяснить выбор, разметить документ по светофору данных. Пишется без доступа к ассистентам, у соседей разные варианты.</p>
+            </article>
+            <article class="card">
+                <h3>Практика</h3>
+                <p>Задание блока на своей рабочей задаче: результат, запросы и что проверили руками.</p>
+            </article>
+            <article class="card">
+                <h3>Сверка</h3>
+                <p>По служебным отметкам шлюза — время, ассистент, объём. Тексты ваших запросов не открываем.</p>
+            </article>
+            <article class="card">
+                <h3>Разговор</h3>
+                <p>Если что-то не сходится — устная защита на 3–5 минут.</p>
+            </article>
+        </div>
+        <div class="grid grid-2">
+            <article class="card card-violet">
+                <h3>Атлас навыков</h3>
+                <p>Карта всех навыков курса — от «отличить экспертную систему от обученной модели» до «обезличить документ и проверить результат». К каждому навыку привязано задание теста; навык освоен, когда все его задания сданы.</p>
+            </article>
+            <article class="card card-accent">
+                <h3>Когда курс пройден</h3>
+                <p>Сданы тесты всех блоков, освоены навыки атласа, защищена своя рабочая задача с замером «было — стало». Посещаемость не считаем. Пропустили занятие — выдаём материалы и задание, тест сдаётся в отдельное окно.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="dannye">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">05 / ДАННЫЕ И ДОСТУП</div>
+            <h2 class="section-title">Данные под контролем</h2>
+            <p class="section-note">Запросы обрабатывают зарубежные сервисы. Поэтому правила работы с данными — обязательное занятие курса.</p>
+        </div>
+        <div class="grid grid-4">
+            <article class="card card-violet">
+                <h3>В браузере</h3>
+                <p>Работаем через наш шлюз. На рабочие компьютеры ничего не ставим, VPN не нужен.</p>
+            </article>
+            <article class="card card-violet">
+                <h3>Светофор</h3>
+                <p>Зелёное — можно отправлять. Жёлтое — по правилам вашей компании. Красное — персональные данные, коммерческая тайна, документы клиентов — в исходном виде никуда.</p>
+            </article>
+            <article class="card card-violet">
+                <h3>RedactDoc</h3>
+                <p>Документ с персональными данными сначала обезличиваем и перечитываем глазами. Если и после этого отправлять нельзя — делаем вручную.</p>
+            </article>
+            <article class="card card-violet">
+                <h3>Не читаем</h3>
+                <p>Тексты запросов сотрудников проверяющие не открывают.</p>
+            </article>
+        </div>
+        <p class="after-note">Занятие о данных — второе по счёту и обязательное. Пока сотрудник не сдал по нему тест, он работает только с учебными документами и задачами без персональных данных. Что сами компании-разработчики пишут о хранении переписки, разбираем по их открытым страницам.</p>
+    </div>
+</section>
+
+<section id="raspisanie" class="alt">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">06 / ФОРМАТ</div>
+            <h2 class="section-title">Формат и расписание пилота</h2>
+            <p class="section-note">Живые занятия в группе с ведущим. Первую группу ведёт генеральный директор. Запись курса сделаем позже; живые занятия записываем только с согласия группы и наружу не выкладываем.</p>
+        </div>
+        <div class="schedule-wrap">
+            <h3 class="sched-head" id="t0-head"><span class="mono">Т0</span> · ИИ на рабочем месте — понедельники</h3>
+            <table class="schedule" role="table" aria-labelledby="t0-head">
+                <thead role="rowgroup">
+                    <tr role="row"><th scope="col" role="columnheader">Дата</th><th scope="col" role="columnheader">Занятие</th></tr>
+                </thead>
+                <tbody role="rowgroup">
+                    <tr role="row"><td role="cell">9 ноября</td><td role="cell">Четыре ассистента на одной задаче</td></tr>
+                    <tr role="row"><td role="cell">16 ноября</td><td role="cell">Что нельзя отправлять во внешние ИИ</td></tr>
+                    <tr role="row"><td role="cell">23 ноября</td><td role="cell">Постановка задачи: контекст, формат, примеры</td></tr>
+                    <tr role="row"><td role="cell">30 ноября</td><td role="cell">Проверка ответа: факты, числа, источники</td></tr>
+                    <tr role="row"><td role="cell">7 декабря</td><td role="cell">Документы и таблицы</td></tr>
+                    <tr role="row"><td role="cell">14 декабря</td><td role="cell">Своя задача от начала до конца</td></tr>
+                </tbody>
+            </table>
+            <p class="sched-note">Между занятиями — самостоятельные блоки по 30–40 минут и домашнее задание на своей задаче.</p>
+
+            <div class="sched-block">
+                <h3 class="sched-head"><span class="mono">Т1</span> · Офис и аналитика — четверги</h3>
+                <ul class="sched-list">
+                    <li><b>26 ноября</b> — таблицы</li>
+                    <li><b>3 декабря</b> — отчёт из выгрузки</li>
+                    <li><b>10 декабря</b> — письма и служебные записки</li>
+                    <li><b>17 декабря</b> — регламенты и инструкции</li>
+                </ul>
+            </div>
+
+            <div class="sched-block">
+                <h3 class="sched-head"><span class="mono">Т2</span> · Агенты и автоматизация</h3>
+                <ul class="sched-list">
+                    <li><b>январь 2027 года</b></li>
+                </ul>
+            </div>
+
+            <p class="caption">Это план пилота 2026 года.</p>
+        </div>
+    </div>
+</section>
+
+<section id="voprosy">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-label">07 / ВОПРОСЫ</h2>
+        </div>
+        <div class="faq">
+            <details>
+                <summary>Нужен ли VPN и что придётся установить?</summary>
+                <p>Ни то, ни другое. Сотрудник работает в браузере через наш шлюз. Вход каждого проверяем с его рабочего компьютера до первого занятия.</p>
+            </details>
+            <details>
+                <summary>Можно работать с нашими документами?</summary>
+                <p>С теми, где нет персональных данных и коммерческой тайны, — да. Документ с персональными данными сначала обезличиваем в RedactDoc и перечитываем глазами. Какие документы нельзя отправлять даже после этого, разбираем на занятии о данных.</p>
+            </details>
+            <details>
+                <summary>Сотрудник никогда не пользовался ИИ — справится?</summary>
+                <p>Да. Курс начинается с короткой истории ИИ и занятия, где вся группа отправляет одну задачу в четыре ассистента. Уровень каждого узнаём анкетой до старта.</p>
+            </details>
+            <details>
+                <summary>Сколько стоит?</summary>
+                <p>Цену для корпоративных групп назовём после пилота. Оставьте заявку — напишем, когда она будет утверждена.</p>
+            </details>
+            <details>
+                <summary>Будет ли запись курса?</summary>
+                <p>Позже. Сейчас — только живые группы.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<section id="zayavka" class="cta">
+    <div class="container">
+        <div class="section-label">08 / ЗАЯВКА</div>
+        <h2>Группа для вашей компании</h2>
+        <p class="cta-text">Пилот стартует 9 ноября 2026 года — набираем первую группу. Расскажите, сколько сотрудников и каких должностей хотите учить: подберём уровень и направление, а даты и цену согласуем отдельно.</p>
+        <div class="yform">
+            <div class="yform-skeleton" aria-hidden="true">
+                <div class="sk sk-label"></div><div class="sk sk-field"></div>
+                <div class="sk sk-label"></div><div class="sk sk-field"></div>
+                <div class="sk sk-label"></div><div class="sk sk-field"></div>
+                <div class="sk sk-label"></div><div class="sk sk-field"></div>
+                <div class="sk sk-btn"></div>
+            </div>
+            <iframe src="https://forms.yandex.ru/u/6ab77bf002848f02d3020c48/?iframe=1" name="ya-form-6ab77bf002848f02d3020c48" title="Форма заявки" width="100%" height="640" loading="lazy"></iframe>
+        </div>
+        <p class="form-msg" id="form-msg">Форма не загрузилась? <a href="https://forms.yandex.ru/u/6ab77bf002848f02d3020c48/" target="_blank" rel="noopener">Откройте её в новой вкладке</a>.</p>
+        <p class="form-msg form-policy"><a href="policy.html">Политика обработки персональных данных</a></p>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <div class="container footer-inner">
+        <div>© 2026 Операционный контроль будущего · <a href="policy.html">Политика обработки персональных данных</a></div>
+        <div><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Telegram</a> · <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener">MAX</a></div>
+    </div>
+</footer>
+
+<script>
+(function () {
+    document.querySelectorAll('[data-tg]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+            e.preventDefault();
+            var n = a.getAttribute('data-tg');
+            window.location.href = 'tg://resolve?domain=' + n;
+            setTimeout(function () {
+                if (document.hasFocus()) window.open('https://t.me/' + n, '_blank', 'noopener');
+            }, 2000);
+        });
+    });
+
+    var box = document.querySelector('.yform');
+    var frame = box && box.querySelector('iframe');
+    var msg = document.getElementById('form-msg');
+    if (box && frame) {
+        var done = false;
+        var finish = function (slow) {
+            if (done) return;
+            done = true;
+            box.classList.remove('is-loading');
+            if (slow && msg) msg.classList.add('is-slow');
+        };
+        box.classList.add('is-loading');
+        frame.addEventListener('load', function () { finish(false); });
+        var startTimer = function () { setTimeout(function () { finish(true); }, 15000); };
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                if (entries[0].isIntersecting) { io.disconnect(); startTimer(); }
+            });
+            io.observe(box);
+        } else {
+            startTimer();
+        }
+    }
+
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var wide = window.matchMedia('(min-width: 901px)').matches;
+    if (!fine || reduce || !wide) return;
+
+    var slab = document.querySelector('.slab');
+    if (!slab) return;
+    var parent = slab.parentElement;
+    parent.addEventListener('pointermove', function (e) {
+        var b = parent.getBoundingClientRect();
+        var x = (e.clientX - b.left) / b.width - 0.5;
+        var y = (e.clientY - b.top) / b.height - 0.5;
+        slab.style.transform = 'rotateX(' + (12 - y * 10) + 'deg) rotateY(' + (-16 + x * 16) + 'deg)';
+    });
+    parent.addEventListener('pointerleave', function () {
+        slab.style.transform = '';
+    });
+})();
+</script>
+<script src="https://forms.yandex.ru/_static/embed.js"></script>
+</body>
+</html>

@@ -459,6 +459,12 @@
         margin: 0 auto 40px;
         position: relative;
     }
+    .free { max-width: 960px; }
+    a.card.free-card { display: flex; flex-direction: column; color: inherit; text-decoration: none; transition: border-color .2s, transform .2s; }
+    a.card.free-card:hover, a.card.free-card:focus-visible { border-color: var(--cyan); transform: translateY(-2px); }
+    .free-card p { margin-bottom: 20px; }
+    .free-more { margin-top: auto; color: var(--cyan); font-weight: 600; }
+    @media (prefers-reduced-motion: reduce) { a.card.free-card { transition: none; } a.card.free-card:hover { transform: none; } }
     .paths { max-width: 960px; margin: 0 auto; position: relative; text-align: left; }
     .path { display: flex; flex-direction: column; }
     .path p { margin-bottom: 24px; }
@@ -862,9 +868,31 @@
     </div>
 </section>
 
+<section id="besplatno" class="alt">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">08 / БЕСПЛАТНО</div>
+            <h2 class="section-title">Попробовать бесплатно</h2>
+            <p class="section-note">Два открытых урока без регистрации: по три коротких занятия на 5–10 минут, с источниками.</p>
+        </div>
+        <div class="grid grid-2 free">
+            <a class="card card-accent free-card" href="academy/istoriya-ii.html">
+                <h3>История ИИ</h3>
+                <p>Как за восемьдесят лет пришли от правил к ассистентам и откуда взялись OpenAI, Google DeepMind, Anthropic и xAI.</p>
+                <span class="free-more">Открыть урок →</span>
+            </a>
+            <a class="card card-violet free-card" href="academy/urok-chatgpt.html">
+                <h3>ChatGPT</h3>
+                <p>Что можно отправлять модели, как поставить задачу из четырёх частей и когда платить за большую модель.</p>
+                <span class="free-more">Открыть урок →</span>
+            </a>
+        </div>
+    </div>
+</section>
+
 <section id="zayavka" class="cta">
     <div class="container">
-        <div class="section-label">08 / ЗАЯВКА</div>
+        <div class="section-label">09 / ЗАЯВКА</div>
         <h2>Два пути на курс</h2>
         <p class="cta-text">Пилот стартует 9 ноября 2026 года. Выберите, как хотите учиться, и напишите нам в Telegram или MAX.</p>
         <div class="grid grid-2 paths">

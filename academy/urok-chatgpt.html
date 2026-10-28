@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatGPT · Академия ИИ · Нейромануфактура</title>
+<meta name="description" content="Открытый урок Академии ИИ по ChatGPT: что можно отправлять модели, как поставить задачу из четырёх частей и когда платить за большую модель. Три урока по 5–10 минут с источниками.">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --bg-dark: #0f1419;   /* фон: основной текст 14.92:1, вторичный 6.12:1 */
+        --bg-card: #1a1f2e;   /* карточка: основной текст 13.23:1, вторичный 5.42:1 */
+        --line: #2a3441;
+        --text: #e4e7eb;
+        --muted: #8b95a5;
+        --cyan: #00d9ff;      /* 10.90:1 на фоне, 9.67:1 на карточке */
+        --magenta: #ff006e;
+        --purple: #a855f7;    /* 4.15:1 на карточке — только границы и градиент кнопки */
+        --green: #10b981;     /* 6.47:1 на карточке */
+        --amber: #f59e0b;     /* 7.64:1 на карточке */
+        --mono: 'SF Mono', 'Consolas', 'Menlo', 'DejaVu Sans Mono', monospace;
+        --sans: system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    section[id] { scroll-margin-top: 88px; }
+
+    body {
+        font-family: var(--sans);
+        font-size: 16px;
+        background: var(--bg-dark);
+        color: var(--text);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        color-scheme: dark;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(900px 500px at 80% 10%, rgba(0, 217, 255, 0.08), transparent 60%),
+            radial-gradient(700px 480px at 10% 80%, rgba(168, 85, 247, 0.07), transparent 65%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+    a:focus-visible, .btn:focus-visible, summary:focus-visible {
+        outline: 2px solid var(--cyan);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+    .nowrap { white-space: nowrap; }
+    .sr-only {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
+    /* ---------- шапка ---------- */
+    header {
+        position: fixed; top: 0; left: 0; width: 100%;
+        background: rgba(15, 20, 25, 0.9);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--line);
+        z-index: 100;
+    }
+    nav { display: flex; justify-content: space-between; align-items: center; height: 64px; gap: 24px; }
+    .logo {
+        font-size: clamp(13px, 1.15vw, 15px); font-weight: 700; letter-spacing: 0.01em;
+        line-height: 1.25; white-space: nowrap;
+        color: var(--cyan);
+        text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
+    .nav-links a {
+        color: var(--muted); text-decoration: none; font-size: 14px;
+        white-space: nowrap;
+        transition: color .2s var(--ease-out); position: relative;
+    }
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: -4px; left: 0; width: 100%; height: 2px;
+        background: var(--cyan);
+        transform: scaleX(0); transform-origin: left center;
+        transition: transform .25s var(--ease-out);
+        box-shadow: 0 0 10px var(--cyan);
+    }
+    .nav-home { padding-left: 24px; border-left: 1px solid var(--line); }
+    .nav-home a { color: var(--text); }
+
+    /* ---------- кнопки ---------- */
+    .btn {
+        display: inline-block; padding: 12px 24px; border-radius: 6px;
+        font-size: 16px; font-weight: 600; text-decoration: none; line-height: 1.5;
+        transition: transform .16s var(--ease-out), box-shadow .2s var(--ease-out), border-color .2s var(--ease-out);
+        cursor: pointer;
+        position: relative;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        color: #0f1419;   /* 10.90:1 на бирюзовом конце, 4.68:1 на фиолетовом */
+        box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+    }
+    .btn-primary:active { transform: translateY(1px) scale(0.98); }
+    .btn-ghost {
+        border: 1px solid var(--line); color: var(--text);
+        background: transparent;
+    }
+    .btn-ghost:active { transform: scale(0.98); }
+    .btn-sm { padding: 8px 16px; font-size: 14px; }
+
+    @media (hover: hover) and (pointer: fine) {
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0, 217, 255, 0.35); }
+        .btn-ghost:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0, 217, 255, 0.2); }
+        .footer-inner a:hover { color: var(--text); }
+        .row:hover { background: rgba(0, 217, 255, 0.02); }
+        .row:hover::before { transform: scaleY(1); }
+    }
+
+    /* ---------- первый экран ---------- */
+    section.hero { padding: 160px 32px 80px; position: relative; }
+    .hero::after {
+        content: '';
+        position: absolute;
+        top: 50%; right: -200px;
+        width: 600px; height: 600px;
+        background: radial-gradient(circle, rgba(0, 217, 255, 0.15) 0%, transparent 70%);
+        filter: blur(80px);
+        pointer-events: none;
+    }
+    .eyebrow {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        letter-spacing: 0.15em; margin-bottom: 28px;
+        display: inline-block;
+    }
+    .hero h1 {
+        font-size: 64px; font-weight: 700; line-height: 1.05;
+        letter-spacing: -0.03em; margin-bottom: 28px; max-width: 900px;
+        position: relative;
+    }
+    .hero h1 .highlight {
+        color: var(--cyan);
+        background: linear-gradient(135deg, var(--cyan), var(--magenta));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .hero .sub {
+        font-size: 20px; color: var(--muted); max-width: 640px;
+        margin-bottom: 20px; line-height: 1.6;
+    }
+    .pilot {
+        display: flex; align-items: baseline; gap: 10px;
+        font-size: 17px; color: var(--text); max-width: 640px;
+        margin-bottom: 36px;
+    }
+    .pilot::before {
+        content: '';
+        flex-shrink: 0;
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        transform: translateY(-2px);
+    }
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    /* ---------- панель-терминал ---------- */
+    .stage {
+        position: relative;
+        perspective: 1400px;
+        margin-top: 56px;
+        padding: 28px 12px 64px;
+    }
+    .stage-floor {
+        position: absolute;
+        z-index: 0;
+        left: -8%; right: -8%; bottom: 8px;
+        height: 240px;
+        background-image:
+            linear-gradient(rgba(0, 217, 255, 0.28) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 217, 255, 0.28) 1px, transparent 1px);
+        background-size: 52px 52px;
+        transform: rotateX(72deg);
+        transform-origin: center top;
+        -webkit-mask-image: linear-gradient(#000 10%, transparent 80%);
+        mask-image: linear-gradient(#000 10%, transparent 80%);
+        pointer-events: none;
+        opacity: 0.45;
+    }
+    .slab {
+        position: relative;
+        z-index: 1;
+        transform: rotateX(12deg) rotateY(-16deg);
+        transform-style: preserve-3d;
+        transition: transform .3s var(--ease-out);
+    }
+    .slab-side, .slab-bottom { position: absolute; pointer-events: none; }
+    .slab-side {
+        top: 0; bottom: 0; right: 0;
+        width: 22px;
+        background: linear-gradient(90deg, #101820, #2a3c52);
+        transform-origin: right center;
+        transform: rotateY(-90deg);
+    }
+    .slab-bottom {
+        left: 0; right: 0; bottom: 0;
+        height: 22px;
+        background: linear-gradient(#0c1218, #1c2a3a);
+        transform-origin: center bottom;
+        transform: rotateX(90deg);
+    }
+    .terminal {
+        position: relative;
+        background:
+            linear-gradient(160deg, rgba(255,255,255,0.06), transparent 38%),
+            var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.28);
+        border-radius: 14px;
+        overflow: hidden;
+        transform: translateZ(1px);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.14),
+            0 30px 50px rgba(0, 0, 0, 0.45);
+    }
+    .terminal::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        animation: scanline 3s linear infinite;
+    }
+    @keyframes scanline {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    .terminal-bar {
+        display: flex; align-items: center; gap: 8px;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.3);
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .dot:nth-child(1) { background: #ff5f57; }
+    .dot:nth-child(2) { background: #febc2e; }
+    .dot:nth-child(3) { background: #28c840; }
+    .terminal-title {
+        margin-left: 12px; font-family: var(--mono); font-size: 14px;
+        color: var(--cyan);
+        text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+    }
+    .terminal-body {
+        padding: 28px; font-family: var(--mono); font-size: 16px; line-height: 1.6;
+        list-style: none;
+    }
+    .t-line {
+        display: flex; gap: 12px;
+        padding: 6px 0;
+        opacity: 0;
+        animation: appear .3s var(--ease-out) forwards;
+    }
+    .t-line:nth-child(1) { animation-delay: .2s; }
+    .t-line:nth-child(2) { animation-delay: .45s; }
+    .t-line:nth-child(3) { animation-delay: .7s; }
+    .t-line:nth-child(4) { animation-delay: .95s; }
+    .t-line:nth-child(5) { animation-delay: 1.2s; }
+    @keyframes appear {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .t-tag { width: 130px; flex-shrink: 0; font-weight: 600; }
+    .tag-ok { color: var(--green); text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+    .tag-warn { color: var(--amber); text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+    .tag-info { color: var(--cyan); text-shadow: 0 0 10px rgba(0, 217, 255, 0.5); }
+    .t-text { color: var(--text); min-width: 0; }
+    .terminal-note {
+        padding: 0 28px 24px;
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+    /* ---------- разделы ---------- */
+    section { padding: 120px 0; position: relative; }
+    .section-header { margin-bottom: 56px; max-width: 760px; }
+    .section-label {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        letter-spacing: 0.15em; margin-bottom: 20px; font-weight: 400;
+        display: inline-block;
+    }
+    .section-title {
+        font-size: 44px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+    }
+    .section-note {
+        margin-top: 16px;
+        font-size: 17px;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 680px;
+    }
+    .alt { background: linear-gradient(180deg, var(--bg-dark) 0%, #0a0f14 100%); }
+
+    .grid { display: grid; gap: 20px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid + .grid { margin-top: 20px; }
+
+    .card {
+        padding: 32px 28px;
+        background:
+            linear-gradient(165deg, rgba(255,255,255,0.05), transparent 42%),
+            var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.22);
+        border-radius: 14px;
+        min-width: 0;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 10px 24px rgba(0,0,0,0.35);
+    }
+    .card-num {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        margin-bottom: 16px; letter-spacing: 0.08em;
+    }
+    .card h3 { font-size: 20px; font-weight: 600; line-height: 1.3; margin-bottom: 12px; }
+    .card p { font-size: 16px; color: var(--muted); line-height: 1.6; }
+    .card-accent { border-color: rgba(0, 217, 255, 0.5); }
+    .card-violet { border-color: rgba(168, 85, 247, 0.4); }
+    .card-violet h3 { color: var(--cyan); }
+
+    .after-note {
+        margin-top: 32px; max-width: 760px;
+        font-size: 17px; color: var(--text); line-height: 1.6;
+    }
+
+    /* программа: строки как «02 / РЕШЕНИЕ» на главной */
+    .rows { list-style: none; }
+    .row {
+        display: grid; grid-template-columns: 80px minmax(0, 1fr) minmax(0, 2fr);
+        gap: 32px; align-items: baseline;
+        padding: 32px 0;
+        border-bottom: 1px solid var(--line);
+        transition: background .2s var(--ease-out);
+        position: relative;
+    }
+    .row:first-child { border-top: 1px solid var(--line); }
+    .row::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0; width: 2px;
+        background: var(--cyan);
+        transform: scaleY(0);
+        transition: transform .25s var(--ease-out);
+    }
+    .r-num { font-family: var(--mono); font-size: 14px; color: var(--cyan); padding-left: 12px; }
+    .r-name { font-size: 22px; font-weight: 600; line-height: 1.3; }
+    .r-desc { font-size: 16px; color: var(--muted); line-height: 1.6; }
+
+    /* расписание */
+    .schedule-wrap { max-width: 860px; }
+    .sched-head {
+        font-size: 20px; font-weight: 600; margin-bottom: 16px; line-height: 1.3;
+    }
+    .sched-head .mono { font-family: var(--mono); color: var(--cyan); font-weight: 600; }
+    .schedule {
+        width: 100%; border-collapse: collapse;
+        background: var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.22);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+    .schedule th, .schedule td {
+        text-align: left; padding: 16px 24px;
+        border-bottom: 1px solid var(--line);
+        font-size: 16px; vertical-align: baseline;
+    }
+    .schedule tr:last-child td { border-bottom: 0; }
+    .schedule th {
+        font-family: var(--mono); font-size: 14px; font-weight: 400;
+        color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+        background: rgba(0, 0, 0, 0.25);
+    }
+    .schedule td:first-child {
+        font-family: var(--mono); color: var(--cyan);
+        white-space: nowrap; width: 200px;
+    }
+    .sched-note { margin-top: 16px; font-size: 16px; color: var(--muted); line-height: 1.6; }
+    .sched-block { margin-top: 40px; }
+    .sched-list { list-style: none; display: grid; gap: 8px; margin-top: 4px; }
+    .sched-list li { font-size: 16px; color: var(--muted); padding-left: 20px; position: relative; }
+    .sched-list li::before {
+        content: ''; position: absolute; left: 0; top: 0.65em;
+        width: 8px; height: 2px; background: var(--cyan);
+    }
+    .sched-list b { color: var(--text); font-family: var(--mono); font-weight: 400; }
+    .caption {
+        margin-top: 40px; font-family: var(--mono); font-size: 14px;
+        color: var(--muted); letter-spacing: 0.06em;
+    }
+
+    /* вопросы */
+    .faq { max-width: 860px; }
+    .faq details { border-bottom: 1px solid var(--line); }
+    .faq details:first-child { border-top: 1px solid var(--line); }
+    .faq summary {
+        list-style: none; cursor: pointer;
+        display: flex; justify-content: space-between; align-items: center; gap: 24px;
+        padding: 24px 0;
+        font-size: 19px; font-weight: 600; line-height: 1.35;
+        min-height: 48px;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+        content: '';
+        flex-shrink: 0;
+        width: 10px; height: 10px;
+        border-right: 2px solid var(--cyan);
+        border-bottom: 2px solid var(--cyan);
+        transform: translateY(-3px) rotate(45deg);
+        transition: transform .2s var(--ease-out);
+    }
+    .faq details[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+    .faq details p {
+        padding: 0 48px 24px 0;
+        font-size: 16px; color: var(--muted); line-height: 1.65; max-width: 720px;
+    }
+
+    /* заявка */
+    .cta {
+        border-top: 1px solid var(--line);
+        text-align: center;
+        position: relative;
+    }
+    .cta::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 800px; height: 800px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+        transform: translate(-50%, -50%);
+        filter: blur(100px);
+        pointer-events: none;
+    }
+    .cta .section-label { position: relative; }
+    .cta h2 {
+        font-size: 52px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .cta-text {
+        font-size: 19px; color: var(--muted); max-width: 600px; line-height: 1.6;
+        margin: 0 auto 40px;
+        position: relative;
+    }
+    .paths { max-width: 960px; margin: 0 auto; position: relative; text-align: left; }
+    .path { display: flex; flex-direction: column; }
+    .path p { margin-bottom: 24px; }
+    .path-btns { margin-top: auto; display: flex; flex-wrap: wrap; gap: 12px; }
+
+    /* подвал */
+    footer {
+        padding: 48px 0;
+        border-top: 1px solid var(--line);
+        position: relative;
+    }
+    .footer-inner {
+        display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+        color: var(--muted); font-size: 14px;
+    }
+    .footer-inner a { color: var(--muted); }
+
+    /* шапка: до 1100 px меню уходит второй строкой с прокруткой внутри строки */
+    @media (max-width: 1100px) {
+        nav { height: auto; min-height: 56px; flex-wrap: wrap; padding: 8px 0 0; row-gap: 0; column-gap: 12px; }
+        .logo { margin-right: auto; flex: 1 1 140px; min-width: 0; white-space: normal; }
+        .nav-links {
+            order: 3; width: 100%;
+            gap: 20px;
+            overflow-x: auto; overscroll-behavior-x: contain;
+            scrollbar-width: none;
+            padding: 0 4px;
+            margin: 0 -4px;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-links a { display: inline-block; padding: 12px 0; }
+        .nav-links a::after { bottom: 6px; }
+        .nav-home { padding-left: 20px; }
+        section[id] { scroll-margin-top: 120px; }
+    }
+
+    @media (max-width: 1100px) and (min-width: 901px) {
+        .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+        .container { padding: 0 16px; }
+        .logo { font-size: 13px; }
+        section.hero { padding: 120px 16px 56px; }
+        .hero::after { display: none; }
+        .eyebrow { font-size: 14px; letter-spacing: 0.04em; margin-bottom: 16px; }
+        .hero h1 { font-size: 30px; line-height: 1.1; margin-bottom: 16px; }
+        .hero .sub { font-size: 16px; line-height: 1.55; margin-bottom: 16px; }
+        .pilot { font-size: 16px; margin-bottom: 20px; }
+        .hero-cta { gap: 12px; }
+        .hero-cta .btn-primary { width: 100%; text-align: center; padding: 12px 16px; }
+        .stage { perspective: none; margin-top: 40px; padding: 0; }
+        .stage-floor, .slab-side, .slab-bottom { display: none; }
+        .slab { transform: none; }
+        .terminal-body { padding: 16px; }
+        .terminal-note { padding: 0 16px 16px; }
+        .t-line { flex-wrap: wrap; gap: 0 12px; padding: 8px 0; }
+        .t-tag { width: auto; }
+        section { padding: 72px 0; }
+        .section-header { margin-bottom: 32px; }
+        .section-title { font-size: 30px; }
+        .section-note { font-size: 16px; }
+        .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+        .grid { gap: 14px; }
+        .grid + .grid { margin-top: 14px; }
+        .card { padding: 24px 20px; }
+        .row { grid-template-columns: auto minmax(0, 1fr); gap: 8px 16px; padding: 24px 0; }
+        .r-num { padding-left: 8px; }
+        .r-name { font-size: 19px; }
+        .r-desc { grid-column: 1 / -1; padding-left: 8px; }
+        .faq summary { font-size: 17px; padding: 20px 0; }
+        .faq details p { padding-right: 0; }
+        .cta h2 { font-size: 30px; }
+        .cta-text { font-size: 16px; }
+        .after-note { font-size: 16px; }
+        .path-btns .btn { width: 100%; text-align: center; }
+    }
+
+    @media (max-width: 600px) {
+        .schedule, .schedule tbody, .schedule tr, .schedule td { display: block; width: 100%; }
+        .schedule thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+        .schedule tr { padding: 14px 18px; border-bottom: 1px solid var(--line); }
+        .schedule tr:last-child { border-bottom: 0; }
+        .schedule td { padding: 0; border: 0; }
+        .schedule td:first-child { width: auto; font-size: 14px; margin-bottom: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after {
+            animation-duration: .01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: .01ms !important;
+        }
+        .terminal::before { display: none; }
+        .slab { transform: none !important; }
+        .stage-floor { display: none; }
+        .t-line { opacity: 1; animation: none; }
+        .btn-primary:hover, .btn:active { transform: none; }
+    }
+
+    /* ---------- П-26: открытые уроки ---------- */
+    .howto { font-size: 16px; color: var(--muted); max-width: 640px; line-height: 1.6; }
+    section#uroki { padding-top: 24px; }
+    .lessons { display: grid; gap: 28px; max-width: 820px; }
+    .lesson h3 { font-size: 28px; margin-bottom: 20px; }
+    .lesson h4 {
+        font-family: var(--mono); font-size: 14px; font-weight: 400; color: var(--cyan);
+        letter-spacing: 0.08em; text-transform: uppercase; margin: 24px 0 10px;
+    }
+    .lesson p, .lesson li { font-size: 16px; line-height: 1.6; color: var(--text); }
+    .lesson p + p { margin-top: 10px; }
+    .lesson b { font-weight: 600; color: var(--cyan); }
+    .lesson .idea { list-style: none; display: grid; gap: 8px; }
+    .lesson .idea li { padding-left: 20px; position: relative; }
+    .lesson .idea li::before { content: '›'; position: absolute; left: 2px; color: var(--cyan); }
+    .lesson .impact { margin-top: 20px; }
+    .lesson .who { margin-top: 12px; color: var(--muted); }
+    .lesson .who b { color: var(--text); }
+    .try, .rule {
+        margin-top: 24px; padding: 4px 20px 18px; border-radius: 10px;
+        border: 1px solid var(--line); background: rgba(0, 0, 0, 0.18);
+    }
+    .rule { border-color: rgba(16, 185, 129, 0.45); }
+    .rule h4 { color: var(--green); }
+    .rule p { font-size: 18px; font-weight: 600; }
+    .try-meta { color: var(--muted); text-transform: none; letter-spacing: 0; }
+    .try p { color: var(--muted); }
+    .try ol { margin: 10px 0 0 22px; display: grid; gap: 6px; }
+    .lesson .skip { margin-top: 20px; color: var(--muted); font-size: 15px; }
+    .lesson .skip b { color: var(--muted); }
+    .deeper { list-style: none; display: grid; gap: 6px; }
+    .deeper a, a.src { color: var(--cyan); text-underline-offset: 3px; overflow-wrap: anywhere; }
+    .src-id { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+    a.src { font-family: var(--mono); font-size: 14px; white-space: nowrap; }
+    .table-wrap { overflow-x: auto; }
+    .hron { width: 100%; max-width: 980px; border-collapse: collapse; }
+    .hron th, .hron td { text-align: left; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--line); vertical-align: baseline; font-size: 16px; }
+    .hron th { font-family: var(--mono); font-size: 14px; font-weight: 400; color: var(--muted); }
+    .hron td:first-child { font-family: var(--mono); color: var(--cyan); white-space: nowrap; width: 130px; font-size: 14px; }
+    .hron .t-src { white-space: nowrap; }
+    .cta { text-align: center; }
+    @media (max-width: 900px) {
+        .lesson h3 { font-size: 23px; }
+        .try, .rule { padding: 2px 14px 14px; }
+        .rule p { font-size: 17px; }
+        .hron, .hron tbody, .hron tr, .hron td { display: block; width: 100%; }
+        .hron thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+        .hron tr { padding: 12px 0; border-bottom: 1px solid var(--line); }
+        .hron td { padding: 0; border: 0; }
+        .hron td:first-child { width: auto; margin-bottom: 2px; }
+        .hron .t-src { margin-top: 4px; white-space: normal; }
+    }
+
+</style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <nav aria-label="Разделы страницы">
+            <a class="logo" href="../index.html">Нейромануфактура</a>
+            <ul class="nav-links">
+                <li><a href="#uroki">Уроки</a></li>
+                
+                <li><a href="istoriya-ii.html">История ИИ</a></li>
+                <li><a href="../academy.html">Академия ИИ</a></li>
+                <li class="nav-home"><a href="../index.html">На главную</a></li>
+            </ul>
+            <a href="#kurs" class="btn btn-ghost btn-sm">Весь курс</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+<section class="hero container" id="start">
+    <div class="eyebrow">// АКАДЕМИЯ ИИ · ОТКРЫТЫЙ УРОК</div>
+    <h1>ChatGPT:<br><span class="highlight">три урока по OpenAI</span></h1>
+    <p class="sub">Что можно отдать модели, а что нет, как поставить задачу так, чтобы годный текст вышел с первого раза, и когда большая модель стоит своих денег. Упражнения 7 и 8 выполняются в «Немо», урок 6 — без него.</p>
+    <p class="howto">Каждый урок — одна идея на один экран: что это, кто это говорит, одно дело на 5–10 минут и одна фраза в свои правила. Номера в скобках — ссылки на источники: страницы самих компаний и статьи авторов.</p>
+</section>
+
+<section id="uroki">
+    <div class="container">
+        <div class="lessons">
+        <article class="card lesson" id="urok-6">
+            <div class="card-num">УРОК 6</div>
+            <h3>Проверка перед отправкой</h3>
+
+            <h4>Идея в трёх строках</h4>
+            <ul class="idea">
+                <li>ChatGPT — приложение OpenAI с поиском, картинками и файлами; в «Немо» приложения нет, там две модели OpenAI — gpt-4o-mini и gpt-4o [<a class="src" href="https://chatgpt.com/overview/" target="_blank" rel="noopener">М-10</a>] (программа курса).</li>
+                <li>OpenAI пишет, что данные из API не идут в обучение без согласия, а журналы для проверки злоупотреблений хранятся до 30 дней [<a class="src" href="https://developers.openai.com/api/docs/guides/your-data" target="_blank" rel="noopener">М-08</a>].</li>
+                <li>Подвох: запрос всё равно уходит вендору, поэтому имена, телефоны и суммы договоров в нём не пишут (программа курса).</li>
+            </ul>
+
+            <p class="impact"><b>Влияние:</b> до отправки вы за минуту видите, что из текста можно отдать модели, а что нет.</p>
+            <p class="who"><b>Кто говорит:</b> 1 из 1 источника OpenAI о данных в реестре источников курса — [<a class="src" href="https://developers.openai.com/api/docs/guides/your-data" target="_blank" rel="noopener">М-08</a>]. Расхождений в реестре нет.</p>
+
+            <div class="try">
+                <h4>Попробуй <span class="try-meta">· рутина · 5 мин</span></h4>
+                <p>Это упражнение блока «ChatGPT», запросов — 0. Все имена, номера и компании вымышлены.</p>
+                <ol>
+                    <li>Черновик А: «Напиши объявление для коллег: склад закрыт 20.11 с 14:00».</li>
+                    <li>Черновик Б: «Напиши кладовщику Ерофееву Глебу Олеговичу, моб. +7 (000) 000-03-28, что склад закрыт».</li>
+                    <li>Черновик В: то же, «и добавь, что задержим поставку по договору с ООО «Кедрофабрика» на 1 260 000 ₽».</li>
+                    <li>Отметьте, какой можно отправить как есть, и назовите, что мешает двум другим.</li>
+                </ol>
+            </div>
+
+            <div class="rule">
+                <h4>Правило в копилку</h4>
+                <p>Перед отправкой я убираю из запроса имена, телефоны, суммы и контрагентов.</p>
+            </div>
+
+            <p class="skip"><b>Пропуск:</b> пропуск ничего не стоит: урок 7 — это просто урок 7, догонять нечего.</p>
+
+            <h4>Глубже (по желанию)</h4>
+            <ul class="deeper">
+                <li><a href="https://developers.openai.com/api/docs/guides/your-data" target="_blank" rel="noopener">OpenAI о данных в API, по-английски</a> <span class="src-id">[М-08]</span></li>
+                <li><a href="https://chatgpt.com/overview/" target="_blank" rel="noopener">Что умеет приложение ChatGPT, по-английски</a> <span class="src-id">[М-10]</span></li>
+            </ul>
+        </article>
+        <article class="card lesson" id="urok-7">
+            <div class="card-num">УРОК 7</div>
+            <h3>Роль, читатель, формат</h3>
+
+            <h4>Идея в трёх строках</h4>
+            <ul class="idea">
+                <li>По словам OpenAI, GPT-модели лучше слушаются явных инструкций [<a class="src" href="https://developers.openai.com/api/docs/guides/prompt-engineering" target="_blank" rel="noopener">М-09</a>].</li>
+                <li>Явный запрос — четыре части: кто пишет, для кого, факты и формат ответа (программа курса).</li>
+                <li>Подвох: ответ на тот же запрос каждый раз выходит другим, поэтому правку просят в том же диалоге, а не начинают заново [<a class="src" href="https://developers.openai.com/api/docs/guides/prompt-engineering" target="_blank" rel="noopener">М-09</a>].</li>
+            </ul>
+
+            <p class="impact"><b>Влияние:</b> годный текст выходит с первого-второго запроса, а не с пятого.</p>
+            <p class="who"><b>Кто говорит:</b> 3 из 3 вендоров в реестре источников курса советуют ставить задачу ясно и прямо — OpenAI [<a class="src" href="https://developers.openai.com/api/docs/guides/prompt-engineering" target="_blank" rel="noopener">М-09</a>], Anthropic [<a class="src" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">М-18</a>], Google [<a class="src" href="https://ai.google.dev/gemini-api/docs/prompting-strategies" target="_blank" rel="noopener">М-26</a>]. Расхождений в реестре нет.</p>
+
+            <div class="try">
+                <h4>Попробуй <span class="try-meta">· быстрая победа · 10 мин</span></h4>
+                <p>Это упражнения блока «ChatGPT», запросов — 3. Материал вымышлен: «Склад ООО «Шарнирвельт» закрыт на инвентаризацию в пятницу 20.11.2026 с 14:00. Приёмка возобновится в понедельник 23.11.2026 с 9:00. Заявки на 20.11 — до среды 18.11 до 17:00. Вопросы — внутренний номер 214».</p>
+                <ol>
+                    <li>Напишите запрос из четырёх частей; формат — сообщение в рабочий чат, до 5 строк. Отправьте в gpt-4o-mini.</li>
+                    <li>В том же диалоге попросите письмо клиентам на «вы», 3–4 предложения, без внутреннего номера.</li>
+                    <li>Исправьте одну деталь там же и сверьте даты, дни недели и время с материалом.</li>
+                </ol>
+            </div>
+
+            <div class="rule">
+                <h4>Правило в копилку</h4>
+                <p>В запросе я называю, кто пишет, кому, какие факты и в каком виде.</p>
+            </div>
+
+            <p class="skip"><b>Пропуск:</b> пропуск ничего не стоит: урок 8 — это просто урок 8, догонять нечего.</p>
+
+            <h4>Глубже (по желанию)</h4>
+            <ul class="deeper">
+                <li><a href="https://developers.openai.com/api/docs/guides/prompt-engineering" target="_blank" rel="noopener">Руководство OpenAI по запросам, по-английски</a> <span class="src-id">[М-09]</span></li>
+                <li><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">Советы Anthropic по запросам, по-английски</a> <span class="src-id">[М-18]</span></li>
+            </ul>
+        </article>
+        <article class="card lesson" id="urok-8">
+            <div class="card-num">УРОК 8</div>
+            <h3>Две модели OpenAI</h3>
+
+            <h4>Идея в трёх строках</h4>
+            <ul class="idea">
+                <li>От OpenAI в «Немо» работают две модели, gpt-4o-mini и gpt-4o; обе знают мир примерно до 1 октября 2023 года [<a class="src" href="https://developers.openai.com/api/docs/models/gpt-4o-mini" target="_blank" rel="noopener">М-03</a>, <a class="src" href="https://developers.openai.com/api/docs/models/gpt-4o" target="_blank" rel="noopener">М-04</a>].</li>
+                <li>По прайсу OpenAI запрос к gpt-4o дороже, чем к gpt-4o-mini, в 16–17 раз [<a class="src" href="https://developers.openai.com/api/docs/models/gpt-4o-mini" target="_blank" rel="noopener">М-03</a>, <a class="src" href="https://developers.openai.com/api/docs/models/gpt-4o" target="_blank" rel="noopener">М-04</a>].</li>
+                <li>Подвох: 14 октября 2026 года OpenAI объявила, что уберёт обе модели из API 14 января 2027 года [<a class="src" href="https://developers.openai.com/api/docs/deprecations" target="_blank" rel="noopener">М-05</a>].</li>
+            </ul>
+
+            <p class="impact"><b>Влияние:</b> за большую модель вы платите только там, где у малой пришлось много править.</p>
+            <p class="who"><b>Кто говорит:</b> дату знаний дают 2 из 2 источников OpenAI в реестре источников курса — [<a class="src" href="https://developers.openai.com/api/docs/models/gpt-4o-mini" target="_blank" rel="noopener">М-03</a>] и [<a class="src" href="https://developers.openai.com/api/docs/models/gpt-4o" target="_blank" rel="noopener">М-04</a>]. Против — сам вендор: страница gpt-4o зовёт её флагманом [<a class="src" href="https://developers.openai.com/api/docs/models/gpt-4o" target="_blank" rel="noopener">М-04</a>], общий список моделей — другую [<a class="src" href="https://developers.openai.com/api/docs/models" target="_blank" rel="noopener">М-02</a>]; курс берёт список (программа курса).</p>
+
+            <div class="try">
+                <h4>Попробуй <span class="try-meta">· быстрая победа · 10 мин</span></h4>
+                <p>Это упражнение блока «ChatGPT», запросов — 1.</p>
+                <ol>
+                    <li>Возьмите свой запрос из урока 7 — тот, после которого ответ gpt-4o-mini вас устроил.</li>
+                    <li>Откройте новый чат, выберите gpt-4o и отправьте тот же текст без единой правки.</li>
+                    <li>Выпишите два отличия ответов и отметьте, все ли даты и числа сохранились.</li>
+                    <li>Допишите фразу: на какой задаче разница в цене окупается и при каком условии.</li>
+                </ol>
+            </div>
+
+            <div class="rule">
+                <h4>Правило в копилку</h4>
+                <p>Большую модель я беру, когда правок у малой больше, чем сэкономленного времени.</p>
+            </div>
+
+            <p class="skip"><b>Пропуск:</b> пропуск ничего не стоит: урок 9 — это просто урок 9, догонять нечего.</p>
+
+            <h4>Глубже (по желанию)</h4>
+            <ul class="deeper">
+                <li><a href="https://developers.openai.com/api/docs/models/gpt-4o-mini" target="_blank" rel="noopener">Карточка gpt-4o-mini у OpenAI</a> <span class="src-id">[М-03]</span></li>
+                <li><a href="https://developers.openai.com/api/docs/models/gpt-4o" target="_blank" rel="noopener">Карточка gpt-4o</a> <span class="src-id">[М-04]</span></li>
+                <li><a href="https://developers.openai.com/api/docs/deprecations" target="_blank" rel="noopener">OpenAI убирает обе модели из API 14.01.2027</a> <span class="src-id">[М-05]</span></li>
+            </ul>
+        </article>
+        </div>
+    </div>
+</section>
+
+<section id="kurs" class="cta">
+    <div class="container">
+        <div class="section-label">ВЕСЬ КУРС</div>
+        <h2>Это открытая часть курса</h2>
+        <p class="cta-text">Весь курс — в «Немо»: одна рабочая задача, четыре ИИ-ассистента в браузере и ведущий, который разбирает ответы вместе с группой. Выберите, как хотите учиться, и напишите нам в Telegram или MAX.</p>
+        <div class="grid grid-2 paths">
+            <article class="card card-accent path">
+                <h3>Для компании</h3>
+                <p>Корпоративные группы для сотрудников. Напишите, сколько человек и каких должностей хотите учить, — подберём уровень и направление.</p>
+                <div class="path-btns">
+                    <a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener" class="btn btn-primary">Написать в Telegram</a>
+                    <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener" class="btn btn-ghost">Написать в MAX</a>
+                </div>
+            </article>
+            <article class="card card-violet path">
+                <h3>Для себя</h3>
+                <p>Самостоятельно в браузере, место в группе или вечерняя живая группа. Напишите нам — расскажем, как начать.</p>
+                <div class="path-btns">
+                    <a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener" class="btn btn-primary">Написать в Telegram</a>
+                    <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener" class="btn btn-ghost">Написать в MAX</a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <div class="container footer-inner">
+        <div>© 2026 Нейромануфактура · <a href="../policy.html">Политика обработки персональных данных</a></div>
+        <div><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Telegram</a> · <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener">MAX</a></div>
+    </div>
+</footer>
+
+<script>
+(function () {
+    document.querySelectorAll('[data-tg]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+            e.preventDefault();
+            var n = a.getAttribute('data-tg');
+            window.location.href = 'tg://resolve?domain=' + n;
+            setTimeout(function () {
+                if (document.hasFocus()) window.open('https://t.me/' + n, '_blank', 'noopener');
+            }, 2000);
+        });
+    });
+})();
+</script>
+</body>
+</html>

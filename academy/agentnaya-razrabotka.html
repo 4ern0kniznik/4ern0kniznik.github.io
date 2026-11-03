@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Агентная разработка с Claude · бесплатный курс · Академия ИИ · Нейромануфактура</title>
+<meta name="description" content="Бесплатный неофициальный курс по докладам Code w/ Claude 2026: эвалы, навыки, субагенты, рутины и память агента. Девять модулей, практика на русских примерах, ссылки на официальные записи. Не связан с Anthropic.">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --bg-dark: #0f1419;   /* фон: основной текст 14.92:1, вторичный 6.12:1 */
+        --bg-card: #1a1f2e;   /* карточка: основной текст 13.23:1, вторичный 5.42:1 */
+        --line: #2a3441;
+        --text: #e4e7eb;
+        --muted: #8b95a5;
+        --cyan: #00d9ff;      /* 10.90:1 на фоне, 9.67:1 на карточке */
+        --magenta: #ff006e;
+        --purple: #a855f7;    /* 4.15:1 на карточке — только границы и градиент кнопки */
+        --green: #10b981;     /* 6.47:1 на карточке */
+        --amber: #f59e0b;     /* 7.64:1 на карточке */
+        --mono: 'SF Mono', 'Consolas', 'Menlo', 'DejaVu Sans Mono', monospace;
+        --sans: system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    section[id] { scroll-margin-top: 88px; }
+
+    body {
+        font-family: var(--sans);
+        font-size: 16px;
+        background: var(--bg-dark);
+        color: var(--text);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        color-scheme: dark;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(900px 500px at 80% 10%, rgba(0, 217, 255, 0.08), transparent 60%),
+            radial-gradient(700px 480px at 10% 80%, rgba(168, 85, 247, 0.07), transparent 65%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+    a:focus-visible, .btn:focus-visible, summary:focus-visible {
+        outline: 2px solid var(--cyan);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+    .nowrap { white-space: nowrap; }
+    .sr-only {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
+    /* ---------- шапка ---------- */
+    header {
+        position: fixed; top: 0; left: 0; width: 100%;
+        background: rgba(15, 20, 25, 0.9);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--line);
+        z-index: 100;
+    }
+    nav { display: flex; justify-content: space-between; align-items: center; height: 64px; gap: 24px; }
+    .logo {
+        font-size: clamp(13px, 1.15vw, 15px); font-weight: 700; letter-spacing: 0.01em;
+        line-height: 1.25; white-space: nowrap;
+        color: var(--cyan);
+        text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
+    .nav-links a {
+        color: var(--muted); text-decoration: none; font-size: 14px;
+        white-space: nowrap;
+        transition: color .2s var(--ease-out); position: relative;
+    }
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: -4px; left: 0; width: 100%; height: 2px;
+        background: var(--cyan);
+        transform: scaleX(0); transform-origin: left center;
+        transition: transform .25s var(--ease-out);
+        box-shadow: 0 0 10px var(--cyan);
+    }
+    .nav-home { padding-left: 24px; border-left: 1px solid var(--line); }
+    .nav-home a { color: var(--text); }
+
+    /* ---------- кнопки ---------- */
+    .btn {
+        display: inline-block; padding: 12px 24px; border-radius: 6px;
+        font-size: 16px; font-weight: 600; text-decoration: none; line-height: 1.5;
+        transition: transform .16s var(--ease-out), box-shadow .2s var(--ease-out), border-color .2s var(--ease-out);
+        cursor: pointer;
+        position: relative;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        color: #0f1419;   /* 10.90:1 на бирюзовом конце, 4.68:1 на фиолетовом */
+        box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+    }
+    .btn-primary:active { transform: translateY(1px) scale(0.98); }
+    .btn-ghost {
+        border: 1px solid var(--line); color: var(--text);
+        background: transparent;
+    }
+    .btn-ghost:active { transform: scale(0.98); }
+    .btn-sm { padding: 8px 16px; font-size: 14px; }
+
+    @media (hover: hover) and (pointer: fine) {
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0, 217, 255, 0.35); }
+        .btn-ghost:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0, 217, 255, 0.2); }
+        .footer-inner a:hover { color: var(--text); }
+        .row:hover { background: rgba(0, 217, 255, 0.02); }
+        .row:hover::before { transform: scaleY(1); }
+    }
+
+    /* ---------- первый экран ---------- */
+    section.hero { padding: 160px 32px 80px; position: relative; }
+    .hero::after {
+        content: '';
+        position: absolute;
+        top: 50%; right: -200px;
+        width: 600px; height: 600px;
+        background: radial-gradient(circle, rgba(0, 217, 255, 0.15) 0%, transparent 70%);
+        filter: blur(80px);
+        pointer-events: none;
+    }
+    .eyebrow {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        letter-spacing: 0.15em; margin-bottom: 28px;
+        display: inline-block;
+    }
+    .hero h1 {
+        font-size: 64px; font-weight: 700; line-height: 1.05;
+        letter-spacing: -0.03em; margin-bottom: 28px; max-width: 900px;
+        position: relative;
+    }
+    .hero h1 .highlight {
+        color: var(--cyan);
+        background: linear-gradient(135deg, var(--cyan), var(--magenta));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .hero .sub {
+        font-size: 20px; color: var(--muted); max-width: 640px;
+        margin-bottom: 20px; line-height: 1.6;
+    }
+    .pilot {
+        display: flex; align-items: baseline; gap: 10px;
+        font-size: 17px; color: var(--text); max-width: 640px;
+        margin-bottom: 36px;
+    }
+    .pilot::before {
+        content: '';
+        flex-shrink: 0;
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        transform: translateY(-2px);
+    }
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    /* ---------- панель-терминал ---------- */
+    .stage {
+        position: relative;
+        perspective: 1400px;
+        margin-top: 56px;
+        padding: 28px 12px 64px;
+    }
+    .stage-floor {
+        position: absolute;
+        z-index: 0;
+        left: -8%; right: -8%; bottom: 8px;
+        height: 240px;
+        background-image:
+            linear-gradient(rgba(0, 217, 255, 0.28) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 217, 255, 0.28) 1px, transparent 1px);
+        background-size: 52px 52px;
+        transform: rotateX(72deg);
+        transform-origin: center top;
+        -webkit-mask-image: linear-gradient(#000 10%, transparent 80%);
+        mask-image: linear-gradient(#000 10%, transparent 80%);
+        pointer-events: none;
+        opacity: 0.45;
+    }
+    .slab {
+        position: relative;
+        z-index: 1;
+        transform: rotateX(12deg) rotateY(-16deg);
+        transform-style: preserve-3d;
+        transition: transform .3s var(--ease-out);
+    }
+    .slab-side, .slab-bottom { position: absolute; pointer-events: none; }
+    .slab-side {
+        top: 0; bottom: 0; right: 0;
+        width: 22px;
+        background: linear-gradient(90deg, #101820, #2a3c52);
+        transform-origin: right center;
+        transform: rotateY(-90deg);
+    }
+    .slab-bottom {
+        left: 0; right: 0; bottom: 0;
+        height: 22px;
+        background: linear-gradient(#0c1218, #1c2a3a);
+        transform-origin: center bottom;
+        transform: rotateX(90deg);
+    }
+    .terminal {
+        position: relative;
+        background:
+            linear-gradient(160deg, rgba(255,255,255,0.06), transparent 38%),
+            var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.28);
+        border-radius: 14px;
+        overflow: hidden;
+        transform: translateZ(1px);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.14),
+            0 30px 50px rgba(0, 0, 0, 0.45);
+    }
+    .terminal::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        animation: scanline 3s linear infinite;
+    }
+    @keyframes scanline {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    .terminal-bar {
+        display: flex; align-items: center; gap: 8px;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.3);
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .dot:nth-child(1) { background: #ff5f57; }
+    .dot:nth-child(2) { background: #febc2e; }
+    .dot:nth-child(3) { background: #28c840; }
+    .terminal-title {
+        margin-left: 12px; font-family: var(--mono); font-size: 14px;
+        color: var(--cyan);
+        text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+    }
+    .terminal-body {
+        padding: 28px; font-family: var(--mono); font-size: 16px; line-height: 1.6;
+        list-style: none;
+    }
+    .t-line {
+        display: flex; gap: 12px;
+        padding: 6px 0;
+        opacity: 0;
+        animation: appear .3s var(--ease-out) forwards;
+    }
+    .t-line:nth-child(1) { animation-delay: .2s; }
+    .t-line:nth-child(2) { animation-delay: .45s; }
+    .t-line:nth-child(3) { animation-delay: .7s; }
+    .t-line:nth-child(4) { animation-delay: .95s; }
+    .t-line:nth-child(5) { animation-delay: 1.2s; }
+    @keyframes appear {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .t-tag { width: 130px; flex-shrink: 0; font-weight: 600; }
+    .tag-ok { color: var(--green); text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+    .tag-warn { color: var(--amber); text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+    .tag-info { color: var(--cyan); text-shadow: 0 0 10px rgba(0, 217, 255, 0.5); }
+    .t-text { color: var(--text); min-width: 0; }
+    .terminal-note {
+        padding: 0 28px 24px;
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+    /* ---------- разделы ---------- */
+    section { padding: 120px 0; position: relative; }
+    .section-header { margin-bottom: 56px; max-width: 760px; }
+    .section-label {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        letter-spacing: 0.15em; margin-bottom: 20px; font-weight: 400;
+        display: inline-block;
+    }
+    .section-title {
+        font-size: 44px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+    }
+    .section-note {
+        margin-top: 16px;
+        font-size: 17px;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 680px;
+    }
+    .alt { background: linear-gradient(180deg, var(--bg-dark) 0%, #0a0f14 100%); }
+
+    .grid { display: grid; gap: 20px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid + .grid { margin-top: 20px; }
+
+    .card {
+        padding: 32px 28px;
+        background:
+            linear-gradient(165deg, rgba(255,255,255,0.05), transparent 42%),
+            var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.22);
+        border-radius: 14px;
+        min-width: 0;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 10px 24px rgba(0,0,0,0.35);
+    }
+    .card-num {
+        font-family: var(--mono); font-size: 14px; color: var(--cyan);
+        margin-bottom: 16px; letter-spacing: 0.08em;
+    }
+    .card h3 { font-size: 20px; font-weight: 600; line-height: 1.3; margin-bottom: 12px; }
+    .card p { font-size: 16px; color: var(--muted); line-height: 1.6; }
+    .card-accent { border-color: rgba(0, 217, 255, 0.5); }
+    .card-violet { border-color: rgba(168, 85, 247, 0.4); }
+    .card-violet h3 { color: var(--cyan); }
+
+    .after-note {
+        margin-top: 32px; max-width: 760px;
+        font-size: 17px; color: var(--text); line-height: 1.6;
+    }
+
+    /* программа: строки как «02 / РЕШЕНИЕ» на главной */
+    .rows { list-style: none; }
+    .row {
+        display: grid; grid-template-columns: 80px minmax(0, 1fr) minmax(0, 2fr);
+        gap: 32px; align-items: baseline;
+        padding: 32px 0;
+        border-bottom: 1px solid var(--line);
+        transition: background .2s var(--ease-out);
+        position: relative;
+    }
+    .row:first-child { border-top: 1px solid var(--line); }
+    .row::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0; width: 2px;
+        background: var(--cyan);
+        transform: scaleY(0);
+        transition: transform .25s var(--ease-out);
+    }
+    .r-num { font-family: var(--mono); font-size: 14px; color: var(--cyan); padding-left: 12px; }
+    .r-name { font-size: 22px; font-weight: 600; line-height: 1.3; }
+    .r-desc { font-size: 16px; color: var(--muted); line-height: 1.6; }
+
+    /* расписание */
+    .schedule-wrap { max-width: 860px; }
+    .sched-head {
+        font-size: 20px; font-weight: 600; margin-bottom: 16px; line-height: 1.3;
+    }
+    .sched-head .mono { font-family: var(--mono); color: var(--cyan); font-weight: 600; }
+    .schedule {
+        width: 100%; border-collapse: collapse;
+        background: var(--bg-card);
+        border: 1px solid rgba(0, 217, 255, 0.22);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+    .schedule th, .schedule td {
+        text-align: left; padding: 16px 24px;
+        border-bottom: 1px solid var(--line);
+        font-size: 16px; vertical-align: baseline;
+    }
+    .schedule tr:last-child td { border-bottom: 0; }
+    .schedule th {
+        font-family: var(--mono); font-size: 14px; font-weight: 400;
+        color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+        background: rgba(0, 0, 0, 0.25);
+    }
+    .schedule td:first-child {
+        font-family: var(--mono); color: var(--cyan);
+        white-space: nowrap; width: 200px;
+    }
+    .sched-note { margin-top: 16px; font-size: 16px; color: var(--muted); line-height: 1.6; }
+    .sched-block { margin-top: 40px; }
+    .sched-list { list-style: none; display: grid; gap: 8px; margin-top: 4px; }
+    .sched-list li { font-size: 16px; color: var(--muted); padding-left: 20px; position: relative; }
+    .sched-list li::before {
+        content: ''; position: absolute; left: 0; top: 0.65em;
+        width: 8px; height: 2px; background: var(--cyan);
+    }
+    .sched-list b { color: var(--text); font-family: var(--mono); font-weight: 400; }
+    .caption {
+        margin-top: 40px; font-family: var(--mono); font-size: 14px;
+        color: var(--muted); letter-spacing: 0.06em;
+    }
+
+    /* вопросы */
+    .faq { max-width: 860px; }
+    .faq details { border-bottom: 1px solid var(--line); }
+    .faq details:first-child { border-top: 1px solid var(--line); }
+    .faq summary {
+        list-style: none; cursor: pointer;
+        display: flex; justify-content: space-between; align-items: center; gap: 24px;
+        padding: 24px 0;
+        font-size: 19px; font-weight: 600; line-height: 1.35;
+        min-height: 48px;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+        content: '';
+        flex-shrink: 0;
+        width: 10px; height: 10px;
+        border-right: 2px solid var(--cyan);
+        border-bottom: 2px solid var(--cyan);
+        transform: translateY(-3px) rotate(45deg);
+        transition: transform .2s var(--ease-out);
+    }
+    .faq details[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+    .faq details p {
+        padding: 0 48px 24px 0;
+        font-size: 16px; color: var(--muted); line-height: 1.65; max-width: 720px;
+    }
+
+    /* заявка */
+    .cta {
+        border-top: 1px solid var(--line);
+        text-align: center;
+        position: relative;
+    }
+    .cta::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 800px; height: 800px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+        transform: translate(-50%, -50%);
+        filter: blur(100px);
+        pointer-events: none;
+    }
+    .cta .section-label { position: relative; }
+    .cta h2 {
+        font-size: 52px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .cta-text {
+        font-size: 19px; color: var(--muted); max-width: 600px; line-height: 1.6;
+        margin: 0 auto 40px;
+        position: relative;
+    }
+    .paths { max-width: 960px; margin: 0 auto; position: relative; text-align: left; }
+    .path { display: flex; flex-direction: column; }
+    .path p { margin-bottom: 24px; }
+    .path-btns { margin-top: auto; display: flex; flex-wrap: wrap; gap: 12px; }
+
+    /* подвал */
+    footer {
+        padding: 48px 0;
+        border-top: 1px solid var(--line);
+        position: relative;
+    }
+    .footer-inner {
+        display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+        color: var(--muted); font-size: 14px;
+    }
+    .footer-inner a { color: var(--muted); }
+
+    /* шапка: до 1100 px меню уходит второй строкой с прокруткой внутри строки */
+    @media (max-width: 1100px) {
+        nav { height: auto; min-height: 56px; flex-wrap: wrap; padding: 8px 0 0; row-gap: 0; column-gap: 12px; }
+        .logo { margin-right: auto; flex: 1 1 140px; min-width: 0; white-space: normal; }
+        .nav-links {
+            order: 3; width: 100%;
+            gap: 20px;
+            overflow-x: auto; overscroll-behavior-x: contain;
+            scrollbar-width: none;
+            padding: 0 4px;
+            margin: 0 -4px;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-links a { display: inline-block; padding: 12px 0; }
+        .nav-links a::after { bottom: 6px; }
+        .nav-home { padding-left: 20px; }
+        section[id] { scroll-margin-top: 120px; }
+    }
+
+    @media (max-width: 1100px) and (min-width: 901px) {
+        .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+        .container { padding: 0 16px; }
+        .logo { font-size: 13px; }
+        section.hero { padding: 120px 16px 56px; }
+        .hero::after { display: none; }
+        .eyebrow { font-size: 14px; letter-spacing: 0.04em; margin-bottom: 16px; }
+        .hero h1 { font-size: 30px; line-height: 1.1; margin-bottom: 16px; }
+        .hero .sub { font-size: 16px; line-height: 1.55; margin-bottom: 16px; }
+        .pilot { font-size: 16px; margin-bottom: 20px; }
+        .hero-cta { gap: 12px; }
+        .hero-cta .btn-primary { width: 100%; text-align: center; padding: 12px 16px; }
+        .stage { perspective: none; margin-top: 40px; padding: 0; }
+        .stage-floor, .slab-side, .slab-bottom { display: none; }
+        .slab { transform: none; }
+        .terminal-body { padding: 16px; }
+        .terminal-note { padding: 0 16px 16px; }
+        .t-line { flex-wrap: wrap; gap: 0 12px; padding: 8px 0; }
+        .t-tag { width: auto; }
+        section { padding: 72px 0; }
+        .section-header { margin-bottom: 32px; }
+        .section-title { font-size: 30px; }
+        .section-note { font-size: 16px; }
+        .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+        .grid { gap: 14px; }
+        .grid + .grid { margin-top: 14px; }
+        .card { padding: 24px 20px; }
+        .row { grid-template-columns: auto minmax(0, 1fr); gap: 8px 16px; padding: 24px 0; }
+        .r-num { padding-left: 8px; }
+        .r-name { font-size: 19px; }
+        .r-desc { grid-column: 1 / -1; padding-left: 8px; }
+        .faq summary { font-size: 17px; padding: 20px 0; }
+        .faq details p { padding-right: 0; }
+        .cta h2 { font-size: 30px; }
+        .cta-text { font-size: 16px; }
+        .after-note { font-size: 16px; }
+        .path-btns .btn { width: 100%; text-align: center; }
+    }
+
+    @media (max-width: 600px) {
+        .schedule, .schedule tbody, .schedule tr, .schedule td { display: block; width: 100%; }
+        .schedule thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+        .schedule tr { padding: 14px 18px; border-bottom: 1px solid var(--line); }
+        .schedule tr:last-child { border-bottom: 0; }
+        .schedule td { padding: 0; border: 0; }
+        .schedule td:first-child { width: auto; font-size: 14px; margin-bottom: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after {
+            animation-duration: .01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: .01ms !important;
+        }
+        .terminal::before { display: none; }
+        .slab { transform: none !important; }
+        .stage-floor { display: none; }
+        .t-line { opacity: 1; animation: none; }
+        .btn-primary:hover, .btn:active { transform: none; }
+    }
+
+    /* ---------- П-26: открытые уроки ---------- */
+    .howto { font-size: 16px; color: var(--muted); max-width: 640px; line-height: 1.6; }
+    section#uroki { padding-top: 24px; }
+    .lessons { display: grid; gap: 28px; max-width: 820px; }
+    .lesson h3 { font-size: 28px; margin-bottom: 20px; }
+    .lesson h4 {
+        font-family: var(--mono); font-size: 14px; font-weight: 400; color: var(--cyan);
+        letter-spacing: 0.08em; text-transform: uppercase; margin: 24px 0 10px;
+    }
+    .lesson p, .lesson li { font-size: 16px; line-height: 1.6; color: var(--text); }
+    .lesson p + p { margin-top: 10px; }
+    .lesson b { font-weight: 600; color: var(--cyan); }
+    .lesson .idea { list-style: none; display: grid; gap: 8px; }
+    .lesson .idea li { padding-left: 20px; position: relative; }
+    .lesson .idea li::before { content: '›'; position: absolute; left: 2px; color: var(--cyan); }
+    .lesson .impact { margin-top: 20px; }
+    .lesson .who { margin-top: 12px; color: var(--muted); }
+    .lesson .who b { color: var(--text); }
+    .try, .rule {
+        margin-top: 24px; padding: 4px 20px 18px; border-radius: 10px;
+        border: 1px solid var(--line); background: rgba(0, 0, 0, 0.18);
+    }
+    .rule { border-color: rgba(16, 185, 129, 0.45); }
+    .rule h4 { color: var(--green); }
+    .rule p { font-size: 18px; font-weight: 600; }
+    .try-meta { color: var(--muted); text-transform: none; letter-spacing: 0; }
+    .try p { color: var(--muted); }
+    .try ol { margin: 10px 0 0 22px; display: grid; gap: 6px; }
+    .lesson .skip { margin-top: 20px; color: var(--muted); font-size: 15px; }
+    .lesson .skip b { color: var(--muted); }
+    .deeper { list-style: none; display: grid; gap: 6px; }
+    .deeper a, a.src { color: var(--cyan); text-underline-offset: 3px; overflow-wrap: anywhere; }
+    .src-id { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+    a.src { font-family: var(--mono); font-size: 14px; white-space: nowrap; }
+    .table-wrap { overflow-x: auto; }
+    .hron { width: 100%; max-width: 980px; border-collapse: collapse; }
+    .hron th, .hron td { text-align: left; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--line); vertical-align: baseline; font-size: 16px; }
+    .hron th { font-family: var(--mono); font-size: 14px; font-weight: 400; color: var(--muted); }
+    .hron td:first-child { font-family: var(--mono); color: var(--cyan); white-space: nowrap; width: 130px; font-size: 14px; }
+    .hron .t-src { white-space: nowrap; }
+    .cta { text-align: center; }
+    @media (max-width: 900px) {
+        .lesson h3 { font-size: 23px; }
+        .try, .rule { padding: 2px 14px 14px; }
+        .rule p { font-size: 17px; }
+        .hron, .hron tbody, .hron tr, .hron td { display: block; width: 100%; }
+        .hron thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+        .hron tr { padding: 12px 0; border-bottom: 1px solid var(--line); }
+        .hron td { padding: 0; border: 0; }
+        .hron td:first-child { width: auto; margin-bottom: 2px; }
+        .hron .t-src { margin-top: 4px; white-space: normal; }
+    }
+
+    /* ---------- П-29: курс Т2-К ---------- */
+    .notice {
+        max-width: 760px; margin-top: 8px; padding: 14px 18px; border-radius: 10px;
+        border: 1px solid rgba(245, 158, 11, 0.55); background: rgba(245, 158, 11, 0.06);
+        font-size: 15px; line-height: 1.6; color: var(--text);
+    }
+    .notice b { color: var(--amber); }
+    .facts { list-style: none; display: grid; gap: 8px; max-width: 760px; margin-top: 24px; }
+    .facts li { font-size: 16px; color: var(--muted); line-height: 1.6; padding-left: 20px; position: relative; }
+    .facts li::before { content: '›'; position: absolute; left: 2px; color: var(--cyan); }
+    .facts b { color: var(--text); font-weight: 600; }
+    .toc { list-style: none; display: grid; gap: 0; max-width: 820px; counter-reset: none; }
+    .toc li { border-bottom: 1px solid var(--line); }
+    .toc li:first-child { border-top: 1px solid var(--line); }
+    .toc a { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 14px 0; color: var(--text); text-decoration: none; font-size: 17px; line-height: 1.4; }
+    .toc .r-num { padding-left: 0; }
+    .rf { display: grid; gap: 14px; max-width: 820px; }
+    .rf div { font-size: 16px; color: var(--muted); line-height: 1.6; }
+    .rf b { color: var(--text); font-weight: 600; display: block; }
+    .module .goal { margin-bottom: 4px; }
+    .module .video { margin-top: 12px; color: var(--muted); }
+    .module .video b { color: var(--text); }
+    .module .video a, .module .files a { color: var(--cyan); text-underline-offset: 3px; font-weight: 600; }
+    .v-meta { color: var(--muted); font-size: 14px; }
+    .v-copy { display: block; font-family: var(--mono); font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .module .adapt { margin-top: 20px; }
+    .module code, .lesson code { font-family: var(--mono); font-size: 14px; color: var(--cyan); }
+    .files { margin-top: 12px !important; }
+    .final { max-width: 820px; margin: 0 0 0 22px; display: grid; gap: 8px; }
+    .final li { font-size: 16px; line-height: 1.6; color: var(--text); }
+    .about { max-width: 760px; margin: 0 auto; font-size: 16px; color: var(--muted); line-height: 1.6; }
+    .about a { color: var(--cyan); }
+    @media (hover: hover) and (pointer: fine) { .toc a:hover { color: var(--cyan); } }
+    @media (max-width: 900px) { .toc a { font-size: 16px; grid-template-columns: 36px minmax(0, 1fr); } }
+
+</style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <nav aria-label="Разделы страницы">
+            <a class="logo" href="../index.html">Нейромануфактура</a>
+            <ul class="nav-links">
+                <li><a href="#moduli">Модули</a></li>
+                <li><a href="#rossiya">Что у нас иначе</a></li>
+                <li><a href="#proekt">Итоговый проект</a></li>
+                <li class="nav-home"><a href="../index.html">На главную</a></li>
+            </ul>
+            <a href="#m1" class="btn btn-ghost btn-sm">Начать</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+<section class="hero container" id="start">
+    <div class="eyebrow">// АКАДЕМИЯ ИИ · БЕСПЛАТНЫЙ КУРС</div>
+    <h1>Агентная разработка<br><span class="highlight">с Claude</span></h1>
+    <p class="sub">Девять модулей по докладам конференции Code w/ Claude 2026: эвалы, навыки, субагенты, рутины и память агента. Теорию пересказываем своими словами, практику даём на российских примерах, доклады смотрите по ссылкам на официальные записи.</p>
+    <p class="notice"><b>Неофициальный курс, не связан с Anthropic.</b> Anthropic его не заказывала и не проверяла. Записи докладов принадлежат Anthropic PBC и лежат на YouTube-канале Claude, мы только ссылаемся на них. Пересказ, задания и учебные файлы — наши.</p>
+    <ul class="facts">
+        <li><b>Для кого.</b> Разработчики, тимлиды, техлиды и продакты, которые уже пробовали ИИ-ассистента и хотят строить агентов и процессы вокруг них.</li>
+        <li><b>Что нужно уметь.</b> Работать в терминале и с git, читать Python или JS.</li>
+        <li><b>Объём.</b> 9 модулей по 1,5–2 часа: полчаса доклада, остальное практика. Всего около 16 часов и итоговый проект.</li>
+        <li><b>Что получится.</b> Свой агент для задачи своей компании: с эвалом, навыками, проверкой, рутиной и памятью и с замером «до» и «после».</li>
+        <li><b>Условия.</b> Бесплатно, без регистрации. Практику делаете на своём рабочем месте: Cursor, CLI-агент, свой ключ или модель, доступная в России.</li>
+    </ul>
+</section>
+
+<section id="moduli">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">01 / МОДУЛИ</div>
+            <h2 class="section-title">Девять модулей</h2>
+            <p class="section-note">В каждом: цель, главное из доклада нашими словами, ссылка на запись, практика и зачёт. Записи на английском, на YouTube; встроенных плееров на странице нет. Учебные файлы к модулям 1, 2 и 4 — архивами, данные в них выдуманы.</p>
+        </div>
+        <ol class="toc">
+                <li><a href="#m1"><span class="r-num">01</span><span>Эвалы и миграция промпта</span></a></li>
+                <li><a href="#m2"><span class="r-num">02</span><span>Агент с нуля: создать, проверить, исправить</span></a></li>
+                <li><a href="#m3"><span class="r-num">03</span><span>Claude Code: настройка и рабочий цикл</span></a></li>
+                <li><a href="#m4"><span class="r-num">04</span><span>Инструмент, навык или субагент</span></a></li>
+                <li><a href="#m5"><span class="r-num">05</span><span>Спецификация через интервью и встроенная проверка</span></a></li>
+                <li><a href="#m6"><span class="r-num">06</span><span>Полный цикл выпуска: агент и облако</span></a></li>
+                <li><a href="#m7"><span class="r-num">07</span><span>Рутины: агент, который не ждёт Enter</span></a></li>
+                <li><a href="#m8"><span class="r-num">08</span><span>Память агентов и «сновидения»</span></a></li>
+                <li><a href="#m9"><span class="r-num">09</span><span>Команда, где код дешёвый</span></a></li>
+        </ol>
+    </div>
+</section>
+
+<section id="rossiya" class="alt">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">02 / ЧТО У НАС ИНАЧЕ</div>
+            <h2 class="section-title">Что меняем под Россию</h2>
+            <p class="section-note">Доклады рассчитаны на американские сервисы. Приёмы те же, инструменты свои.</p>
+        </div>
+        <div class="rf">
+            <div><b>Доступ к моделям</b>Из России прямого доступа к Claude и API Anthropic нет, российская карта к оплате не проходит. Приёмы показываем в Cursor или в CLI-агенте через корпоративный шлюз к моделям (например, LiteLLM) и повторяем на модели, доступной в России: YandexGPT, GigaChat или открытой модели на своём сервере. Так видно, что приём держится не на одной модели.</div>
+            <div><b>Облако</b>Вместо Google Cloud — Yandex Cloud, VK Cloud или Selectel: бессерверные контейнеры, управляемая база данных, IAM и сервисные аккаунты. Роли продакта, дизайнера, разработчика и безопасника те же.</div>
+            <div><b>Сервисы</b>Вместо Slack, Datadog и Twilio — Telegram или «Пачка», Grafana или Zabbix, SMS-шлюзы. GitHub работает; если код нужно держать в России — GitFlic или GitVerse.</div>
+            <div><b>Персональные данные</b>Если в памяти агента или в запросах есть персональные данные, действует 152-ФЗ: данные граждан РФ хранятся в России, во внешнюю модель уходят только обезличенными. Для каждого хранилища — таблица «что пишем, что не пишем».</div>
+            <div><b>Примеры</b>Свои, на русском: поддержка интернет-магазина на InSales или Битрикс24, закупки по выгрузке из 1С, график смен по ТК РФ.</div>
+            <div><b>Деньги</b>Цены за токены пересчитываем в рубли по курсу ЦБ на дату занятия: стоимость задачи = токены × цена. Курс и тарифы в текст курса не вшиваем.</div>
+        </div>
+    </div>
+</section>
+
+<section id="kurs">
+    <div class="container">
+        <div class="lessons">
+        <article class="card lesson module" id="m1">
+            <div class="card-num">МОДУЛЬ 1</div>
+            <h3>Эвалы и миграция промпта</h3>
+            <p class="goal"><b>Цель:</b> понять, почему промпт и модель нельзя менять без эвала, и собрать минимальный набор тестов.</p>
+            <p class="video"><b>Видео:</b> «The prompting playbook», Марго van Laar, Anthropic. <a href="https://www.youtube.com/watch?v=G2B0YWuJUgI" target="_blank" rel="noopener">Смотреть запись</a> <span class="v-meta">YouTube, на английском, 33:49</span>. <span class="v-copy">© Anthropic PBC, Code w/ Claude 2026</span></p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>После смены модели стало хуже — причин бывает две. Новая модель ведёт себя иначе: это лечится промптом. Новой модели не хватает способностей: тут промпт не поможет. Отличить одно от другого может только эвал.</li>
+                <li>Минимальный набор: контрольный случай, который проходит всегда; случаи, на которых модель уже ошибалась; случаи на границе полномочий — когда звать человека и когда отказать.</li>
+                <li>Порядок работы: сначала общая гигиена промпта: XML-теги для роли, политики и тона, без мусора, скопированного с сайта. Потом провалы разбирают по одному.</li>
+                <li>Заплатки для старых моделей вроде «НИКОГДА не…» новые модели понимают слишком буквально и начинают скрывать от клиента нужное. Записывайте, зачем добавили каждую правку, иначе её потом не снять.</li>
+                <li>Инструкция не даёт модели новых умений. Нужно считать — дайте инструмент, а не требование «считай правильно».</li>
+                <li>Называйте цену обеих ошибок: лишняя передача человеку отнимает время сотрудника, пропущенная стоит возврата денег и доверия.</li>
+            </ul>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>Бот поддержки выдуманного магазина «Синица»: промпт на 40 строк с нарочно заложенными ошибками и 5 тестов — контроль, возврат, доставка в регион, двойное списание, вопрос не по теме. Прогоните на двух моделях по три раза и найдите правку, которая одной модели помогает, а другой вредит.</p>
+                <p class="files"><a href="t2k/t2k-m1-bot-podderzhki.zip" download>Скачать файлы: Бот поддержки «Синица»</a> <span class="v-meta">zip, промпт v0 на 40 строк, 5 тестов, шаблон таблицы прогонов</span></p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>Таблица «тест × версия промпта» минимум на 3 версии, у каждой правки записана причина.</p>
+            </div>
+        </article>
+        <article class="card lesson module" id="m2">
+            <div class="card-num">МОДУЛЬ 2</div>
+            <h3>Агент с нуля: создать, проверить, исправить</h3>
+            <p class="goal"><b>Цель:</b> увидеть, что агент — это выбор трёх вещей сразу: промпта, модели и обвязки.</p>
+            <p class="video"><b>Видео (тот же доклад, что в модуле 1):</b> «The prompting playbook», Марго van Laar, Anthropic. <a href="https://www.youtube.com/watch?v=G2B0YWuJUgI" target="_blank" rel="noopener">Смотреть запись</a> <span class="v-meta">YouTube, на английском, 33:49</span>. <span class="v-copy">© Anthropic PBC, Code w/ Claude 2026</span></p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>Жёсткие правила проверяет функция на Python, а не LLM-судья.</li>
+                <li>В демо с расписанием смен сильная модель с долгим рассуждением справляется, но тратит примерно втрое больше токенов и времени. Цикл из трёх простых промптов на быстрой модели (создать, проверить, исправить) решил все случаи и обошёлся дешевле.</li>
+                <li>Мягкие пожелания вроде «этих двоих не ставить в одну смену» передают проверяющему промпту при запуске. Код при этом не трогают.</li>
+            </ul>
+            <p class="adapt"><b>У нас:</b> вместо расписания из доклада — график смен магазина по ТК РФ: не больше 40 часов в неделю (ст. 91), до 18 лет — не больше 35 часов (ст. 92) и без ночной работы (ст. 96), еженедельный отдых не меньше 42 часов подряд (ст. 110). Ещё два правила магазина, а не нормы ТК: 12 часов между сменами и не меньше двух человек в зале.</p>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>Напишите функцию проверки графика на Python, сверьте её с нашими тестами и сравните три подхода — сильная модель одним запросом, быстрая модель одним запросом, цикл на быстрой модели — по трём числам: доля графиков без нарушений, токены, секунды.</p>
+                <p class="files"><a href="t2k/t2k-m2-grafik-smen.zip" download>Скачать файлы: График смен по ТК РФ</a> <span class="v-meta">zip, неделя смен в JSON, 12 тестов для вашей функции проверки</span></p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>Таблица сравнения на 5 запусках и вывод: какой подход вы взяли бы в продакшен и почему.</p>
+            </div>
+        </article>
+        <article class="card lesson module" id="m3">
+            <div class="card-num">МОДУЛЬ 3</div>
+            <h3>Claude Code: настройка и рабочий цикл</h3>
+            <p class="goal"><b>Цель:</b> настроить рабочее место так, чтобы один и тот же цикл повторялся от задачи к задаче.</p>
+            <p class="video none"><b>Видео:</b> официальную запись этого доклада и имя докладчика мы не подтвердили, поэтому ссылки нет. Модуль идёт по нашему тексту.</p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>В CLAUDE.md лежит общая память проекта: команды тестов, структура, стиль. Такой файл бывает в проекте и в домашнем каталоге.</li>
+                <li>Следите за контекстом (<code>/clear</code>, <code>/compact</code>) и разрешениями: команды, разрешённые заранее, экономят время на каждом шаге.</li>
+                <li>Сначала план, потом правка. Смотрите за списком задач агента и прерывайте его клавишей Escape, если он свернул не туда. Шаги маленькие: тест, линт, коммит.</li>
+                <li>Если у сервиса есть хороший CLI вроде <code>gh</code>, он часто удобнее MCP. Агентов можно запустить два–четыре параллельно, состоянием они обмениваются через общий файл.</li>
+            </ul>
+            <p class="adapt"><b>У нас:</b> в России Claude Code напрямую недоступен, поэтому тот же цикл показываем в Cursor и в CLI-агенте через шлюз. Содержимое CLAUDE.md переносится в AGENTS.md или в правила Cursor.</p>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>Напишите CLAUDE.md для своего репозитория, разрешите 5 безопасных команд и проведите одну задачу по циклу «план → тест → правка → коммит».</p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>CLAUDE.md не длиннее 60 строк и история коммитов, в которой виден цикл.</p>
+            </div>
+        </article>
+        <article class="card lesson module" id="m4">
+            <div class="card-num">МОДУЛЬ 4</div>
+            <h3>Инструмент, навык или субагент</h3>
+            <p class="goal"><b>Цель:</b> разобрать агента, который перерос свой промпт.</p>
+            <p class="video"><b>Видео:</b> «Tool, skill, or subagent? Decomposing an agent that outgrew its prompt», Уилл Steuk, Anthropic. <a href="https://www.youtube.com/watch?v=mWvtOHlZM-I" target="_blank" rel="noopener">Смотреть запись</a> <span class="v-meta">YouTube, на английском, 45:06</span>. <span class="v-copy">© Anthropic PBC, Code w/ Claude 2026</span></p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>Типичная картина: промпт на 400 строк, 12 инструментов, 3 субагента, а эвал упал до 62%.</li>
+                <li>Работа по кругу: прогнать эвал, разобрать провалы, поменять устройство агента, прогнать снова.</li>
+                <li>В системном промпте — только то, что нужно всегда. Остальное уходит в навыки, которые агент подгружает по необходимости. В демо от 400 строк промпта осталось 15.</li>
+                <li>Начинайте с простых примитивов: bash, файлы, выполнение кода, поиск. CSV в контекст не грузите: пусть посчитает скрипт, а агент прочитает итог.</li>
+                <li>Порядок выбора: примитивы, потом свой инструмент, MCP — только если инструмент нужен нескольким агентам.</li>
+                <li>Субагент оправдан в двух случаях: параллельная работа или свежий взгляд без контекста автора. Часто его можно убрать совсем.</li>
+                <li>В конце демо: 3 инструмента, промпт на 15 строк, логика в навыках, один субагент. Эвал около 92%, токенов меньше.</li>
+            </ul>
+            <p class="adapt"><b>У нас:</b> агент закупок на выгрузке «как из 1С»: остатки на двух складах, продажи за 90 дней, прайсы трёх поставщиков. Отчёт уходит в Telegram, а не в Slack.</p>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>«перекормленный» агент закупок: промпт на 110 строк, 10 инструментов, эвал на 10 задач. Перепишите его на короткий промпт, навыки и примитивы. Заказ поставщику агент делает только после подтверждения человека.</p>
+                <p class="files"><a href="t2k/t2k-m4-agent-zakupok.zip" download>Скачать файлы: Агент закупок на выгрузке «как из 1С»</a> <span class="v-meta">zip, остатки, продажи за 90 дней и прайсы в CSV, промпт v0, 10 инструментов, эвал на 10 задач и проверка ответов</span></p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>Эвал не хуже исходного при меньшем расходе токенов, замер «до» и «после» приложен.</p>
+            </div>
+        </article>
+        <article class="card lesson module" id="m5">
+            <div class="card-num">МОДУЛЬ 5</div>
+            <h3>Спецификация через интервью и встроенная проверка</h3>
+            <p class="goal"><b>Цель:</b> перенести проверку в начало работы и сделать её удобной для человека.</p>
+            <p class="video"><b>Видео:</b> «How we Claude Code», Арно Doko, Anthropic. <a href="https://www.youtube.com/watch?v=IlqJqcl8ONE" target="_blank" rel="noopener">Смотреть запись</a> <span class="v-meta">YouTube, на английском, 31:43</span>. <span class="v-copy">© Anthropic PBC, Code w/ Claude 2026</span></p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>Чем дольше агент работает без присмотра, тем дороже ошибка. Поэтому проверку закладывают уже в спецификацию.</li>
+                <li>Не перечисляйте ограничения сами — попросите модель расспросить вас. В Claude Code для этого есть инструмент уточняющих вопросов (AskUserQuestion).</li>
+                <li>Спецификацию удобнее делать в HTML: markdown длиннее примерно 200 строк почти никто не дочитывает, а в HTML варианты легко показать рядом.</li>
+                <li>Встроенная проверка: компонент отдаёт своё состояние через data-атрибуты, у него есть фикстуры и инварианты. Одну и ту же проверку запускают человек на дашборде, агент в браузере и CI без интерфейса.</li>
+                <li>Каждый прогон проверки сохраняется как запись, которую можно показать коллеге.</li>
+            </ul>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>Попросите модель провести с вами интервью по одной фиче, получите HTML-спецификацию и добавьте к ней 5 инвариантов с запуском через Playwright.</p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>Спецификация, проверка, которая падает при поломке, и запись прогона.</p>
+            </div>
+        </article>
+        <article class="card lesson module" id="m6">
+            <div class="card-num">МОДУЛЬ 6</div>
+            <h3>Полный цикл выпуска: агент и облако</h3>
+            <p class="goal"><b>Цель:</b> за одну сессию пройти путь от эскиза до выкладки, по очереди побыв всеми ролями команды.</p>
+            <p class="video"><b>Видео:</b> «Building with Claude on Google Cloud», Иван Nardini, Google Cloud. <a href="https://www.youtube.com/watch?v=l8fxVYIP4HQ" target="_blank" rel="noopener">Смотреть запись</a> <span class="v-meta">YouTube, на английском, 24:38</span>. <span class="v-copy">© Anthropic PBC, Code w/ Claude 2026</span></p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>Продакт: от эскиза от руки до wireframe за минуты.</li>
+                <li>Режим плана: агент раскладывает работу по компонентам, человек правит план, и только потом начинается код.</li>
+                <li>Свежая документация облака подключается через MCP, архитектуру строят по ней.</li>
+                <li>Три субагента параллельно — API, загрузка данных, дашборд — работают как маленький спринт.</li>
+                <li>Безопасник: ревью по OWASP, минимальные права сервисного аккаунта, и только после этого выкладка.</li>
+            </ul>
+            <p class="adapt"><b>У нас:</b> облако — Yandex Cloud (Serverless Containers, Managed PostgreSQL, IAM) или Selectel. Документацию подключаем через MCP-сервер или навык со свежими страницами. К ревью безопасности добавляем проверку по 152-ФЗ: где лежат персональные данные и у кого к ним доступ.</p>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>Опрос посетителей с дашбордом: эскиз, план, код, ревью безопасности, выкладка на тестовый стенд.</p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>Рабочий адрес тестового стенда, отчёт ревью безопасности и список прав сервисного аккаунта.</p>
+            </div>
+        </article>
+        <article class="card lesson module" id="m7">
+            <div class="card-num">МОДУЛЬ 7</div>
+            <h3>Рутины: агент, который не ждёт Enter</h3>
+            <p class="goal"><b>Цель:</b> научить агента работать самому — по расписанию или по событию, без запроса человека.</p>
+            <p class="video"><b>Видео:</b> «Build a proactive agent workflow with Claude Code», Майя Nielan, Anthropic. <a href="https://www.youtube.com/watch?v=eSP7PLTXNy8" target="_blank" rel="noopener">Смотреть запись</a> <span class="v-meta">YouTube, на английском, 22:04</span>. <span class="v-copy">© Anthropic PBC, Code w/ Claude 2026</span></p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>Рутина — это промпт, репозитории, коннекторы и триггер на управляемой инфраструктуре. Сессию рутины можно открыть и поправить вживую.</li>
+                <li>Три решения: триггер, контекст и управляемость. Потолок успеха задаёт контекст.</li>
+                <li>Триггер — расписание (<code>/schedule</code>) или событие: релиз, метка, вебхук.</li>
+                <li>Управляемость — пара «генератор и критик»: одна рутина делает, другая проверяет раньше человека. Плюс наблюдение за сессией и проверка результата.</li>
+                <li>Перед выкладкой агент советует «выкатывать» или «не выкатывать», решает человек. Откатывать сам агент начинает, только когда накоплено доверие.</li>
+            </ul>
+            <p class="adapt"><b>У нас:</b> если управляемых рутин нет, то же собирают из cron или GitLab CI, CLI-агента и Telegram-бота для оповещений. Важны три решения, платформа вторична.</p>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>Еженедельная рутина «сверь документацию с кодом и открой PR» и рутина-критик к ней.</p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>Два прогона по расписанию, PR и комментарий критика.</p>
+            </div>
+        </article>
+        <article class="card lesson module" id="m8">
+            <div class="card-num">МОДУЛЬ 8</div>
+            <h3>Память агентов и «сновидения»</h3>
+            <p class="goal"><b>Цель:</b> дать агенту память между сессиями и не дать ей разрастись.</p>
+            <p class="video"><b>Видео:</b> «Agents that remember», Кевин Chen, Anthropic. <a href="https://www.youtube.com/watch?v=geUv4CjPpxI" target="_blank" rel="noopener">Смотреть запись</a> <span class="v-meta">YouTube, на английском, 28:42</span>. <span class="v-copy">© Anthropic PBC, Code w/ Claude 2026</span></p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>Без памяти каждая сессия начинается с нуля.</li>
+                <li>Хранилище памяти — файловая система, подключённая к сессии. Агент ищет в ней через grep и чтение файлов. Доступ бывает «чтение и запись» или «только чтение». Хранилищ сколько угодно: на компанию, на пользователя, на проект.</li>
+                <li>Каждое изменение сохраняет версию, и человек может поправить файл руками.</li>
+                <li>«Сновидение» (dreaming) — фоновая задача. Она перечитывает память и прошлые сессии, сверяет факты, сливает дубли и строит индекс. Исходное хранилище не трогает, результат пишет в копию.</li>
+                <li>Три слоя: сессия, память, «сновидение».</li>
+            </ul>
+            <p class="adapt"><b>У нас:</b> память собираем на обычной папке под git — версии и diff видны сразу. «Сновидение» запускаем ночной задачей cron, которая сначала обезличивает данные. Перед подключением хранилища заполняем таблицу по 152-ФЗ: какие поля писать в память можно, а какие нельзя.</p>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>Агент-секретарь, который помнит договорённости со встреч: пять сессий, ночное «сновидение», потом вопрос «что мы решили по…».</p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>Агент правильно отвечает на 4 вопроса из 5 по прошлым сессиям, в памяти нет персональных данных из запрещённого списка.</p>
+            </div>
+        </article>
+        <article class="card lesson module" id="m9">
+            <div class="card-num">МОДУЛЬ 9</div>
+            <h3>Команда, где код дешёвый</h3>
+            <p class="goal"><b>Цель:</b> пересобрать процессы команды под работу с агентами.</p>
+            <p class="video"><b>Видео:</b> «Running an AI-native engineering org», Фиона Fung, Anthropic. <a href="https://www.youtube.com/watch?v=IA5LWIGqnyM" target="_blank" rel="noopener">Смотреть запись</a> <span class="v-meta">YouTube, на английском, 26:38</span>. <span class="v-copy">© Anthropic PBC, Code w/ Claude 2026</span></p>
+
+            <h4>Главное</h4>
+            <ul class="idea">
+                <li>Узкое место сместилось. Писать код стало дёшево, дорого — проверять, ревьюить, договариваться между командами, держать безопасность и сопровождение.</li>
+                <li>Процессы сами не отмирают, их только наслаивают. Планируют ближе к делу: дорожная карта на полгода устаревает за три месяца. Вместо спора у доски сравнивают три готовых PR.</li>
+                <li>Ритуал «дизайн-документ до кода» сократили, а вложились в проверку и в то, чтобы она начиналась раньше.</li>
+                <li>Человек на ревью нужен там, где есть экспертиза и риск: право, границы доверия, безопасность, продуктовый вкус.</li>
+                <li>Мерить стоит время онбординга, длину цикла PR и в итоге качество и надёжность. Доля сгенерированного кода как метрика ничего не говорит.</li>
+                <li>Задание на понедельник из доклада: возьмите самый шумный процесс и спросите, заслуживает ли он ещё своего места.</li>
+            </ul>
+
+            <div class="try">
+                <h4>Практика</h4>
+                <p>Аудит процессов своей команды: выпишите 10 регулярных ритуалов и для каждого решите — оставить, автоматизировать навыком или рутиной или убрать.</p>
+            </div>
+
+            <div class="rule">
+                <h4>Зачёт</h4>
+                <p>Таблица решений и одна автоматизация, доведённая до работы.</p>
+            </div>
+        </article>
+        </div>
+    </div>
+</section>
+
+<section id="proekt" class="alt">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label">03 / ИТОГОВЫЙ ПРОЕКТ</div>
+            <h2 class="section-title">Агент для своей компании</h2>
+            <p class="section-note">Поддержка, закупки, отчёты или документация — задачу выбираете сами. Обязательные части:</p>
+        </div>
+        <ol class="final">
+                <li>Эвал на 10 и больше случаев с замером «до» и «после» (модули 1, 2, 4).</li>
+                <li>Навыки вместо длинного промпта, промпт не длиннее 30 строк (модуль 4).</li>
+                <li>Встроенная проверка с записью прогона (модуль 5).</li>
+                <li>Рутина с триггером и критиком (модуль 7).</li>
+                <li>Память с таблицей по 152-ФЗ (модуль 8).</li>
+                <li>Одна страница: стоимость задачи в рублях, какая модель и почему, что будет при смене модели.</li>
+        </ol>
+    </div>
+</section>
+
+<section id="kto-my" class="cta">
+    <div class="container">
+        <div class="section-label">КТО МЫ</div>
+        <p class="about">Курс собрала Академия ИИ компании <a href="../index.html">Нейромануфактура</a>. Неофициальный курс, не связан с Anthropic. Записи докладов — © Anthropic PBC, Code w/ Claude 2026.</p>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <div class="container footer-inner">
+        <div>© 2026 Нейромануфактура · <a href="../policy.html">Политика обработки персональных данных</a></div>
+        <div><a data-tg="biznes_autopilot" href="https://t.me/biznes_autopilot" target="_blank" rel="noopener">Telegram</a> · <a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y" target="_blank" rel="noopener">MAX</a></div>
+    </div>
+</footer>
+
+<script>
+(function () {
+    document.querySelectorAll('[data-tg]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+            e.preventDefault();
+            var n = a.getAttribute('data-tg');
+            window.location.href = 'tg://resolve?domain=' + n;
+            setTimeout(function () {
+                if (document.hasFocus()) window.open('https://t.me/' + n, '_blank', 'noopener');
+            }, 2000);
+        });
+    });
+})();
+</script>
+</body>
+</html>

@@ -459,7 +459,8 @@
         margin: 0 auto 40px;
         position: relative;
     }
-    .free { max-width: 960px; }
+    .free { max-width: 1120px; }
+    .free-card p.free-note { font-size: 14px; margin-top: -12px; }
     a.card.free-card { display: flex; flex-direction: column; color: inherit; text-decoration: none; transition: border-color .2s, transform .2s; }
     a.card.free-card:hover, a.card.free-card:focus-visible { border-color: var(--cyan); transform: translateY(-2px); }
     .free-card p { margin-bottom: 20px; }
@@ -873,9 +874,9 @@
         <div class="section-header">
             <div class="section-label">08 / БЕСПЛАТНО</div>
             <h2 class="section-title">Попробовать бесплатно</h2>
-            <p class="section-note">Два открытых урока без регистрации: по три коротких занятия на 5–10 минут, с источниками.</p>
+            <p class="section-note">Без регистрации: два открытых урока по три коротких занятия на 5–10 минут и бесплатный курс для разработчиков.</p>
         </div>
-        <div class="grid grid-2 free">
+        <div class="grid grid-3 free">
             <a class="card card-accent free-card" href="academy/istoriya-ii.html">
                 <h3>История ИИ</h3>
                 <p>Как за восемьдесят лет пришли от правил к ассистентам и откуда взялись OpenAI, Google DeepMind, Anthropic и xAI.</p>
@@ -885,6 +886,12 @@
                 <h3>ChatGPT</h3>
                 <p>Что можно отправлять модели, как поставить задачу из четырёх частей и когда платить за большую модель.</p>
                 <span class="free-more">Открыть урок →</span>
+            </a>
+            <a class="card card-accent free-card" href="academy/agentnaya-razrabotka.html">
+                <h3>Агентная разработка с Claude</h3>
+                <p>Девять модулей по докладам Code w/ Claude 2026 для разработчиков и тимлидов: эвалы, навыки, рутины, память агента.</p>
+                <p class="free-note">Неофициальный курс, не связан с Anthropic.</p>
+                <span class="free-more">Открыть курс →</span>
             </a>
         </div>
     </div>

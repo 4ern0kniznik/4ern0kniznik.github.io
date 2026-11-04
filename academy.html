@@ -292,6 +292,14 @@
     /* ---------- разделы ---------- */
     section { padding: 120px 0; position: relative; }
     .section-header { margin-bottom: 56px; max-width: 760px; }
+    section#obzor { padding-top: 0; }
+    .overview { margin: 0; }
+    .overview video {
+        display: block; width: 100%; height: auto;
+        aspect-ratio: 16 / 9; background: #000;
+        border: 1px solid rgba(0, 217, 255, 0.22); border-radius: 14px;
+    }
+    .overview figcaption { margin-top: 12px; font-size: 15px; color: var(--muted); }
     .section-label {
         font-family: var(--mono); font-size: 14px; color: var(--cyan);
         letter-spacing: 0.15em; margin-bottom: 20px; font-weight: 400;
@@ -622,6 +630,15 @@
             <div class="slab-side" aria-hidden="true"></div>
             <div class="slab-bottom" aria-hidden="true"></div>
         </div>
+    </div>
+</section>
+
+<section id="obzor">
+    <div class="container">
+        <figure class="overview">
+            <video controls preload="none" playsinline poster="video/akademiya.jpg" src="video/akademiya.mp4"></video>
+            <figcaption>Обзор курса за минуту</figcaption>
+        </figure>
     </div>
 </section>
 

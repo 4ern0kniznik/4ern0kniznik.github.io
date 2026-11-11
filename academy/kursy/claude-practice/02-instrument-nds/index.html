@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Первый инструмент: точный расчёт НДС — К5 · Академия ИИ</title>
+<meta name="description" content="Модель пишет текст и иногда ошибается в арифметике. В бухгалтерии ошибка в копейку — это неверный счёт-фактура. Решение — дать модели инструмент: вашу функцию, которая считает точно. Модель…">
+<link rel="canonical" href="https://neuromanufaktura.ru/academy/kursy/claude-practice/02-instrument-nds/">
+<link rel="stylesheet" href="../../kursy.css">
+</head><body>
+<header class="hdr"><div class="wrap">
+<a class="logo" href="../../../../index.html">Нейромануфактура</a>
+<nav class="nav" aria-label="Разделы"><a class="hide-m" href="../../../../academy.html">Академия ИИ</a><a href="../../" aria-current="page">Курсы</a><a class="hide-m home" href="../../../../index.html">На главную</a></nav>
+</div></header>
+<main>
+<section class="sec"><div class="wrap"><article class="read lesson">
+<p class="eyebrow"><a href="../../">Каталог</a> · <a href="../">К5 Claude на практике: инструменты, навыки, агенты</a></p><p class="small" style="margin:0 0 4px">Урок 2 из 15</p><h1>Первый инструмент: точный расчёт НДС</h1><div class="badges" style="margin:12px 0 16px"><span class="badge badge-free">Бесплатно</span><span class="badge badge-lic">MIT</span></div>
+<dl class="src" aria-label="Источник урока"><dt>Основано на</dt><dd>«Using a Calculator Tool with Claude», Anthropic, <a href="https://github.com/anthropics/claude-cookbooks/blob/main/tool_use/calculator_tool.ipynb">github.com/anthropics/claude-cookbooks/blob/main/tool_use/calculator_tool.ipynb</a>, лицензия MIT, © 2023 Anthropic.</dd><dt>Что изменено</dt><dd>перевод на русский, общий калькулятор заменён расчётом НДС до копейки, <code>eval</code> убран, цикл переписан под несколько вызовов, добавлены разделы «Практика Академии» и «Сравните модели».</dd><dt>Оригинал</dt><dd><a href="https://github.com/anthropics/claude-cookbooks">github.com/anthropics/claude-cookbooks</a></dd></dl>
+<h2>Зачем это</h2><p>Модель пишет текст и иногда ошибается в арифметике. В бухгалтерии ошибка в копейку — это неверный счёт-фактура. Решение — дать модели инструмент: вашу функцию, которая считает точно. Модель решает, когда её вызвать и с какими числами, а считает ваш код.</p><h2>Урок</h2><h3>Как устроен вызов инструмента</h3><p>В К1 (урок 10.2) вы играли роль инструмента руками. Теперь это делает программа. Шаги:</p><ol><li>Вы передаёте в запрос описание инструментов: имя, назначение, поля на входе.</li><li>Модель отвечает блоком <code>tool_use</code>: имя инструмента и входные данные. <code>stop_reason</code> в этом случае равен <code>tool_use</code>.</li><li>Ваш код запускает функцию.</li><li>Вы отправляете результат обратно блоком <code>tool_result</code> с тем же <code>id</code>, и модель дописывает ответ.</li></ol><p>Модель сама ничего не запускает. Она только просит. Что выполнить, решает ваш код.</p><h3>Функция</h3><p>В оригинале калькулятор считает выражение через <code>eval</code>, и авторы честно предупреждают, что так делать нельзя. <code>eval</code> выполнит любой код, который придёт от модели. Мы напишем узкую функцию: она умеет одно — НДС.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>from decimal import Decimal, ROUND_HALF_UP
+
+KOP = Decimal("0.01")
+
+def vat(amount: str, rate: float, mode: str) -&gt; dict:
+    """mode="included": НДС уже в сумме, выделяем; mode="on_top": начисляем сверху."""
+    a, r = Decimal(amount), Decimal(str(rate))
+    if mode == "included":
+        tax = (a * r / (100 + r)).quantize(KOP, ROUND_HALF_UP)
+        net, gross = a - tax, a
+    elif mode == "on_top":
+        tax = (a * r / 100).quantize(KOP, ROUND_HALF_UP)
+        net, gross = a, a + tax
+    else:
+        raise ValueError(f"неизвестный режим {mode}")
+    return {"net": str(net), "vat": str(tax), "gross": str(gross)}</pre></div><p>Деньги считаем в <code>Decimal</code>. Во <code>float</code> <code>0.1 + 0.2</code> даёт <code>0.30000000000000004</code>. Ставку функция не знает. Её передаёт модель из условия задачи, а действующую ставку на дату документа проверяет человек.</p><h3>Описание инструмента</h3><p>Модель выбирает инструмент по описанию. Пишите его как инструкцию новому сотруднику: что делает, когда звать, что в каждом поле.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>TOOLS = [{
+    "name": "vat",
+    "description": ("Точный расчёт НДС до копейки. Вызывай для любой суммы с НДС, "
+                    "сам НДС не считай. mode=included — НДС уже в сумме, его надо выделить; "
+                    "mode=on_top — НДС начисляется сверху."),
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "amount": {"type": "string", "description": "Сумма в рублях, точка-разделитель, без пробелов: 118000.00"},
+            "rate":   {"type": "number", "description": "Ставка НДС в процентах из условия задачи"},
+            "mode":   {"type": "string", "enum": ["included", "on_top"]},
+        },
+        "required": ["amount", "rate", "mode"],
+    },
+}]</pre></div><p>Имя инструмента — латиница, цифры, <code>_</code> и <code>-</code>. Кириллицу в имени API не примет, а в описании пишите по-русски.</p><h3>Цикл запроса</h3><p>Оригинал обрабатывает один вызов и делает второй запрос. На практике модели нужно два-три вызова: например, выделить НДС из двух сумм. Поэтому сразу пишем цикл.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>import json
+from anthropic import Anthropic
+
+MODEL = "впишите-имя-модели"  # актуальное имя — в документации вендора
+client = Anthropic()
+
+def ask(question, log=None):
+    messages = [{"role": "user", "content": question}]
+    for _ in range(5):  # предел шагов: модель не должна крутиться вечно
+        resp = client.messages.create(model=MODEL, max_tokens=1024,
+                                      tools=TOOLS, messages=messages)
+        if resp.stop_reason != "tool_use":
+            return "".join(b.text for b in resp.content if b.type == "text")
+        messages.append({"role": "assistant", "content": resp.content})
+        results = []
+        for b in resp.content:
+            if b.type != "tool_use":
+                continue
+            out = vat(**b.input)
+            if log is not None:
+                log.append({"input": b.input, "output": out})
+            results.append({"type": "tool_result", "tool_use_id": b.id,
+                            "content": json.dumps(out, ensure_ascii=False)})
+        messages.append({"role": "user", "content": results})
+    raise RuntimeError("модель не закончила за 5 шагов")</pre></div><p>Три детали, на которых чаще всего ошибаются:</p><ul><li>Ответ модели с вызовом (<code>resp.content</code>) кладут в историю целиком, как реплику ассистента.</li><li>Все результаты одного шага идут одним сообщением пользователя, по блоку на каждый вызов.</li><li><code>tool_use_id</code> в результате совпадает с <code>id</code> вызова. Иначе API вернёт ошибку.</li></ul><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>log = []
+print(ask("Счёт на 118 000,00 ₽ с НДС 20 %. Сколько НДС и сколько без НДС?", log))
+print(log)</pre></div><h3>Когда инструмент не нужен</h3><p>Модель с инструментом не обязана звать его на каждый вопрос. Спросите «Что такое счёт-фактура?» — вызова не будет, <code>log</code> останется пустым. В оригинале это видно на примерах, где вызов появляется только при расчёте.</p><h2>Упражнения</h2><h3>Упражнение 2.1. Сверху или внутри</h3><p>Спросите: «Услуга стоит 50 000 ₽ без НДС, ставка 20 %. Сколько выставить клиенту?»</p><p class="check"><b>Проверка:</b> в <code>log</code> один вызов с <code>mode="on_top"</code>, в ответе сумма 60 000,00 ₽.</p><details><summary>Подсказка</summary><div><p>Если модель выбрала included, допишите в описание поля mode пример: «"без НДС" в условии значит on_top».</p></div></details><h3>Упражнение 2.2. Два вызова</h3><p>Спросите про две суммы сразу: «Выдели НДС 20 % из 24 000 ₽ и из 1 999,99 ₽».</p><p class="check"><b>Проверка:</b> в <code>log</code> два вызова; для 1 999,99 НДС равен 333,33 ₽.</p><details><summary>Подсказка</summary><div><p>Модель может сделать оба вызова в одном шаге. Цикл выше это поддерживает: он обходит все блоки tool_use.</p></div></details><h2>Практика Академии</h2><p><b>Задача.</b> Сначала докажите, что функция считает верно. Потом — что модель её зовёт и переносит число в ответ без искажений.</p><p><b>Часть 1. Тесты функции</b> (без модели и без сети):</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>def test_vat():
+    assert vat("118000.00", 20, "included") == {"net": "98333.33", "vat": "19666.67", "gross": "118000.00"}
+    assert vat("100000", 20, "on_top")       == {"net": "100000", "vat": "20000.00", "gross": "120000.00"}
+    assert vat("1000.00", 22, "included")    == {"net": "819.67", "vat": "180.33", "gross": "1000.00"}
+    assert vat("0.05", 20, "included")["vat"] == "0.01"
+    try:
+        vat("100", 20, "сверху")
+        raise AssertionError("неизвестный режим должен давать ошибку")
+    except ValueError:
+        pass
+    print("Функция vat считает верно")
+
+test_vat()</pre></div><p><b>Часть 2. Модель и инструмент.</b> Прогоните пять вопросов и проверьте журнал:</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>CASES = [
+    ("Счёт на 236 000,00 ₽, НДС 20 % включён. Сколько НДС?",            "included", "236000", "39333.33"),
+    ("Начисли НДС 20 % на 12 345,67 ₽.",                                 "on_top",   "12345.67", "2469.13"),
+    ("Сумма договора 1 220 000 ₽ с НДС 22 %. Выдели НДС.",               "included", "1220000", "220000.00"),
+    ("Сколько будет с НДС 10 %, если без НДС 8 400 ₽?",                  "on_top",   "8400", "840.00"),
+    ("Что такое УПД? Ответь одним предложением.",                         None, None, None),
+]
+
+for q, mode, amount, expected_vat in CASES:
+    log = []
+    answer = ask(q, log)
+    if mode is None:
+        assert log == [], f"лишний вызов на вопрос: {q}"
+        continue
+    assert len(log) &gt;= 1, f"нет вызова: {q}"
+    call = log[0]
+    assert call["input"]["mode"] == mode, f"режим: {q}"
+    assert Decimal(call["input"]["amount"]) == Decimal(amount), f"сумма: {q}"
+    assert call["output"]["vat"] == expected_vat, f"НДС: {q}"
+    digits = answer.replace(" ", "").replace(" ", "").replace(",", ".")
+    assert expected_vat in digits, f"в ответе нет числа {expected_vat}: {q}"
+print("Модель вызывает инструмент и переносит число верно")</pre></div><p>Засчитано, если обе части печатают итоговую строку. Если падает последняя проверка, модель пересказала число по-своему, например округлила до рублей. Добавьте системную подсказку: «Суммы из инструмента переноси в ответ до копейки».</p><h2>Сравните модели</h2><p>У OpenAI-совместимых API (DeepSeek и другие) вызов инструментов называется function calling. Устроен так же, отличается формат:</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>import os
+from openai import OpenAI
+
+alt = OpenAI(api_key=os.environ["ALT_API_KEY"], base_url=os.environ["ALT_BASE_URL"])  # адрес — в документации вендора
+ALT_MODEL = "впишите-имя-модели"  # актуальное имя — в документации вендора
+
+ALT_TOOLS = [{"type": "function", "function": {
+    "name": t["name"], "description": t["description"], "parameters": t["input_schema"]}} for t in TOOLS]
+
+def ask_alt(question, log=None):
+    messages = [{"role": "user", "content": question}]
+    for _ in range(5):
+        msg = alt.chat.completions.create(model=ALT_MODEL, messages=messages,
+                                          tools=ALT_TOOLS).choices[0].message
+        if not msg.tool_calls:
+            return msg.content
+        messages.append({"role": "assistant", "content": msg.content,
+                         "tool_calls": [tc.model_dump() for tc in msg.tool_calls]})
+        for tc in msg.tool_calls:
+            args = json.loads(tc.function.arguments)  # здесь аргументы приходят строкой JSON
+            out = vat(**args)
+            if log is not None:
+                log.append({"input": args, "output": out})
+            messages.append({"role": "tool", "tool_call_id": tc.id,
+                             "content": json.dumps(out, ensure_ascii=False)})
+    raise RuntimeError("модель не закончила за 5 шагов")</pre></div><p>Замените <code>ask</code> на <code>ask_alt</code> во второй части практики и прогоните те же пять вопросов. Смотрите: позвала ли модель инструмент на вопрос про УПД, верно ли выбрала режим, не исказила ли число. Поддержку инструментов у конкретной модели проверьте в документации вендора. Результатов прогона у нас нет: записываете вы.</p>
+<section class="lic" aria-label="Лицензия"><h2 style="margin:0 0 8px;font-size:20px">Лицензия</h2><p>Исходный материал © 2023 Anthropic, лицензия MIT; текст лицензии — <code>LICENSE_MIT.txt</code> в папке курса. Адаптация, функция <code>vat</code>, упражнения, «Практика Академии» и «Сравните модели» — Академия ИИ.</p><p><a href="../licenziya/">Полный текст лицензии курса</a></p></section>
+<nav class="pager" aria-label="Уроки"><a class="btn btn-quiet" href="../01-pervyy-zapros-i-json/">Урок 1</a><a class="btn btn-primary" href="../03-izvlechenie-po-skheme/">Урок 3. Извлечение данных по схеме</a></nav>
+</article></div></section>
+</main>
+<footer class="ftr"><div class="wrap">
+<nav aria-label="Ссылки"><a href="../../../../academy.html">Академия ИИ</a><a href="../../dokumenty/oferta.html">Оферта</a><a href="../../dokumenty/vozvrat.html">Правила возврата</a><a href="../../dokumenty/soglasie.html">Согласие на обработку данных</a><a href="../../dokumenty/prodavec.html">Продавец: ИП</a><a href="../../../../policy.html">Политика обработки персональных данных</a><a href="https://t.me/biznes_autopilot">Telegram</a><a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y">MAX</a></nav>
+<p>Академия ИИ не является партнёром или представителем OpenAI, Anthropic, Google, Microsoft и других вендоров. Курсы сделаны по открытым материалам: у каждого урока указаны автор, источник и лицензия.</p>
+<p>© 2026 Нейромануфактура</p>
+</div></footer>
+<script src="../../kursy.js" defer></script>
+</body></html>

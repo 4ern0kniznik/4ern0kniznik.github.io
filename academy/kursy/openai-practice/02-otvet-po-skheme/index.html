@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ответ по схеме: JSON Schema и Pydantic — К6 · Академия ИИ</title>
+<meta name="description" content="Скрипту нужен не текст «Счёт № 214 на сумму…», а поля: номер, дата, сумма. Их кладут в таблицу, в 1С, в отчёт. Структурированный вывод (Structured Outputs) заставляет модель вернуть JSON строго по…">
+<link rel="canonical" href="https://neuromanufaktura.ru/academy/kursy/openai-practice/02-otvet-po-skheme/">
+<link rel="stylesheet" href="../../kursy.css">
+</head><body>
+<header class="hdr"><div class="wrap">
+<a class="logo" href="../../../../index.html">Нейромануфактура</a>
+<nav class="nav" aria-label="Разделы"><a class="hide-m" href="../../../../academy.html">Академия ИИ</a><a href="../../" aria-current="page">Курсы</a><a class="hide-m home" href="../../../../index.html">На главную</a></nav>
+</div></header>
+<main>
+<section class="sec"><div class="wrap"><article class="read lesson">
+<p class="eyebrow"><a href="../../">Каталог</a> · <a href="../">К6 OpenAI на практике: Responses API, агенты, оценка, MCP</a></p><p class="small" style="margin:0 0 4px">Урок 2 из 16</p><h1>Ответ по схеме: JSON Schema и Pydantic</h1><div class="badges" style="margin:12px 0 16px"><span class="badge badge-free">Бесплатно</span><span class="badge badge-lic">MIT</span></div>
+<dl class="src" aria-label="Источник урока"><dt>Основано на</dt><dd>«Introduction to Structured Outputs», OpenAI, <a href="https://github.com/openai/openai-cookbook/blob/main/examples/Structured_Outputs_Intro.ipynb">github.com/openai/openai-cookbook/blob/main/examples/Structured_Outputs_Intro.ipynb</a> (06.08.2024). Лицензия MIT, © OpenAI.</dd><dt>Что изменено</dt><dd>перевод смысла на русский, код переписан своими фрагментами под Responses API, примеры заменены на российские (счёт поставщика вместо задачи по математике и статей об изобретениях), добавлены упражнения с проверкой, «Практика Академии» и «Сравните модели».</dd><dt>Оригинал</dt><dd><a href="https://github.com/openai/openai-cookbook/blob/main/examples/Structured_Outputs_Intro.ipynb">github.com/openai/openai-cookbook/blob/main/examples/Structured_Outputs_Intro.ipynb</a></dd></dl>
+<h2>Зачем это</h2><p>Скрипту нужен не текст «Счёт № 214 на сумму…», а поля: номер, дата, сумма. Их кладут в таблицу, в 1С, в отчёт. Структурированный вывод (Structured Outputs) заставляет модель вернуть JSON строго по вашей схеме. Нет схемы — каждый ответ приходится разбирать регулярками и надеяться.</p><h2>Урок</h2><h3>JSON-режим и строгая схема</h3><p>Попросить модель «ответь в JSON» можно и в обычной подсказке. Она почти всегда послушается. «Почти» — проблема: то лишнее поле, то пропущенное, то комментарий перед JSON.</p><p>Строгий режим (<code>strict: true</code>) другой. Модель генерирует ответ так, чтобы он совпал со схемой JSON Schema: все обязательные поля на месте, типы верные, лишних полей нет. Это обещание формы, а не содержания. Схема гарантирует, что поле <code>sum</code> — число. Что число правильное, схема не гарантирует. Это проверяете вы.</p><p>В оригинале (2024 год) примеры написаны на Chat Completions, параметр там — <code>response_format</code>. Ниже — то же на Responses API, параметр называется <code>text.format</code>. Точный синтаксис сверяйте с документацией: он менялся.</p><h3>Схема через Pydantic</h3><p>Удобнее всего описать схему классом Pydantic. Библиотека <code>openai</code> сама переведёт его в JSON Schema и разберёт ответ обратно в объект.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>from pydantic import BaseModel
+from openai import OpenAI
+
+MODEL = "..."  # актуальное имя модели — в документации OpenAI
+client = OpenAI()
+
+class Position(BaseModel):
+    name: str        # наименование товара или услуги
+    quantity: float
+    price: float     # цена за единицу, ₽, без НДС
+
+class Invoice(BaseModel):
+    number: str
+    date: str        # ДД.ММ.ГГГГ
+    supplier: str
+    positions: list[Position]
+    total_without_vat: float
+    vat: float
+    total_with_vat: float
+
+INSTRUCTIONS = (
+    "Извлеки реквизиты счёта из текста письма. "
+    "Дату пиши в формате ДД.ММ.ГГГГ. Суммы — числом, без пробелов и знака ₽. "
+    "Если поля в письме нет, оставь пустую строку или 0."
+)
+
+LETTER = """Добрый день!
+Направляем счёт № 214 от 28.10.2026 от ООО «Ладога-Снаб».
+Бумага А4, 40 пачек по 350 руб. Картридж для принтера, 2 шт. по 4 100 руб.
+Итого без НДС 22 200 руб., НДС 22 % — 4 884 руб., всего к оплате 27 084 руб."""
+
+response = client.responses.parse(
+    model=MODEL,
+    instructions=INSTRUCTIONS,
+    input=LETTER,
+    text_format=Invoice,
+)
+invoice = response.output_parsed      # объект Invoice
+print(invoice.number, invoice.date, invoice.total_with_vat)</pre></div><p><code>output_parsed</code> — уже объект Python, а не строка. Поля доступны через точку, типы проверены.</p><h3>Схема вручную</h3><p>Без Pydantic схему пишут словарём. В строгом режиме у схемы два обязательных условия: все поля перечислены в <code>required</code>, и у каждого объекта <code>additionalProperties: false</code>.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>schema = {
+    "type": "object",
+    "properties": {
+        "number": {"type": "string"},
+        "date": {"type": "string", "description": "ДД.ММ.ГГГГ"},
+        "total_with_vat": {"type": "number"},
+    },
+    "required": ["number", "date", "total_with_vat"],
+    "additionalProperties": False,
+}
+
+response = client.responses.create(
+    model=MODEL,
+    instructions=INSTRUCTIONS,
+    input=LETTER,
+    text={"format": {"type": "json_schema", "name": "invoice", "schema": schema, "strict": True}},
+)
+import json
+data = json.loads(response.output_text)</pre></div><p>Поле <code>description</code> в схеме читает модель. Это место для коротких правил: формат даты, единица измерения, что писать при пустом значении.</p><p>Поле «необязательно» в строгом режиме делается так: оно остаётся в <code>required</code>, а тип — <code>["string", "null"]</code>. Модель вернёт <code>null</code>, если значения нет.</p><h3>Перечисления вместо свободного текста</h3><p>Если у поля конечный список значений, задайте его через <code>enum</code> (в Pydantic — <code>Literal</code> или <code>Enum</code>). Модель не сможет вернуть «Бухгалтерия.» с точкой или «бух.». Это решает проблему из практики урока 1.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>from typing import Literal
+
+class Ticket(BaseModel):
+    department: Literal["бухгалтерия", "склад", "ИТ", "договорной"]
+    urgent: bool</pre></div><h3>Отказ</h3><p>На вход скрипта может прийти что угодно, в том числе просьба, которую модель выполнять не станет. Тогда ответа по схеме не будет, а будет отказ (refusal) отдельным элементом ответа. Скрипт должен это заметить, а не упасть на разборе. В оригинале отказ показан на Chat Completions (поле <code>refusal</code>). В Responses API отказ приходит в содержимом сообщения с типом <code>refusal</code>; проверяйте <code>output_parsed</code> на <code>None</code> и смотрите <code>response.output</code>.</p><h3>Что ещё есть в оригинале</h3><p>Третий пример ноутбука — схема в описании функции (<code>strict: true</code> для функций). Это тема урока 3.</p><h2>Упражнения</h2><h3>Упражнение 2.1. Три поля</h3><p>Извлеките из письма <code>LETTER</code> только номер, дату и сумму к оплате через Pydantic-класс из трёх полей.</p><p class="check"><b>Проверка:</b> <code>number == "214"</code> (или <code>"№ 214"</code> — решите, какой вариант нужен, и закрепите в <code>description</code>), <code>date == "28.10.2026"</code>, <code>total_with_vat == 27084</code>.</p><details><summary>Подсказка</summary><div><p>Если номер приходит то с «№», то без, добавьте в описание поля: «только цифры, без знака №».</p></div></details><h3>Упражнение 2.2. Перечисление</h3><p>Сделайте класс <code>Ticket</code> с полем <code>department</code> через <code>Literal</code> и прогоните заявки 1–10 из практики урока 1.</p><p class="check"><b>Проверка:</b> каждый ответ — одно из четырёх значений без лишних символов; код сравнения с эталоном больше не нужно чистить через <code>strip().rstrip(".")</code>.</p><details><summary>Подсказка</summary><div><p>Поле <code>urgent</code> модель заполнит сама. Задайте в <code>instructions</code>, что считать срочным, иначе каждая модель решит по-своему.</p></div></details><h3>Упражнение 2.3. Схема словарём</h3><p>Напишите ту же схему из 2.1 словарём и вызовите <code>responses.create</code> с <code>text.format</code>.</p><p class="check"><b>Проверка:</b> <code>json.loads(response.output_text)</code> не падает, ключей ровно три.</p><details><summary>Подсказка</summary><div><p>Ошибка про <code>additionalProperties</code> или <code>required</code> — значит, не выполнено одно из двух условий строгого режима.</p></div></details><h2>Практика Академии</h2><p><b>Задача.</b> Бухгалтерия получает счета в теле письма. Нужен скрипт, который превращает письмо в запись <code>Invoice</code> и сам проверяет арифметику.</p><p>Три тестовых письма (вымышленные поставщики):</p><div class="blk"><div class="bar"><span>текст</span><button type="button" class="copy">Скопировать</button></div><pre class="wrap-text">Письмо 1. Счёт № 88 от 01.11.2026, ООО «Ромашка-Сервис».
+Уборка офиса за октябрь — 1 услуга, 18 000 руб. НДС не облагается. К оплате 18 000 руб.
+
+Письмо 2. ООО «Вектор-Опт», счёт 1045 от 30.10.2026.
+Стулья офисные — 6 шт. по 5 200 р. Стол — 1 шт., 12 800 р.
+Без НДС 44 000 р., НДС 22 % 9 680 р., итого 53 680 р.
+
+Письмо 3. Высылаем счёт от 3 ноября 2026 г. № 17/11 (ООО «Кедр»).
+Вода питьевая 19 л — 10 бутылей по 420 руб. Аренда кулера — 1 мес., 600 руб.
+Сумма без НДС 4 800 руб., НДС 1 056 руб., всего 5 856 руб.</pre></div><p>Эталон:</p><div class="tbl"><table><thead><tr><th>Письмо</th><th>number</th><th>date</th><th>позиций</th><th>total_without_vat</th><th>vat</th><th>total_with_vat</th></tr></thead><tbody><tr><td>1</td><td>88</td><td>01.11.2026</td><td>1</td><td>18000</td><td>0</td><td>18000</td></tr><tr><td>2</td><td>1045</td><td>30.10.2026</td><td>2</td><td>44000</td><td>9680</td><td>53680</td></tr><tr><td>3</td><td>17/11</td><td>03.11.2026</td><td>2</td><td>4800</td><td>1056</td><td>5856</td></tr></tbody></table></div><p>Что сделать:</p><ol><li>Возьмите класс <code>Invoice</code> из урока, добавьте <code>description</code> к полям, где ошибается модель.</li><li>Напишите функцию <code>check(inv)</code>, которая возвращает список ошибок:</li></ol><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>import re
+
+def check(inv: Invoice) -&gt; list[str]:
+    errors = []
+    if not re.fullmatch(r"\d{2}\.\d{2}\.\d{4}", inv.date):
+        errors.append(f"дата не ДД.ММ.ГГГГ: {inv.date}")
+    s = round(sum(p.quantity * p.price for p in inv.positions), 2)
+    if s != round(inv.total_without_vat, 2):
+        errors.append(f"позиции дают {s}, в счёте {inv.total_without_vat}")
+    if round(inv.total_without_vat + inv.vat, 2) != round(inv.total_with_vat, 2):
+        errors.append("без НДС + НДС ≠ итого")
+    return errors</pre></div><ol><li>Прогоните три письма, сравните с эталоном и выведите ошибки <code>check</code>.</li></ol><p class="check"><b>Проверка:</b></p><ul><li>все три записи совпадают с эталоном по шести полям таблицы;</li><li><code>check</code> возвращает пустой список для всех трёх;</li><li>письмо 3: дата «3 ноября 2026 г.» превращена в <code>03.11.2026</code>, номер «17/11» сохранён целиком;</li><li>испорченное письмо (поменяйте в письме 2 итог на 52 000 р.) даёт ошибку «без НДС + НДС ≠ итого». Модель не должна «исправлять» сумму сама: если исправила, допишите в инструкции «переписывай суммы как в письме, не пересчитывай».</li></ul><h2>Сравните модели</h2><ol><li>Прогоните практику на двух-трёх значениях <code>MODEL</code>.</li><li>У провайдеров с OpenAI-совместимым Chat Completions поддержка схем разная: у одних есть только «режим JSON» без строгой схемы, у других схема поддерживается частично. Проверьте по документации провайдера. Если строгой схемы нет, запросите JSON обычной подсказкой и разберите его тем же классом: <code>Invoice.model_validate_json(text)</code>. Ошибка разбора тоже результат: запишите её.</li></ol><p>Таблица для записи: модель, строгая схема есть или нет, сколько писем из трёх совпало с эталоном, сработала ли проверка на испорченном письме. Результатов прогона у нас нет, заполняете вы.</p>
+<section class="lic" aria-label="Лицензия"><h2 style="margin:0 0 8px;font-size:20px">Лицензия</h2><p>Урок основан на материалах OpenAI Cookbook, © 2025 OpenAI, лицензия MIT. Текст лицензии — в файле <code>LICENSE_MIT.txt</code> папки курса. Адаптация и «Практика Академии» — Академия ИИ, 2026.</p><p><a href="../licenziya/">Полный текст лицензии курса</a></p></section>
+<nav class="pager" aria-label="Уроки"><a class="btn btn-quiet" href="../01-pervyy-zapros/">Урок 1</a><a class="btn btn-primary" href="../03-vyzov-funktsiy/">Урок 3. Вызов функций: модель просит, программа выполняет</a></nav>
+</article></div></section>
+</main>
+<footer class="ftr"><div class="wrap">
+<nav aria-label="Ссылки"><a href="../../../../academy.html">Академия ИИ</a><a href="../../dokumenty/oferta.html">Оферта</a><a href="../../dokumenty/vozvrat.html">Правила возврата</a><a href="../../dokumenty/soglasie.html">Согласие на обработку данных</a><a href="../../dokumenty/prodavec.html">Продавец: ИП</a><a href="../../../../policy.html">Политика обработки персональных данных</a><a href="https://t.me/biznes_autopilot">Telegram</a><a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y">MAX</a></nav>
+<p>Академия ИИ не является партнёром или представителем OpenAI, Anthropic, Google, Microsoft и других вендоров. Курсы сделаны по открытым материалам: у каждого урока указаны автор, источник и лицензия.</p>
+<p>© 2026 Нейромануфактура</p>
+</div></footer>
+<script src="../../kursy.js" defer></script>
+</body></html>

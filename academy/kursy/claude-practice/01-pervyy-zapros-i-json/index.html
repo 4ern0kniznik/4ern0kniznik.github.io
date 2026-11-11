@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Первый запрос и ответ в JSON — К5 · Академия ИИ</title>
+<meta name="description" content="Ответ модели в чате читает человек. Ответ модели в программе читает код. Коду нужен JSON без вступлений вроде «Вот ваш JSON:». В этом уроке вы отправите первый запрос из Python и научитесь надёжно…">
+<link rel="canonical" href="https://neuromanufaktura.ru/academy/kursy/claude-practice/01-pervyy-zapros-i-json/">
+<link rel="stylesheet" href="../../kursy.css">
+</head><body>
+<header class="hdr"><div class="wrap">
+<a class="logo" href="../../../../index.html">Нейромануфактура</a>
+<nav class="nav" aria-label="Разделы"><a class="hide-m" href="../../../../academy.html">Академия ИИ</a><a href="../../" aria-current="page">Курсы</a><a class="hide-m home" href="../../../../index.html">На главную</a></nav>
+</div></header>
+<main>
+<section class="sec"><div class="wrap"><article class="read lesson">
+<p class="eyebrow"><a href="../../">Каталог</a> · <a href="../">К5 Claude на практике: инструменты, навыки, агенты</a></p><p class="small" style="margin:0 0 4px">Урок 1 из 15</p><h1>Первый запрос и ответ в JSON</h1><div class="badges" style="margin:12px 0 16px"><span class="badge badge-free">Бесплатно</span><span class="badge badge-lic">MIT</span></div>
+<dl class="src" aria-label="Источник урока"><dt>Основано на</dt><dd>«Prompting Claude for "JSON Mode"», Anthropic, <a href="https://github.com/anthropics/claude-cookbooks/blob/main/misc/how_to_enable_json_mode.ipynb">github.com/anthropics/claude-cookbooks/blob/main/misc/how_to_enable_json_mode.ipynb</a>, лицензия MIT, © 2023 Anthropic.</dd><dt>Что изменено</dt><dd>перевод на русский, пример про спортсменов заменён на разбор счетов, код переписан своими фрагментами, добавлены разделы «Практика Академии» и «Сравните модели».</dd><dt>Оригинал</dt><dd><a href="https://github.com/anthropics/claude-cookbooks">github.com/anthropics/claude-cookbooks</a></dd></dl>
+<h2>Зачем это</h2><p>Ответ модели в чате читает человек. Ответ модели в программе читает код. Коду нужен JSON без вступлений вроде «Вот ваш JSON:». В этом уроке вы отправите первый запрос из Python и научитесь надёжно доставать JSON из ответа.</p><h2>Урок</h2><h3>Подготовка</h3><div class="blk"><div class="bar"><span>bash</span><button type="button" class="copy">Скопировать</button></div><pre>pip install anthropic
+export ANTHROPIC_API_KEY="ваш ключ"   # Windows: set ANTHROPIC_API_KEY=ваш ключ</pre></div><p>Если ключ выдан через шлюз (например, «Немо»), в инструкции к нему будет адрес API. Тогда клиент создаётся с параметром <code>base_url</code>. Формат шлюза «Немо» и сроки выдачи ключей — нет данных.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>import json, re
+from anthropic import Anthropic
+
+MODEL = "впишите-имя-модели"  # актуальное имя — в документации вендора
+client = Anthropic()  # ключ из ANTHROPIC_API_KEY; для шлюза: Anthropic(base_url="адрес из инструкции")</pre></div><h3>Первый запрос</h3><p>Запрос состоит из трёх обязательных частей: модель, предел длины ответа <code>max_tokens</code> и список сообщений. Системная подсказка из урока 1 курса К1 передаётся отдельным параметром <code>system</code>.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>resp = client.messages.create(
+    model=MODEL,
+    max_tokens=1024,
+    system="Ты помощник бухгалтера. Отвечай коротко.",
+    messages=[{"role": "user", "content": "Что такое УПД? Одно предложение."}],
+)
+
+def text_of(resp):
+    # ответ — список блоков; текст лежит в блоках типа "text"
+    return "".join(b.text for b in resp.content if b.type == "text")
+
+print(text_of(resp))
+print(resp.stop_reason)  # end_turn — закончил сам, max_tokens — упёрся в предел</pre></div><p>Ответ приходит списком блоков. Сейчас там один текстовый блок, но в следующих уроках появятся блоки вызова инструментов и рассуждений. Поэтому текст собираем по типу блока, а не берём <code>content[0]</code> вслепую.</p><h3>Просим JSON</h3><p>Попросите JSON прямо и опишите поля. Без описания модель придумает свои ключи, и они будут меняться от запроса к запросу.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>invoice = """Счёт на оплату № 214 от 28.10.2026
+Поставщик: ООО «Северный картон»
+Бумага офисная А4, 40 пачек × 520,00 ₽ = 20 800,00 ₽
+Итого: 20 800,00 ₽, в т. ч. НДС 3 750,82 ₽"""
+
+prompt = f"""Извлеки из счёта данные в JSON с ключами:
+number — номер счёта, строка;
+date — дата в формате ДД.ММ.ГГГГ;
+supplier — поставщик, как в счёте;
+total — итог в рублях, число с точкой;
+vat — НДС в рублях, число с точкой, или null, если НДС нет.
+
+&lt;invoice&gt;
+{invoice}
+&lt;/invoice&gt;"""
+
+resp = client.messages.create(model=MODEL, max_tokens=1024,
+                              messages=[{"role": "user", "content": prompt}])
+print(text_of(resp))</pre></div><p>Модель может ответить JSON-ом в обёртке: строка вступления, блок ``<code>json, пояснение после. Первый способ достать JSON — взять всё от первой </code>{<code> до последней </code>}`:</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>def extract_json(text):
+    start, end = text.index("{"), text.rindex("}")
+    return json.loads(text[start:end + 1])</pre></div><p>Способ простой и ломается, если объектов в ответе несколько или в пояснении после JSON есть фигурная скобка.</p><h3>Теги и стоп-последовательность</h3><p>Надёжнее попросить положить JSON в теги и остановить ответ на закрывающем теге. Стоп-последовательность (stop sequence) обрывает генерацию, как только модель её напишет. Сам стоп-текст в ответ не попадает.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>prompt_tags = prompt + "\n\nВыведи только JSON внутри тегов &lt;json&gt;&lt;/json&gt;."
+
+resp = client.messages.create(
+    model=MODEL, max_tokens=1024,
+    stop_sequences=["&lt;/json&gt;"],
+    messages=[{"role": "user", "content": prompt_tags}],
+)
+text = text_of(resp)
+data = json.loads(text.split("&lt;json&gt;", 1)[1])   # всё после открывающего тега
+print(data, resp.stop_reason)                    # stop_reason == "stop_sequence"</pre></div><p>Если объектов несколько, каждый кладут в свой тег и забирают регулярным выражением:</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>def between_tags(tag, text):
+    return [m.strip() for m in re.findall(f"&lt;{tag}&gt;(.+?)&lt;/{tag}&gt;", text, re.DOTALL)]</pre></div><p>Модель успевает написать текст до тега, например рассуждение. Это плюс: можно разрешить ей подумать, а в код забрать только содержимое тегов.</p><h3>Что в оригинале устарело</h3><p>В оригинале есть ещё один приём: дописать начало ответа за модель (prefill), например открывающую <code>{</code>. В заметке к ноутбуку на 04.11.2026 сказано: этот приём принимает только старая модель Claude Haiku 4.5, а текущие модели отвечают ошибкой 400 на запрос, который заканчивается репликой ассистента. Поэтому в уроке его нет.</p><p>Там же сказано, что у текущих моделей есть режим структурированного вывода (structured outputs): ответ гарантированно совпадает с JSON-схемой. Описание — <a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs">platform.claude.com/docs/en/build-with-claude/structured-outputs</a>. Схемы и строгая проверка разобраны в уроке 3. Теги и стоп-последовательность работают на всех моделях, в том числе у других вендоров, поэтому начинаем с них.</p><h2>Упражнения</h2><h3>Упражнение 1.1. Первый ответ</h3><p>Отправьте запрос из раздела «Первый запрос». Затем поставьте <code>max_tokens=5</code> и повторите.</p><p class="check"><b>Проверка:</b> в первом случае <code>stop_reason</code> равен <code>end_turn</code>, во втором <code>max_tokens</code>, а ответ оборван.</p><details><summary>Подсказка</summary><div><p>Если первый запрос упал с ошибкой авторизации, проверьте, что переменная окружения задана в том же окне терминала, где запускаете скрипт.</p></div></details><h3>Упражнение 1.2. JSON в тегах</h3><p>Разберите счёт № 214 через теги и стоп-последовательность.</p><p class="check"><b>Проверка:</b> <code>data["total"] == 20800.0</code>, <code>data["date"] == "28.10.2026"</code>, <code>resp.stop_reason == "stop_sequence"</code>.</p><details><summary>Подсказка</summary><div><p>Если total пришёл строкой «20 800,00», уточните в подсказке: «число с точкой, без пробелов: 20800.00».</p></div></details><h2>Практика Академии</h2><p><b>Задача.</b> Бухгалтерия получает счета текстом из писем. Нужно собрать реестр: номер, дата, поставщик, итог, НДС. Напишите функцию <code>parse_invoice(text) -&gt; dict</code> на приёмах урока, прогоните через неё три счёта и сохраните результат в <code>ответ_01.json</code>.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>INVOICES = [
+"""Счёт № 0457 от 01.11.2026. ООО «Ладога-Опт». Вода питьевая 19 л, 12 шт. по 350 руб. Всего к оплате 4 200 руб. 00 коп., в том числе НДС 757,38 руб.""",
+"""ИП Смирнова А. В. (вымышленный поставщик)
+Счёт 33/11 от 03.11.2026
+Ремонт кондиционера в переговорной — 7 500,00
+Без НДС (УСН). Итого: 7 500,00 ₽""",
+"""Счёт на оплату № СК-1182 от 30.10.2026
+Поставщик: АО «Техносклад»
+1. Картридж лазерный — 3 шт. × 4 990,00 = 14 970,00
+2. Доставка — 1 × 600,00 = 600,00
+Итого: 15 570,00. В том числе НДС: 2 807,70""",
+]
+
+results = [parse_invoice(t) for t in INVOICES]
+json.dump(results, open("ответ_01.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)</pre></div><p class="check"><b>Проверка.</b> Запустите скрипт; он не обращается к модели и сверяет ваш файл с эталоном.</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>import json, re
+
+ETALON = [
+    {"number": "0457",    "date": "01.11.2026", "total": 4200.00,  "vat": 757.38},
+    {"number": "33/11",   "date": "03.11.2026", "total": 7500.00,  "vat": None},
+    {"number": "СК-1182", "date": "30.10.2026", "total": 15570.00, "vat": 2807.70},
+]
+SUPPLIER_WORDS = ["ладога", "смирнова", "техносклад"]
+
+got = json.load(open("ответ_01.json", encoding="utf-8"))
+assert len(got) == 3, "должно быть три счёта"
+for i, (g, e) in enumerate(zip(got, ETALON), 1):
+    assert set(g) &gt;= {"number", "date", "supplier", "total", "vat"}, f"счёт {i}: не хватает ключей"
+    assert re.fullmatch(r"\d{2}\.\d{2}\.\d{4}", g["date"]), f"счёт {i}: дата не ДД.ММ.ГГГГ"
+    assert g["number"] == e["number"] and g["date"] == e["date"], f"счёт {i}: номер или дата"
+    assert isinstance(g["total"], (int, float)) and abs(g["total"] - e["total"]) &lt; 0.005, f"счёт {i}: итог"
+    if e["vat"] is None:
+        assert g["vat"] is None, f"счёт {i}: НДС должен быть null"
+    else:
+        assert abs(g["vat"] - e["vat"]) &lt; 0.005, f"счёт {i}: НДС"
+    assert SUPPLIER_WORDS[i - 1] in g["supplier"].lower(), f"счёт {i}: поставщик"
+print("Все три счёта разобраны верно")</pre></div><p>Засчитано, если скрипт печатает «Все три счёта разобраны верно». Типичные ошибки: номер «№ 0457» вместо «0457», ноль вместо <code>null</code> при «Без НДС», итог строкой с пробелами. Каждую чините правилом в подсказке, а не правкой эталона.</p><h2>Сравните модели</h2><p>Тот же приём на другой модели через OpenAI-совместимый API (DeepSeek, YandexGPT, GigaChat и другие, если у вас есть их ключ):</p><div class="blk"><div class="bar"><span>python</span><button type="button" class="copy">Скопировать</button></div><pre>import os
+from openai import OpenAI
+
+alt = OpenAI(api_key=os.environ["ALT_API_KEY"], base_url=os.environ["ALT_BASE_URL"])  # адрес — в документации вендора
+ALT_MODEL = "впишите-имя-модели"  # актуальное имя — в документации вендора
+
+r = alt.chat.completions.create(
+    model=ALT_MODEL, max_tokens=1024,
+    stop=["&lt;/json&gt;"],  # стоп-последовательность; поддержку проверьте в документации вендора
+    messages=[{"role": "user", "content": prompt_tags}],
+)
+text = r.choices[0].message.content</pre></div><p>Отличия формата: системная подсказка идёт первым сообщением с ролью <code>system</code>, текст лежит в <code>choices[0].message.content</code>, стоп-последовательность называется <code>stop</code>.</p><p>Прогоните три счёта практики через обе модели и тот же скрипт проверки. Запишите, какая модель на каком счёте ошиблась и в каком поле. Готовых результатов прогона у нас нет: таблицу заполняете вы.</p>
+<section class="lic" aria-label="Лицензия"><h2 style="margin:0 0 8px;font-size:20px">Лицензия</h2><p>Исходный материал © 2023 Anthropic, лицензия MIT; текст лицензии — <code>LICENSE_MIT.txt</code> в папке курса. Адаптация, упражнения, «Практика Академии» и «Сравните модели» — Академия ИИ.</p><p><a href="../licenziya/">Полный текст лицензии курса</a></p></section>
+<nav class="pager" aria-label="Уроки"><a class="btn btn-quiet" href="../">Программа курса</a><a class="btn btn-primary" href="../02-instrument-nds/">Урок 2. Первый инструмент: точный расчёт НДС</a></nav>
+</article></div></section>
+</main>
+<footer class="ftr"><div class="wrap">
+<nav aria-label="Ссылки"><a href="../../../../academy.html">Академия ИИ</a><a href="../../dokumenty/oferta.html">Оферта</a><a href="../../dokumenty/vozvrat.html">Правила возврата</a><a href="../../dokumenty/soglasie.html">Согласие на обработку данных</a><a href="../../dokumenty/prodavec.html">Продавец: ИП</a><a href="../../../../policy.html">Политика обработки персональных данных</a><a href="https://t.me/biznes_autopilot">Telegram</a><a href="https://max.ru/join/--P-xPtxLRxEVLOqEf619dGRbH2Q3LsIaH8E2Se096Y">MAX</a></nav>
+<p>Академия ИИ не является партнёром или представителем OpenAI, Anthropic, Google, Microsoft и других вендоров. Курсы сделаны по открытым материалам: у каждого урока указаны автор, источник и лицензия.</p>
+<p>© 2026 Нейромануфактура</p>
+</div></footer>
+<script src="../../kursy.js" defer></script>
+</body></html>
